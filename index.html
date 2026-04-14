@@ -590,14 +590,200 @@ hr{border:none;border-top:1px solid var(--b1);margin:12px 0;}
 /* EcomFlow Pro - Final Stable Version
    All strings use helper functions to avoid template literal nesting issues */
 
-const DB_KEY = 'ef_v4';
+const SUPABASE_URL = 'https://njbpjattaacesbusfmat.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5qYnBqYXR0YWFjZXNidXNmbWF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNTg5NzIsImV4cCI6MjA5MTczNDk3Mn0.g0yAetDWuRdnkTWAtjtqr_s0DcvOn2lYDQxA2tdM-4c';
+
 let DB = {
   members:[], brands:[], tasks:[], kols:[],
   commissions:[], calEvents:[], notifications:[],
   ids:{m:1,b:1,t:1,k:1,c:1,e:1,n:1}
 };
-function saveDB(){try{localStorage.setItem(DB_KEY,JSON.stringify(DB));}catch(e){}}
-function loadDB(){try{const d=localStorage.getItem(DB_KEY);if(d){const p=JSON.parse(d);DB={...DB,...p};}}catch(e){}}
+
+/* ── Supabase API helper ── */
+function sbFetch(table, method, body, id) {
+  var url = SUPABASE_URL + '/rest/v1/' + table;
+  if(id) url += '?id=eq.' + id;
+  var opts = {
+    method: method || 'GET',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': method === 'POST' ? 'return=representation' : 'return=representation'
+    }
+  };
+  if(body) opts.body = JSON.stringify(body);
+  return fetch(url, opts).then(function(r){ return r.json(); });
+}
+
+function sbGet(table) {
+  return fetch(SUPABASE_URL + '/rest/v1/' + table + '?order=id.asc', {
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+  }).then(function(r){ return r.json(); });
+}
+
+function sbInsert(table, data) {
+  return fetch(SUPABASE_URL + '/rest/v1/' + table, {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation'
+    },
+    body: JSON.stringify(data)
+  }).then(function(r){ return r.json(); });
+}
+
+function sbUpdate(table, id, data) {
+  return fetch(SUPABASE_URL + '/rest/v1/' + table + '?id=eq.' + id, {
+    method: 'PATCH',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation'
+    },
+    body: JSON.stringify(data)
+  }).then(function(r){ return r.json(); });
+}
+
+function sbDelete(table, id) {
+  return fetch(SUPABASE_URL + '/rest/v1/' + table + '?id=eq.' + id, {
+    method: 'DELETE',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY
+    }
+  });
+}
+
+/* ── Load all data from Supabase ── */
+function loadDB() {
+  return Promise.all([
+    sbGet('members'), sbGet('brands'), sbGet('tasks'),
+    sbGet('kols'), sbGet('commissions'), sbGet('cal_events'), sbGet('notifications')
+  ]).then(function(results) {
+    DB.members = results[0] || [];
+    DB.brands = results[1] || [];
+    DB.tasks = (results[2] || []).map(function(t) {
+      t.collab = t.collab || [];
+      t.tags = t.tags || [];
+      t.comments = t.comments || [];
+      t.desc = t.description || '';
+      return t;
+    });
+    DB.kols = results[3] || [];
+    DB.commissions = results[4] || [];
+    DB.calEvents = results[5] || [];
+    DB.notifications = results[6] || [];
+    return DB;
+  }).catch(function(e) {
+    console.error('Supabase load error:', e);
+    return DB;
+  });
+}
+
+function saveDB() { /* data saved directly to Supabase on each action */ }
+
+/* ── Supabase CRUD wrappers ── */
+function dbSaveMember(data, editId) {
+  var row = {name:data.name,ename:data.ename,role:data.role,dept:data.dept,email:data.email,phone:data.phone,perm:data.perm,hours:data.hours,join_date:data.join,color:data.color,skills:data.skills};
+  if(editId) {
+    return sbUpdate('members', editId, row).then(function(r) { var m=r[0]||r; m.id=editId; var idx=DB.members.findIndex(function(x){return x.id===editId;}); if(idx>-1) DB.members[idx]={...DB.members[idx],...m,id:editId}; return m; });
+  } else {
+    return sbInsert('members', row).then(function(r) { var m=r[0]||r; DB.members.push(m); return m; });
+  }
+}
+
+function dbDeleteMember(id) {
+  return sbDelete('members', id).then(function() { DB.members=DB.members.filter(function(x){return x.id!==id;}); });
+}
+
+function dbSaveBrand(data, editId) {
+  var row = {name:data.name,short:data.short,cat:data.cat,emoji:data.emoji,color:data.color,contact:data.contact,email:data.email,phone:data.phone,note:data.note};
+  if(editId) {
+    return sbUpdate('brands', editId, row).then(function(r) { var b=r[0]||r; var idx=DB.brands.findIndex(function(x){return x.id===editId;}); if(idx>-1) DB.brands[idx]={...DB.brands[idx],...row,id:editId}; return b; });
+  } else {
+    return sbInsert('brands', row).then(function(r) { var b=r[0]||r; DB.brands.push(b); return b; });
+  }
+}
+
+function dbDeleteBrand(id) {
+  return sbDelete('brands', id).then(function() { DB.brands=DB.brands.filter(function(x){return x.id!==id;}); });
+}
+
+function dbSaveTask(data, editId) {
+  var row = {name:data.name,brand:data.brand,type:data.type,owner:data.owner,collab:data.collab,due:data.due,hours:data.hours,priority:data.priority,status:data.status,description:data.desc,tags:data.tags,comments:data.comments};
+  if(editId) {
+    return sbUpdate('tasks', editId, row).then(function(r) { var t=r[0]||r; var idx=DB.tasks.findIndex(function(x){return x.id===editId;}); if(idx>-1){DB.tasks[idx]={...DB.tasks[idx],...row,id:editId,desc:row.description};} return t; });
+  } else {
+    return sbInsert('tasks', row).then(function(r) { var t=r[0]||r; t.desc=t.description||''; DB.tasks.push(t); return t; });
+  }
+}
+
+function dbDeleteTask(id) {
+  return sbDelete('tasks', id).then(function() { DB.tasks=DB.tasks.filter(function(x){return x.id!==id;}); });
+}
+
+function dbSaveKol(data, editId) {
+  var row = {name:data.name,handle:data.handle,platform:data.platform,fans:data.fans,er:data.er,views:data.views,email:data.email,line:data.line,brand:data.brand,mode:data.mode,fixed:data.fixed,rate:data.rate,status:data.status,tags:data.tags,note:data.note};
+  if(editId) {
+    return sbUpdate('kols', editId, row).then(function(r) { var idx=DB.kols.findIndex(function(x){return x.id===editId;}); if(idx>-1) DB.kols[idx]={...DB.kols[idx],...row,id:editId}; return r; });
+  } else {
+    return sbInsert('kols', row).then(function(r) { var k=r[0]||r; DB.kols.push(k); return k; });
+  }
+}
+
+function dbDeleteKol(id) {
+  return sbDelete('kols', id).then(function() { DB.kols=DB.kols.filter(function(x){return x.id!==id;}); });
+}
+
+function dbSaveComm(data) {
+  var row = {kol:data.kol,brand:data.brand,activity:data.activity,sales:data.sales,br:data.br,kr:data.kr,kf:data.kf,due:data.due,status:data.status,note:data.note};
+  return sbInsert('commissions', row).then(function(r) { var c=r[0]||r; DB.commissions.push(c); return c; });
+}
+
+function dbPayComm(id) {
+  return sbUpdate('commissions', id, {status:'paid',paid_date:today()}).then(function() {
+    var c=DB.commissions.find(function(x){return x.id===id;}); if(c){c.status='paid';c.paidDate=today();}
+  });
+}
+
+function dbDeleteComm(id) {
+  return sbDelete('commissions', id).then(function() { DB.commissions=DB.commissions.filter(function(x){return x.id!==id;}); });
+}
+
+function dbSaveCalEv(data) {
+  var row = {name:data.name,date:data.date,type:data.type,brand:data.brand,owner:data.owner,note:data.note};
+  return sbInsert('cal_events', row).then(function(r) { var e=r[0]||r; DB.calEvents.push(e); return e; });
+}
+
+function dbDeleteCalEv(id) {
+  return sbDelete('cal_events', id).then(function() { DB.calEvents=DB.calEvents.filter(function(x){return x.id!==id;}); });
+}
+
+function dbAddNotif(msg, type) {
+  return sbInsert('notifications', {msg:msg,type:type||'info',read:false}).then(function(r) {
+    var n=r[0]||r; DB.notifications.unshift(n); updateBadges(); return n;
+  });
+}
+
+function dbReadNotif(id) {
+  return sbUpdate('notifications', id, {read:true}).then(function() {
+    var n=DB.notifications.find(function(x){return x.id===id;}); if(n) n.read=true; updateBadges();
+  });
+}
+
+function dbReadAllNotifs() {
+  var ps=DB.notifications.filter(function(n){return !n.read;}).map(function(n){return sbUpdate('notifications',n.id,{read:true});});
+  return Promise.all(ps).then(function() { DB.notifications.forEach(function(n){n.read=true;}); updateBadges(); });
+}
+
+function dbClearNotifs() {
+  var ps=DB.notifications.map(function(n){return sbDelete('notifications',n.id);});
+  return Promise.all(ps).then(function() { DB.notifications=[]; updateBadges(); });
+}
 
 /* ── Helpers ── */
 const el = id => document.getElementById(id);
@@ -778,7 +964,7 @@ function addCmt(tid){
   if(!t.comments)t.comments=[];
   var now=new Date();
   t.comments.push({author:DB.members[0]?DB.members[0].name:'管理員',text:txt,time:now.toLocaleString('zh-TW',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})});
-  saveDB();openDp(tid);toast('留言已送出','success');
+  sbUpdate('tasks',tid,{comments:t.comments});openDp(tid);toast('留言已送出','success');
 }
 
 /* ── Populate selects ── */
@@ -799,8 +985,7 @@ function populateSels(){
 
 /* ── Notifications ── */
 function addNotif(msg,type){
-  DB.notifications.unshift({id:DB.ids.n++,msg:msg,type:type||'info',read:false,time:new Date().toISOString()});
-  saveDB();updateBadges();
+  dbAddNotif(msg,type).catch(function(){});
 }
 
 /* ── Badges ── */
@@ -851,18 +1036,18 @@ function saveTask(){
     if(idx>-1){var old=DB.tasks[idx];DB.tasks[idx]={id:old.id,comments:old.comments||[],...data};}
     toast('任務已更新','success');
   }else{data.id=DB.ids.t++;data.comments=[];DB.tasks.push(data);addNotif('✅ 新任務「'+name+'」已建立','info');toast('任務已新增','success');}
-  saveDB();closeM('m-task');updateBadges();renderV(curV);
+  dbSaveTask(data, eid).then(function(){ updateBadges();renderV(curV); });
+  closeM('m-task');
 }
 function delTask(id){
   var t=DB.tasks.find(function(x){return x.id===id;});
   showCf('刪除任務？','確定要刪除「'+(t?t.name:'')+'」嗎？此操作無法復原。',function(){
-    DB.tasks=DB.tasks.filter(function(x){return x.id!==id;});
-    saveDB();updateBadges();renderV(curV);toast('任務已刪除','info');
+    dbDeleteTask(id).then(function(){ updateBadges();renderV(curV);toast('任務已刪除','info'); });
   });
 }
 function mvTask(id,status){
   var t=DB.tasks.find(function(x){return x.id===id;});if(!t)return;
-  t.status=status;saveDB();renderKanban();updateBadges();
+  t.status=status;sbUpdate('tasks',id,{status:status});renderKanban();updateBadges();
   toast('任務移至「'+ST_LBL[status]+'」','info');
   if(status==='done')addNotif('✅ 任務「'+t.name+'」已完成！','success');
   if(status==='review')addNotif('🔍 任務「'+t.name+'」等待審核','warning');
@@ -891,13 +1076,13 @@ function saveBrand(){
     email:el('b-email').value.trim(),phone:el('b-phone').value.trim(),note:el('b-note').value.trim()};
   if(eid){var idx=DB.brands.findIndex(function(x){return x.id===eid;});if(idx>-1)DB.brands[idx]={id:DB.brands[idx].id,...data};toast('品牌已更新','success');}
   else{data.id=DB.ids.b++;DB.brands.push(data);addNotif('🏷️ 新品牌「'+name+'」已建立','info');toast('品牌已新增','success');}
-  saveDB();closeM('m-brand');updateBadges();renderV(curV);populateSels();
+  dbSaveBrand(data, eid).then(function(){ updateBadges();renderV(curV);populateSels(); });
+  closeM('m-brand');
 }
 function delBrand(id){
   var b=DB.brands.find(function(x){return x.id===id;});
   showCf('刪除品牌？','確定要移除「'+(b?b.name:'')+'」嗎？相關任務不受影響。',function(){
-    DB.brands=DB.brands.filter(function(x){return x.id!==id;});
-    saveDB();updateBadges();renderV(curV);populateSels();toast('品牌已刪除','info');
+    dbDeleteBrand(id).then(function(){ updateBadges();renderV(curV);populateSels();toast('品牌已刪除','info'); });
   });
 }
 
@@ -927,13 +1112,13 @@ function saveMember(){
     join:el('me-join').value,color:el('me-color').value,skills:el('me-skills').value.trim()};
   if(eid){var idx=DB.members.findIndex(function(x){return x.id===eid;});if(idx>-1)DB.members[idx]={id:DB.members[idx].id,...data};toast('成員已更新','success');}
   else{data.id=DB.ids.m++;DB.members.push(data);addNotif('👤 新成員「'+name+'」已加入團隊','info');toast('成員已新增','success');}
-  saveDB();closeM('m-member');updateBadges();renderV(curV);populateSels();
+  dbSaveMember(data, eid).then(function(){ updateBadges();renderV(curV);populateSels(); });
+  closeM('m-member');
 }
 function delMember(id){
   var m=DB.members.find(function(x){return x.id===id;});
   showCf('刪除成員？','確定要移除「'+(m?m.name:'')+'」嗎？',function(){
-    DB.members=DB.members.filter(function(x){return x.id!==id;});
-    saveDB();updateBadges();renderV(curV);populateSels();toast('成員已刪除','info');
+    dbDeleteMember(id).then(function(){ updateBadges();renderV(curV);populateSels();toast('成員已刪除','info'); });
   });
 }
 
@@ -967,13 +1152,13 @@ function saveKol(){
     status:el('k-status').value,tags:el('k-tags').value.trim(),note:el('k-note').value.trim()};
   if(eid){var idx=DB.kols.findIndex(function(x){return x.id===eid;});if(idx>-1)DB.kols[idx]={id:DB.kols[idx].id,...data};toast('KOL已更新','success');}
   else{data.id=DB.ids.k++;DB.kols.push(data);addNotif('🌟 新KOL「'+name+'」已加入','info');toast('KOL已新增','success');}
-  saveDB();closeM('m-kol');updateBadges();renderV(curV);populateSels();
+  dbSaveKol(data, eid).then(function(){ updateBadges();renderV(curV);populateSels(); });
+  closeM('m-kol');
 }
 function delKol(id){
   var k=DB.kols.find(function(x){return x.id===id;});
   showCf('刪除KOL？','確定要移除「'+(k?k.name:'')+'」嗎？',function(){
-    DB.kols=DB.kols.filter(function(x){return x.id!==id;});
-    saveDB();updateBadges();renderV(curV);toast('KOL已刪除','info');
+    dbDeleteKol(id).then(function(){ updateBadges();renderV(curV);toast('KOL已刪除','info'); });
   });
 }
 
@@ -1009,21 +1194,18 @@ function saveComm(){
     activity:el('c-act').value.trim()||'未命名活動',sales:sales,
     br:parseFloat(el('c-br').value)||0,kr:kr,kf:kf,
     due:el('c-due').value,status:'pending',note:el('c-note').value.trim()};
-  DB.commissions.push(data);
+  dbSaveComm(data).then(function(){});
   addNotif('💰 '+kol+' 分潤 $'+fmt(toK)+' 待確認匯款','payment');
-  saveDB();closeM('m-comm');updateBadges();renderV(curV);toast('分潤紀錄已新增','success');
+  closeM('m-comm');updateBadges();renderV(curV);toast('分潤紀錄已新增','success');
 }
 function payComm(id){
   showCf('確認匯款？','確認標記此筆為已匯款？',function(){
-    var c=DB.commissions.find(function(x){return x.id===id;});
-    if(c){c.status='paid';c.paidDate=today();}
-    saveDB();renderV(curV);toast('匯款已標記完成','success');
+    dbPayComm(id).then(function(){renderV(curV);toast('匯款已標記完成','success');});
   },'✅ 確認匯款','btn-s','💳');
 }
 function delComm(id){
   showCf('刪除紀錄？','確定刪除此分潤紀錄嗎？',function(){
-    DB.commissions=DB.commissions.filter(function(x){return x.id!==id;});
-    saveDB();renderV(curV);toast('紀錄已刪除','info');
+    dbDeleteComm(id).then(function(){renderV(curV);toast('紀錄已刪除','info');});
   });
 }
 
@@ -1053,13 +1235,11 @@ function openCalM(date){
 function saveCalEv(){
   var name=el('cal-name').value.trim();var date=el('cal-date').value;
   if(!name||!date){toast('請填寫活動名稱和日期','error');return;}
-  DB.calEvents.push({id:DB.ids.e++,name:name,date:date,type:el('cal-type').value,
-    brand:el('cal-brand').value,owner:el('cal-owner').value,note:el('cal-note').value.trim()});
-  saveDB();closeM('m-cal');renderCal();toast('活動已新增','success');
+  dbSaveCalEv({name:name,date:date,type:el('cal-type').value,brand:el('cal-brand').value,owner:el('cal-owner').value,note:el('cal-note').value.trim()}).then(function(){renderCal();});
+  closeM('m-cal');toast('活動已新增','success');
 }
 function delCalEv(id){
-  DB.calEvents=DB.calEvents.filter(function(e){return e.id!==id;});
-  saveDB();renderCal();toast('活動已刪除','info');
+  dbDeleteCalEv(id).then(function(){renderCal();toast('活動已刪除','info');});
 }
 function calNav(d){calM+=d;if(calM<1){calM=12;calY--;}if(calM>12){calM=1;calY++;}renderCal();}
 function calToday(){var n=new Date();calY=n.getFullYear();calM=n.getMonth()+1;renderCal();}
@@ -1079,9 +1259,9 @@ function filterMem(dept,btnEl){
 }
 
 /* ── NOTIFICATIONS ── */
-function rdAll(){DB.notifications.forEach(function(n){n.read=true;});saveDB();renderInbox();updateBadges();toast('全部標為已讀','success');}
-function clrAll(){showCf('清除所有通知？','確定要清除嗎？',function(){DB.notifications=[];saveDB();renderInbox();updateBadges();toast('通知已清除','info');});}
-function rdN(id){var n=DB.notifications.find(function(x){return x.id===id;});if(n)n.read=true;saveDB();renderInbox();updateBadges();}
+function rdAll(){dbReadAllNotifs().then(function(){renderInbox();toast('全部標為已讀','success');});}
+function clrAll(){showCf('清除所有通知？','確定要清除嗎？',function(){dbClearNotifs().then(function(){renderInbox();toast('通知已清除','info');});});}
+function rdN(id){dbReadNotif(id).then(function(){renderInbox();});}
 
 /* ── CSV EXPORT ── */
 function expCSV(type){
@@ -1629,7 +1809,7 @@ function renderInbox(){
    SAMPLE DATA
 ══════════════════════════════════════════════════ */
 function initSample(){
-  if(DB.members.length>0)return;
+  // Insert sample data into Supabase
   var ms=[
     {id:1,name:'王小明',ename:'Michael Wang',role:'代操主管',dept:'管理',email:'michael@ecomflow.tw',phone:'0912-001-001',perm:'admin',hours:168,join:'2023-01-01',color:'linear-gradient(135deg,#4a85ff,#a855f7)',skills:'策略規劃,客戶管理,廣告投放'},
     {id:2,name:'陳小美',ename:'Alice Chen',role:'文案企劃',dept:'文案企劃',email:'alice@ecomflow.tw',phone:'0912-002-002',perm:'member',hours:160,join:'2023-03-15',color:'linear-gradient(135deg,#f33f5c,#f97316)',skills:'文案撰寫,品牌策略,IG內容'},
@@ -1686,16 +1866,42 @@ function initSample(){
   addNotif('💰 小美生活日記分潤 $70,600 截止 04/15，待匯款','payment');
   addNotif('✅ B品牌廣告素材已通過客戶審核，可安排投放','success');
   addNotif('👤 新成員劉曉燕已加入 KOL媒合 部門','info');
-  saveDB();
+  // Insert all sample data
+  var allMembers=DB.members.slice();
+  var allBrands=DB.brands.slice();
+  var allTasks=DB.tasks.slice();
+  var allKols=DB.kols.slice();
+  var allComms=DB.commissions.slice();
+  var allEvs=DB.calEvents.slice();
+  DB={members:[],brands:[],tasks:[],kols:[],commissions:[],calEvents:[],notifications:[],ids:{m:1,b:1,t:1,k:1,c:1,e:1,n:1}};
+  Promise.all(
+    allMembers.map(function(m){return dbSaveMember(m,null);})
+  ).then(function(){return Promise.all(allBrands.map(function(b){return dbSaveBrand(b,null);}));})
+  .then(function(){return Promise.all(allTasks.map(function(t){return dbSaveTask(t,null);}));})
+  .then(function(){return Promise.all(allKols.map(function(k){return dbSaveKol(k,null);}));})
+  .then(function(){return Promise.all(allComms.map(function(c){return dbSaveComm(c);}));})
+  .then(function(){return Promise.all(allEvs.map(function(e){return dbSaveCalEv(e);}));})
+  .then(function(){
+    return loadDB();
+  }).then(function(){
+    populateSels();updateBadges();renderDash();renderCal();
+  });
 }
 
 /* ── BOOT ── */
-loadDB();
-initSample();
-populateSels();
-updateBadges();
-renderDash();
-renderCal();
+function boot() {
+  loadDB().then(function() {
+    if(DB.members.length === 0) {
+      initSample();
+    } else {
+      populateSels();
+      updateBadges();
+      renderDash();
+      renderCal();
+    }
+  });
+}
+boot();
 </script>
 </body>
 </html>
