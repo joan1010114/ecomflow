@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>EcomFlow Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07090f;--s1:#0c1019;--s2:#121820;--s3:#18202c;--s4:#1e2838;
+  --b1:#1c2840;--b2:#243252;--b3:#2c3e64;
+  --acc:#4a85ff;--acl:rgba(74,133,255,.14);--acg:rgba(74,133,255,.07);
+  --grn:#21c55d;--gl:rgba(33,197,93,.14);
+  --red:#f33f5c;--rl:rgba(243,63,92,.14);
+  --yel:#f59e0b;--yl:rgba(245,158,11,.14);
+  --pur:#a855f7;--pl:rgba(168,85,247,.14);
+  --cyn:#06b6d4;--cyl:rgba(6,182,212,.14);
+  --org:#f97316;--orl:rgba(249,115,22,.14);
+  --tx:#dde4f2;--tx2:#8899b8;--tx3:#4a5a7a;
+  --fn:'Noto Sans TC',sans-serif;--mo:'JetBrains Mono',monospace;
+  --r:10px;--r2:14px;--sw:224px;--th:52px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);}
+body{font-family:var(--fn);color:var(--tx);font-size:13.5px;overflow:hidden;}
+.app{display:flex;height:100vh;}
+.sidebar{width:var(--sw);min-width:var(--sw);background:var(--s1);border-right:1px solid var(--b1);display:flex;flex-direction:column;height:100vh;position:fixed;left:0;top:0;z-index:200;transition:transform .28s ease;}
+.content{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+.topbar{height:var(--th);min-height:var(--th);background:var(--s1);border-bottom:1px solid var(--b1);display:flex;align-items:center;padding:0 16px;gap:8px;z-index:50;}
+.page{flex:1;overflow-y:auto;padding:20px 24px 60px;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:199;}
+.overlay.show{display:block;}
+.logo{padding:13px 14px 10px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:9px;flex-shrink:0;}
+.logo-icon{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--acc),var(--pur));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.logo-text{font-size:14.5px;font-weight:900;letter-spacing:-.4px;}
+.logo-sub{font-size:9px;color:var(--tx3);letter-spacing:1.5px;text-transform:uppercase;font-family:var(--mo);}
+.nav{flex:1;overflow-y:auto;padding:8px 0;}
+.nav-sec{font-size:9px;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;font-weight:800;padding:10px 13px 3px;font-family:var(--mo);}
+.ni{display:flex;align-items:center;gap:8px;padding:7.5px 10px;margin:1px 6px;border-radius:8px;cursor:pointer;color:var(--tx2);font-size:12.5px;transition:all .15s;position:relative;user-select:none;}
+.ni:hover{background:var(--s2);color:var(--tx);}
+.ni.on{background:var(--acg);color:var(--acc);font-weight:600;}
+.ni.on::before{content:'';position:absolute;left:0;top:20%;height:60%;width:3px;background:var(--acc);border-radius:0 3px 3px 0;}
+.ni-i{font-size:14px;width:18px;text-align:center;flex-shrink:0;}
+.nbadge{margin-left:auto;font-size:9px;font-weight:800;border-radius:99px;padding:1px 6px;font-family:var(--mo);}
+.nb-r{background:var(--red);color:#fff;}
+.nb-b{background:var(--acc);color:#fff;}
+.nb-g{background:var(--grn);color:#fff;}
+.nb-y{background:var(--yel);color:#fff;}
+.sf{padding:10px;border-top:1px solid var(--b1);flex-shrink:0;}
+.urow{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;cursor:pointer;transition:background .15s;}
+.urow:hover{background:var(--s2);}
+.hbg{background:none;border:none;color:var(--tx2);font-size:20px;cursor:pointer;display:none;padding:4px;flex-shrink:0;}
+.tb-t{font-size:14.5px;font-weight:800;flex:1;}
+.srch{display:flex;align-items:center;gap:7px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:6px 12px;color:var(--tx3);font-size:12px;cursor:pointer;min-width:160px;transition:border .15s;}
+.srch:hover{border-color:var(--acc);}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6.5px 13px;border-radius:8px;border:none;font-family:var(--fn);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-p{background:var(--acc);color:#fff;}.btn-p:hover{background:#3a71f0;}
+.btn-g{background:var(--s2);color:var(--tx);border:1px solid var(--b1);}.btn-g:hover{border-color:var(--acc);color:var(--acc);}
+.btn-d{background:var(--red);color:#fff;}.btn-d:hover{background:#df2b4e;}
+.btn-s{background:var(--grn);color:#fff;}.btn-s:hover{background:#16a34a;}
+.btn-pu{background:var(--pur);color:#fff;}
+.btn-sm{padding:3px 8px;font-size:11px;}
+.vw{display:none;animation:fi .2s ease;}.vw.on{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+.ph{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+.ph h1{font-size:20px;font-weight:900;letter-spacing:-.5px;}
+.ph p{font-size:12px;color:var(--tx2);margin-top:3px;}
+.ph-a{display:flex;gap:7px;flex-wrap:wrap;align-items:center;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.cd{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r2);padding:15px;}
+.cd-t{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.cd-tt{font-size:12.5px;font-weight:800;display:flex;align-items:center;gap:7px;}
+.mb12{margin-bottom:12px;}.mb18{margin-bottom:18px;}
+.kpi{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r2);padding:14px;position:relative;overflow:hidden;}
+.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi.bl::after{background:linear-gradient(90deg,var(--acc),transparent);}
+.kpi.gn::after{background:linear-gradient(90deg,var(--grn),transparent);}
+.kpi.rd::after{background:linear-gradient(90deg,var(--red),transparent);}
+.kpi.yl::after{background:linear-gradient(90deg,var(--yel),transparent);}
+.kpi.pu::after{background:linear-gradient(90deg,var(--pur),transparent);}
+.kpi.cy::after{background:linear-gradient(90deg,var(--cyn),transparent);}
+.kpi.or::after{background:linear-gradient(90deg,var(--org),transparent);}
+.kl{font-size:9px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;font-weight:800;font-family:var(--mo);}
+.kv{font-size:24px;font-weight:900;letter-spacing:-1px;margin:6px 0 3px;}
+.kd{font-size:11px;}
+.up{color:var(--grn);}.dn{color:var(--red);}
+.tag{display:inline-flex;align-items:center;padding:2px 7px;border-radius:99px;font-size:10px;font-weight:700;}
+.tbl{background:var(--acl);color:var(--acc);}
+.tgn{background:var(--gl);color:var(--grn);}
+.trd{background:var(--rl);color:var(--red);}
+.tyl{background:var(--yl);color:var(--yel);}
+.tpu{background:var(--pl);color:var(--pur);}
+.tcy{background:var(--cyl);color:var(--cyn);}
+.tor{background:var(--orl);color:var(--org);}
+.tgr{background:rgba(74,90,122,.2);color:var(--tx2);}
+.pb{background:var(--b1);border-radius:99px;height:4px;overflow:hidden;}
+.pbf{height:100%;border-radius:99px;transition:width .4s;}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0;}
+.dt{background:var(--tx3);}.ddo{background:var(--acc);}.drv{background:var(--yel);}.ddn{background:var(--grn);}.dhl{background:var(--red);}
+.tw{overflow-x:auto;}
+.tbl-t{width:100%;border-collapse:collapse;}
+.tbl-t th{text-align:left;font-size:9px;color:var(--tx3);text-transform:uppercase;letter-spacing:1.2px;font-weight:800;padding:8px 10px;border-bottom:1px solid var(--b1);font-family:var(--mo);white-space:nowrap;}
+.tbl-t td{padding:10px 10px;border-bottom:1px solid var(--b1);font-size:12.5px;vertical-align:middle;}
+.tbl-t tr:last-child td{border-bottom:none;}
+.tbl-t tbody tr:hover td{background:var(--s3);cursor:pointer;}
+.ri{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--b1);}
+.ri:last-child{border-bottom:none;}
+.rim{flex:1;min-width:0;}
+.rit{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ris{font-size:11px;color:var(--tx3);margin-top:1px;}
+.kb{display:flex;gap:10px;overflow-x:auto;padding-bottom:10px;min-height:360px;}
+.kbc{min-width:260px;background:var(--s2);border:1px solid var(--b1);border-radius:var(--r2);padding:12px;display:flex;flex-direction:column;}
+.kbh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.kbt{font-size:12.5px;font-weight:800;display:flex;align-items:center;gap:7px;}
+.kbn{background:var(--b1);color:var(--tx2);border-radius:99px;padding:1px 7px;font-size:9.5px;font-family:var(--mo);}
+.kc{background:var(--s1);border:1px solid var(--b1);border-radius:8px;padding:11px;margin-bottom:7px;cursor:pointer;transition:all .15s;}
+.kc:hover{border-color:var(--acc);transform:translateY(-2px);box-shadow:0 5px 18px rgba(74,133,255,.12);}
+.kct{font-size:12.5px;font-weight:600;margin-bottom:7px;line-height:1.4;}
+.kcf{display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.addc{background:none;border:1px dashed var(--b2);color:var(--tx3);border-radius:7px;padding:6px;font-size:11.5px;cursor:pointer;width:100%;text-align:center;transition:all .15s;margin-top:auto;font-family:var(--fn);}
+.addc:hover{border-color:var(--acc);color:var(--acc);}
+.av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;}
+.av-lg{width:44px;height:44px;font-size:17px;}
+.mbk{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:999;align-items:center;justify-content:center;padding:14px;}
+.mbk.on{display:flex;}
+.mdl{background:var(--s2);border:1px solid var(--b2);border-radius:var(--r2);padding:20px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;}
+.mdl-lg{max-width:640px;}
+.mdl h2{font-size:15px;font-weight:900;margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.mft{display:flex;justify-content:flex-end;gap:7px;margin-top:14px;padding-top:12px;border-top:1px solid var(--b1);}
+.fg{margin-bottom:11px;}
+.fg label{display:block;font-size:10px;color:var(--tx2);font-weight:800;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;}
+.fc{width:100%;background:var(--s1);border:1px solid var(--b1);border-radius:7px;padding:7.5px 10px;color:var(--tx);font-family:var(--fn);font-size:13px;outline:none;transition:border .15s;}
+.fc:focus{border-color:var(--acc);}
+textarea.fc{resize:vertical;min-height:68px;}
+select.fc option{background:var(--s2);}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.dpov{display:none;position:fixed;inset:0;z-index:298;}
+.dpov.on{display:block;}
+.dpp{position:fixed;right:0;top:0;width:420px;max-width:95vw;height:100vh;background:var(--s1);border-left:1px solid var(--b2);z-index:299;transform:translateX(100%);transition:transform .3s ease;display:flex;flex-direction:column;}
+.dpp.on{transform:none;}
+.dph{padding:15px;border-bottom:1px solid var(--b1);display:flex;align-items:flex-start;gap:10px;}
+.dpb{flex:1;overflow-y:auto;padding:15px;}
+.dps{margin-bottom:14px;}
+.dpst{font-size:9.5px;font-weight:800;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;font-family:var(--mo);}
+.srchp{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:998;display:none;align-items:flex-start;justify-content:center;padding-top:80px;}
+.srchp.on{display:flex;}
+.srchb{background:var(--s2);border:1px solid var(--b2);border-radius:var(--r2);width:100%;max-width:580px;overflow:hidden;}
+.srchi{width:100%;background:none;border:none;padding:14px 16px;font-size:15px;color:var(--tx);font-family:var(--fn);outline:none;}
+.srchr{max-height:380px;overflow-y:auto;}
+.srch-ri{display:flex;align-items:center;gap:10px;padding:10px 16px;border-top:1px solid var(--b1);cursor:pointer;transition:background .15s;}
+.srch-ri:hover{background:var(--s3);}
+.cfbk{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:1001;align-items:center;justify-content:center;}
+.cfbk.on{display:flex;}
+.cfbox{background:var(--s2);border:1px solid var(--b2);border-radius:var(--r2);padding:22px;max-width:320px;width:90%;text-align:center;}
+.cfbox h3{font-size:15px;font-weight:900;margin-bottom:7px;}
+.cfbox p{font-size:12.5px;color:var(--tx2);margin-bottom:16px;line-height:1.6;}
+.cfft{display:flex;gap:7px;justify-content:center;}
+.toast{position:fixed;bottom:18px;right:18px;background:var(--s2);border:1px solid var(--b2);border-radius:9px;padding:11px 14px;font-size:12.5px;font-weight:600;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,.45);display:flex;align-items:center;gap:7px;transform:translateX(130%);transition:transform .3s ease;max-width:270px;}
+.toast.on{transform:none;}
+.toast.success{border-left:3px solid var(--grn);}
+.toast.error{border-left:3px solid var(--red);}
+.toast.info{border-left:3px solid var(--acc);}
+.toast.warning{border-left:3px solid var(--yel);}
+.tabs{display:flex;gap:2px;background:var(--s1);border:1px solid var(--b1);border-radius:8px;padding:3px;width:fit-content;overflow-x:auto;}
+.tb{padding:5px 12px;border-radius:6px;font-size:11.5px;font-weight:700;cursor:pointer;color:var(--tx2);transition:all .15s;white-space:nowrap;border:none;background:none;font-family:var(--fn);}
+.tb.on{background:var(--s2);color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.3);}
+.cbx{background:var(--acg);border:1px solid rgba(74,133,255,.2);border-radius:8px;padding:12px;margin-top:10px;}
+.cl{display:flex;justify-content:space-between;padding:3px 0;font-size:13px;}
+.cl.tot{font-weight:900;font-size:14px;border-top:1px solid var(--b2);padding-top:8px;margin-top:4px;}
+.brw{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.brl{width:90px;font-size:11.5px;color:var(--tx2);text-align:right;flex-shrink:0;}
+.brt{flex:1;background:var(--b1);border-radius:3px;height:20px;overflow:hidden;}
+.brf{height:100%;border-radius:3px;display:flex;align-items:center;justify-content:flex-end;padding-right:7px;font-size:11px;font-weight:700;color:rgba(255,255,255,.9);min-width:20px;}
+.wlr{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.wln{width:70px;font-size:12px;color:var(--tx);flex-shrink:0;}
+.wlb{flex:1;background:var(--b1);border-radius:3px;height:20px;overflow:hidden;}
+.wlf{height:100%;border-radius:3px;display:flex;align-items:center;padding-left:8px;font-size:11px;font-weight:700;color:rgba(255,255,255,.9);}
+.wlf.ov{background:repeating-linear-gradient(45deg,var(--red),var(--red) 4px,var(--rl) 4px,var(--rl) 10px)!important;}
+.wlc{font-size:11px;color:var(--tx3);font-family:var(--mo);width:36px;text-align:right;flex-shrink:0;}
+.calg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.caldh{text-align:center;font-size:9px;font-weight:800;color:var(--tx3);padding:4px 0;font-family:var(--mo);}
+.cald{min-height:64px;background:var(--s1);border:1px solid var(--b1);border-radius:6px;padding:5px;cursor:pointer;transition:border .15s;}
+.cald:hover{border-color:var(--acc);}
+.cald.tod{border-color:var(--acc);}
+.cald.oth{opacity:.25;}
+.caldn{font-size:10.5px;font-weight:800;margin-bottom:2px;font-family:var(--mo);}
+.calev{font-size:9px;border-radius:2px;padding:1px 4px;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;}
+.gnt-row{display:flex;align-items:center;height:30px;border-bottom:1px solid var(--b1);}
+.gnt-row:last-child{border-bottom:none;}
+.gnt-lbl{width:140px;min-width:140px;font-size:11.5px;padding-right:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.gnt-trk{flex:1;position:relative;height:100%;display:flex;align-items:center;}
+.gnt-bar{position:absolute;height:16px;border-radius:3px;display:flex;align-items:center;padding:0 7px;font-size:9.5px;font-weight:700;color:rgba(255,255,255,.9);overflow:hidden;white-space:nowrap;}
+.gnt-mhd{display:flex;margin-left:140px;margin-bottom:5px;}
+.gnt-m{flex:1;text-align:center;font-size:9px;color:var(--tx3);font-weight:800;border-right:1px solid var(--b1);font-family:var(--mo);}
+.mc{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r2);padding:15px;transition:border .15s;}
+.mc:hover{border-color:var(--acc);}
+.mcs{display:flex;justify-content:space-around;margin-top:9px;padding-top:9px;border-top:1px solid var(--b1);}
+.mcsv{font-size:17px;font-weight:900;text-align:center;}
+.mcsl{font-size:9.5px;color:var(--tx3);text-align:center;}
+.cmt{background:var(--s3);border-radius:7px;padding:9px;margin-bottom:7px;}
+.cmt-h{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+.cmt-n{font-size:11.5px;font-weight:700;}
+.cmt-t{font-size:10px;color:var(--tx3);margin-left:auto;font-family:var(--mo);}
+.cmt-x{font-size:12.5px;color:var(--tx2);line-height:1.6;}
+.cmt-in{display:flex;gap:7px;margin-top:10px;}
+.cmt-in input{flex:1;background:var(--s1);border:1px solid var(--b1);border-radius:7px;padding:7px 10px;color:var(--tx);font-family:var(--fn);font-size:12.5px;outline:none;}
+.cmt-in input:focus{border-color:var(--acc);}
+.sk{display:inline-flex;align-items:center;background:var(--s3);color:var(--tx2);padding:2px 7px;border-radius:4px;font-size:10.5px;margin:2px;}
+.empty{color:var(--tx3);font-size:13px;text-align:center;padding:36px 16px;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.empty-i{font-size:34px;opacity:.35;}
+hr{border:none;border-top:1px solid var(--b1);margin:12px 0;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--b2);border-radius:99px;}
+@media(max-width:860px){
+  .sidebar{transform:translateX(-100%);}.sidebar.on{transform:none;}.overlay.show{display:block;}
+  .content{margin-left:0;}.hbg{display:block;}
+  .g4,.g5{grid-template-columns:repeat(2,1fr);}
+  .g3{grid-template-columns:1fr 1fr;}.g2{grid-template-columns:1fr;}
+  .page{padding:14px 12px 60px;}.srch{display:none;}
+  .fr{grid-template-columns:1fr;}.dpp{width:100%;}
+}
+@media(max-width:480px){
+  .g4,.g5{grid-template-columns:1fr 1fr;gap:7px;}.g3{grid-template-columns:1fr;}
+  .kv{font-size:20px;}.ph h1{font-size:18px;}.topbar{padding:0 10px;}
+}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<div class="cfbk" id="cfbk">
+  <div class="cfbox">
+    <div style="font-size:28px;margin-bottom:8px" id="cf-ico">⚠️</div>
+    <h3 id="cf-title">確認操作？</h3>
+    <p id="cf-msg">此操作無法復原。</p>
+    <div class="cfft">
+      <button class="btn btn-g" onclick="cfNo()">取消</button>
+      <button class="btn" id="cf-ok" onclick="cfYes()">確認</button>
+    </div>
+  </div>
+</div>
+<div class="srchp" id="srchp" onclick="closeSrch(event)">
+  <div class="srchb">
+    <input class="srchi" id="srch-in" placeholder="🔍  搜尋任務、品牌、KOL、成員..." oninput="doSrch(this.value)" onkeydown="if(event.key==='Escape')hideSrch()">
+    <div class="srchr" id="srch-rs"></div>
+  </div>
+</div>
+<div class="dpov" id="dpov" onclick="closeDp()"></div>
+<div class="dpp" id="dpp">
+  <div class="dph">
+    <div style="flex:1">
+      <div id="dp-t" style="font-size:14.5px;font-weight:800;margin-bottom:3px;line-height:1.4;"></div>
+      <div id="dp-s" style="font-size:11px;color:var(--tx3);"></div>
+    </div>
+    <button class="btn btn-g btn-sm" onclick="closeDp()">✕</button>
+  </div>
+  <div class="dpb" id="dp-b"></div>
+</div>
+<div class="overlay" id="ov" onclick="closeSb()"></div>
+<div class="mbk" id="m-task"><div class="mdl mdl-lg">
+  <h2 id="mt-title">✅ 新增任務</h2><input type="hidden" id="t-eid">
+  <div class="fg"><label>任務名稱 *</label><input class="fc" id="t-name" placeholder="例：撰寫母親節廣告文案"></div>
+  <div class="fr"><div class="fg"><label>所屬品牌</label><select class="fc" id="t-brand"></select></div>
+  <div class="fg"><label>任務類型</label><select class="fc" id="t-type"><option>廣告投放</option><option>文案撰寫</option><option>素材設計</option><option>SEO優化</option><option>KOL合作</option><option>數據報告</option><option>平台上架</option><option>LINE推播</option><option>EDM行銷</option><option>競品分析</option><option>客戶提案</option><option>會議準備</option></select></div></div>
+  <div class="fr"><div class="fg"><label>負責人</label><select class="fc" id="t-owner"></select></div>
+  <div class="fg"><label>協作者（可多選）</label><select class="fc" id="t-collab" multiple style="height:64px;"></select></div></div>
+  <div class="fr"><div class="fg"><label>截止日期</label><input class="fc" type="date" id="t-due"></div>
+  <div class="fg"><label>預計工時（h）</label><input class="fc" type="number" id="t-hours" placeholder="例：4" min="0" step="0.5"></div></div>
+  <div class="fr"><div class="fg"><label>優先級</label><select class="fc" id="t-pri"><option value="high">🔴 高優先</option><option value="mid" selected>🟡 一般</option><option value="low">🟢 低優先</option></select></div>
+  <div class="fg"><label>狀態</label><select class="fc" id="t-status"><option value="todo">待執行</option><option value="doing">進行中</option><option value="review">待審核</option><option value="done">已完成</option></select></div></div>
+  <div class="fg"><label>任務說明</label><textarea class="fc" id="t-desc" placeholder="詳細描述任務內容、交付物、注意事項..."></textarea></div>
+  <div class="fg"><label>標籤（逗號分隔）</label><input class="fc" id="t-tags" placeholder="例：廣告,FB,春節"></div>
+  <div class="mft"><button class="btn btn-g" onclick="closeM('m-task')">取消</button><button class="btn btn-p" onclick="saveTask()">💾 儲存任務</button></div>
+</div></div>
+
+<div class="mbk" id="m-brand"><div class="mdl">
+  <h2 id="mb-title">🏷️ 新增品牌</h2><input type="hidden" id="b-eid">
+  <div class="fr"><div class="fg"><label>品牌名稱 *</label><input class="fc" id="b-name" placeholder="例：美妝品牌 A"></div>
+  <div class="fg"><label>簡稱（顯示用）</label><input class="fc" id="b-short" placeholder="例：A品牌"></div></div>
+  <div class="fr"><div class="fg"><label>產業類別</label><select class="fc" id="b-cat"><option>美妝保養</option><option>服飾配件</option><option>食品飲料</option><option>3C家電</option><option>保健食品</option><option>寵物用品</option><option>教育培訓</option><option>餐飲</option><option>其他</option></select></div>
+  <div class="fg"><label>品牌 Emoji</label><select class="fc" id="b-emoji"><option value="💄">💄 美妝</option><option value="👗">👗 服飾</option><option value="🥗">🥗 食品</option><option value="📱">📱 3C</option><option value="💊">💊 保健</option><option value="🐾">🐾 寵物</option><option value="📚">📚 教育</option><option value="☕">☕ 餐飲</option><option value="📦">📦 其他</option></select></div></div>
+  <div class="fr"><div class="fg"><label>聯絡窗口</label><input class="fc" id="b-contact" placeholder="例：林小姐"></div>
+  <div class="fg"><label>聯絡 Email</label><input class="fc" type="email" id="b-email" placeholder="brand@company.com"></div></div>
+  <div class="fr"><div class="fg"><label>電話</label><input class="fc" id="b-phone" placeholder="02-1234-5678"></div>
+  <div class="fg"><label>代表色</label><select class="fc" id="b-color"><option value="var(--acc)">藍色</option><option value="var(--red)">紅色</option><option value="var(--grn)">綠色</option><option value="var(--yel)">黃色</option><option value="var(--pur)">紫色</option><option value="var(--cyn)">青色</option><option value="var(--org)">橘色</option></select></div></div>
+  <div class="fg"><label>備註</label><textarea class="fc" id="b-note" placeholder="合約重點、客戶偏好、注意事項..."></textarea></div>
+  <div class="mft"><button class="btn btn-g" onclick="closeM('m-brand')">取消</button><button class="btn btn-p" onclick="saveBrand()">💾 儲存品牌</button></div>
+</div></div>
+
+<div class="mbk" id="m-member"><div class="mdl">
+  <h2 id="mm-title">👤 新增成員</h2><input type="hidden" id="me-eid">
+  <div class="fr"><div class="fg"><label>姓名 *</label><input class="fc" id="me-name" placeholder="例：陳小美"></div>
+  <div class="fg"><label>英文名稱</label><input class="fc" id="me-ename" placeholder="例：Alice Chen"></div></div>
+  <div class="fr"><div class="fg"><label>職稱</label><input class="fc" id="me-role" placeholder="例：廣告投放專員"></div>
+  <div class="fg"><label>部門</label><select class="fc" id="me-dept"><option>廣告投放</option><option>文案企劃</option><option>設計</option><option>KOL媒合</option><option>數據分析</option><option>帳務</option><option>管理</option></select></div></div>
+  <div class="fr"><div class="fg"><label>Email</label><input class="fc" type="email" id="me-email" placeholder="member@company.com"></div>
+  <div class="fg"><label>電話</label><input class="fc" id="me-phone" placeholder="0912-345-678"></div></div>
+  <div class="fr"><div class="fg"><label>權限等級</label><select class="fc" id="me-perm"><option value="admin">管理員（Admin）</option><option value="manager">主管（Manager）</option><option value="member" selected>一般成員（Member）</option><option value="viewer">檢視者（Viewer）</option></select></div>
+  <div class="fg"><label>月目標工時（h）</label><input class="fc" type="number" id="me-hours" value="160" min="0"></div></div>
+  <div class="fr"><div class="fg"><label>入職日期</label><input class="fc" type="date" id="me-join"></div>
+  <div class="fg"><label>頭像顏色</label><select class="fc" id="me-color"><option value="linear-gradient(135deg,#4a85ff,#a855f7)">藍紫</option><option value="linear-gradient(135deg,#f33f5c,#f97316)">紅橙</option><option value="linear-gradient(135deg,#21c55d,#4a85ff)">綠藍</option><option value="linear-gradient(135deg,#f59e0b,#ef4444)">黃紅</option><option value="linear-gradient(135deg,#a855f7,#06b6d4)">紫青</option><option value="linear-gradient(135deg,#21c55d,#06b6d4)">綠青</option><option value="linear-gradient(135deg,#f97316,#f59e0b)">橘黃</option></select></div></div>
+  <div class="fg"><label>專長技能（逗號分隔）</label><input class="fc" id="me-skills" placeholder="例：FB廣告,Google Ads,數據分析"></div>
+  <div class="mft"><button class="btn btn-g" onclick="closeM('m-member')">取消</button><button class="btn btn-p" onclick="saveMember()">💾 儲存成員</button></div>
+</div></div>
+
+<div class="mbk" id="m-kol"><div class="mdl mdl-lg">
+  <h2 id="mk-title">🌟 新增 KOL</h2><input type="hidden" id="k-eid">
+  <div class="fr"><div class="fg"><label>網紅名稱 *</label><input class="fc" id="k-name" placeholder="例：小美生活日記"></div>
+  <div class="fg"><label>帳號 ID</label><input class="fc" id="k-handle" placeholder="例：@xiaomei_life"></div></div>
+  <div class="fr"><div class="fg"><label>主要平台</label><select class="fc" id="k-plat"><option>Instagram</option><option>YouTube</option><option>TikTok</option><option>Facebook</option><option>部落格</option><option>Podcast</option></select></div>
+  <div class="fg"><label>粉絲數</label><input class="fc" type="number" id="k-fans" placeholder="例：150000"></div></div>
+  <div class="fr"><div class="fg"><label>平均互動率（%）</label><input class="fc" type="number" id="k-er" placeholder="例：3.5" step="0.1"></div>
+  <div class="fg"><label>平均觀看數</label><input class="fc" type="number" id="k-views" placeholder="例：50000"></div></div>
+  <div class="fr"><div class="fg"><label>聯絡 Email</label><input class="fc" type="email" id="k-email" placeholder="kol@email.com"></div>
+  <div class="fg"><label>LINE / 電話</label><input class="fc" id="k-line" placeholder="line_id"></div></div>
+  <div class="fr"><div class="fg"><label>合作品牌</label><select class="fc" id="k-brand"></select></div>
+  <div class="fg"><label>合作模式</label><select class="fc" id="k-mode"><option value="fixed">固定費用</option><option value="commission">純分潤制</option><option value="both">固定費+分潤</option><option value="product">商品換貼</option></select></div></div>
+  <div class="fr"><div class="fg"><label>固定費用（元）</label><input class="fc" type="number" id="k-fixed" value="0"></div>
+  <div class="fg"><label>KOL 分潤比（%）</label><input class="fc" type="number" id="k-rate" value="0" step="0.1"></div></div>
+  <div class="fr"><div class="fg"><label>合作狀態</label><select class="fc" id="k-status"><option value="active">合作中</option><option value="pending">接洽中</option><option value="paused">暫停</option><option value="ended">已結束</option></select></div>
+  <div class="fg"><label>內容風格標籤</label><input class="fc" id="k-tags" placeholder="例：生活,美妝,旅遊"></div></div>
+  <div class="fg"><label>備註</label><textarea class="fc" id="k-note" placeholder="合作注意事項..."></textarea></div>
+  <div class="mft"><button class="btn btn-g" onclick="closeM('m-kol')">取消</button><button class="btn btn-p" onclick="saveKol()">💾 儲存 KOL</button></div>
+</div></div>
+
+<div class="mbk" id="m-comm"><div class="mdl">
+  <h2>💰 新增分潤紀錄</h2>
+  <div class="fr"><div class="fg"><label>選擇 KOL *</label><select class="fc" id="c-kol"></select></div>
+  <div class="fg"><label>合作品牌</label><select class="fc" id="c-brand"></select></div></div>
+  <div class="fg"><label>活動 / 商品名稱</label><input class="fc" id="c-act" placeholder="例：清潔精華組合"></div>
+  <div class="fr"><div class="fg"><label>活動銷售額（元）*</label><input class="fc" type="number" id="c-sales" placeholder="例：500000" oninput="liveCalc()"></div>
+  <div class="fg"><label>品牌給代操（%）</label><input class="fc" type="number" id="c-br" value="5" step="0.1" oninput="liveCalc()"></div></div>
+  <div class="fr"><div class="fg"><label>代操給 KOL（%）</label><input class="fc" type="number" id="c-kr" value="8" step="0.1" oninput="liveCalc()"></div>
+  <div class="fg"><label>KOL 固定費（元）</label><input class="fc" type="number" id="c-kf" value="0" oninput="liveCalc()"></div></div>
+  <div id="c-preview"></div>
+  <div class="fr" style="margin-top:10px;"><div class="fg"><label>匯款截止日</label><input class="fc" type="date" id="c-due"></div>
+  <div class="fg"><label>備註</label><input class="fc" id="c-note" placeholder="選填"></div></div>
+  <div class="mft"><button class="btn btn-g" onclick="closeM('m-comm')">取消</button><button class="btn btn-p" onclick="saveComm()">💾 儲存紀錄</button></div>
+</div></div>
+
+<div class="mbk" id="m-cal"><div class="mdl">
+  <h2>📅 新增行銷活動</h2>
+  <div class="fg"><label>活動名稱 *</label><input class="fc" id="cal-name" placeholder="例：A品牌母親節直播"></div>
+  <div class="fr"><div class="fg"><label>日期 *</label><input class="fc" type="date" id="cal-date"></div>
+  <div class="fg"><label>類型</label><select class="fc" id="cal-type"><option value="deadline">截止日期</option><option value="event">行銷活動</option><option value="meeting">客戶會議</option><option value="launch">產品上市</option><option value="report">報告發送</option><option value="kol">KOL 直播</option></select></div></div>
+  <div class="fr"><div class="fg"><label>相關品牌</label><select class="fc" id="cal-brand"></select></div>
+  <div class="fg"><label>負責人</label><select class="fc" id="cal-owner"></select></div></div>
+  <div class="fg"><label>備註</label><input class="fc" id="cal-note" placeholder="選填"></div>
+  <div class="mft"><button class="btn btn-g" onclick="closeM('m-cal')">取消</button><button class="btn btn-p" onclick="saveCalEv()">💾 新增活動</button></div>
+</div></div>
+<div class="app">
+<div class="sidebar" id="sb">
+  <div class="logo"><div class="logo-icon">⚡</div><div><div class="logo-text">EcomFlow Pro</div><div class="logo-sub">電商代操管理系統</div></div></div>
+  <nav class="nav">
+    <div class="nav-sec">主要</div>
+    <div class="ni on" onclick="sv('dash',this)"><span class="ni-i">📊</span>總覽儀表板</div>
+    <div class="ni" onclick="sv('proj',this)"><span class="ni-i">📁</span>客戶專案<span class="nbadge nb-b" id="nb-b">0</span></div>
+    <div class="ni" onclick="sv('tasks',this)"><span class="ni-i">✅</span>任務看板<span class="nbadge nb-r" id="nb-t">0</span></div>
+    <div class="ni" onclick="sv('review',this)"><span class="ni-i">🔍</span>審核流程<span class="nbadge nb-r" id="nb-rv">0</span></div>
+    <div class="ni" onclick="sv('cal',this)"><span class="ni-i">📅</span>行銷日曆</div>
+    <div class="ni" onclick="sv('gantt',this)"><span class="ni-i">📉</span>時程甘特圖</div>
+    <div class="nav-sec">品牌 &amp; KOL</div>
+    <div class="ni" onclick="sv('brands',this)"><span class="ni-i">🏷️</span>品牌管理<span class="nbadge nb-b" id="nb-br">0</span></div>
+    <div class="ni" onclick="sv('kol',this)"><span class="ni-i">🌟</span>KOL 資料庫<span class="nbadge nb-b" id="nb-k">0</span></div>
+    <div class="ni" onclick="sv('comm',this)"><span class="ni-i">💰</span>分潤管理<span class="nbadge nb-r" id="nb-c">0</span></div>
+    <div class="ni" onclick="sv('pay',this)"><span class="ni-i">💳</span>匯款核算</div>
+    <div class="nav-sec">團隊</div>
+    <div class="ni" onclick="sv('members',this)"><span class="ni-i">👥</span>成員管理<span class="nbadge nb-b" id="nb-m">0</span></div>
+    <div class="ni" onclick="sv('workload',this)"><span class="ni-i">⚖️</span>工作負載</div>
+    <div class="ni" onclick="sv('time',this)"><span class="ni-i">⏱</span>時間追蹤</div>
+    <div class="nav-sec">分析</div>
+    <div class="ni" onclick="sv('report',this)"><span class="ni-i">📈</span>績效報告</div>
+    <div class="ni" onclick="sv('inbox',this)"><span class="ni-i">🔔</span>通知中心<span class="nbadge nb-g" id="nb-n">0</span></div>
+  </nav>
+  <div class="sf"><div class="urow" onclick="sv('members',null)">
+    <div class="av" id="ua" style="background:linear-gradient(135deg,var(--acc),var(--pur))">王</div>
+    <div><div style="font-size:12px;font-weight:700" id="un">王小明</div><div style="font-size:10px;color:var(--tx3)" id="ur">代操主管</div></div>
+  </div></div>
+</div>
+
+<div class="content">
+<div class="topbar">
+  <button class="hbg" onclick="toggleSb()">☰</button>
+  <div class="tb-t" id="tbt">總覽儀表板</div>
+  <div class="srch" onclick="openSrch()">🔍&nbsp; 搜尋...</div>
+  <button class="btn btn-g" style="font-size:11.5px" onclick="openTaskM()">+ 任務</button>
+  <button class="btn btn-p" style="font-size:11.5px" onclick="openBrandM()">+ 品牌</button>
+</div>
+<div class="page" id="pg">
+<div class="vw on" id="v-dash">
+  <div class="ph"><div><h1 id="dg">早安 👋</h1><p id="dd"></p></div>
+  <div class="ph-a"><button class="btn btn-g" onclick="sv('report',null)">📊 報告</button><button class="btn btn-p" onclick="openTaskM()">+ 新增任務</button></div></div>
+  <div class="g5 mb18">
+    <div class="kpi bl"><div class="kl">品牌數</div><div class="kv" style="color:var(--acc)" id="kpi-b">0</div><div class="kd up">▲ 活躍</div></div>
+    <div class="kpi yl"><div class="kl">進行中任務</div><div class="kv" style="color:var(--yel)" id="kpi-t">0</div><div class="kd">待完成</div></div>
+    <div class="kpi gn"><div class="kl">完成率</div><div class="kv" style="color:var(--grn)" id="kpi-r">0%</div><div class="kd up">▲ 累計</div></div>
+    <div class="kpi pu"><div class="kl">合作KOL</div><div class="kv" style="color:var(--pur)" id="kpi-k">0</div><div class="kd">活躍中</div></div>
+    <div class="kpi cy"><div class="kl">分潤淨利</div><div class="kv" style="color:var(--cyn)" id="kpi-p">$0</div><div class="kd up">▲ 本月</div></div>
+  </div>
+  <div class="g2 mb12">
+    <div class="cd"><div class="cd-t"><div class="cd-tt">📋 今日待辦</div><span class="tag tbl" id="d-tc">0件</span></div><div id="d-td"></div></div>
+    <div class="cd"><div class="cd-t"><div class="cd-tt">🏷️ 品牌進度</div></div><div id="d-bp"></div></div>
+  </div>
+  <div class="g3">
+    <div class="cd"><div class="cd-t"><div class="cd-tt">💰 本月分潤</div></div><div id="d-cs"></div><button class="btn btn-g" style="width:100%;margin-top:9px;font-size:11px" onclick="sv('comm',null)">查看完整分潤 →</button></div>
+    <div class="cd"><div class="cd-t"><div class="cd-tt">📊 任務狀態</div></div><div id="d-ts"></div></div>
+    <div class="cd"><div class="cd-t"><div class="cd-tt">🔔 最新通知</div></div><div id="d-ns"></div><button class="btn btn-g" style="width:100%;margin-top:8px;font-size:11px" onclick="sv('inbox',null)">查看全部 →</button></div>
+  </div>
+</div>
+
+<div class="vw" id="v-proj">
+  <div class="ph"><div><h1>客戶專案管理</h1><p id="proj-sub">各品牌專案狀態</p></div>
+  <div class="ph-a"><select class="btn btn-g" style="padding:5px 9px;font-size:11.5px" onchange="renderProj(this.value)"><option value="all">全部</option><option value="active">進行中</option><option value="done">已結案</option></select><button class="btn btn-p" onclick="openBrandM()">+ 新增品牌</button></div></div>
+  <div id="proj-list"></div>
+</div>
+
+<div class="vw" id="v-tasks">
+  <div class="ph"><div><h1>任務看板</h1><p>點任務卡查看詳情 · 點 ◀▶ 移動狀態</p></div>
+  <div class="ph-a">
+    <select class="btn btn-g" style="padding:5px 9px;font-size:11.5px" id="ft-brand" onchange="renderKanban()"></select>
+    <select class="btn btn-g" style="padding:5px 9px;font-size:11.5px" id="ft-owner" onchange="renderKanban()"></select>
+    <button class="btn btn-p" onclick="openTaskM()">+ 新增任務</button>
+  </div></div>
+  <div class="kb" id="kanban"></div>
+</div>
+
+<div class="vw" id="v-review">
+  <div class="ph"><div><h1>審核流程管理</h1><p id="rv-sub">待審核與退改任務</p></div>
+  <div class="ph-a"><button class="btn btn-p" onclick="openTaskM()">+ 新增任務</button></div></div>
+  <div class="g3 mb12">
+    <div class="kpi rd"><div class="kl">退改中</div><div class="kv" style="color:var(--red)" id="rv-h">0</div></div>
+    <div class="kpi yl"><div class="kl">待審核</div><div class="kv" style="color:var(--yel)" id="rv-rv">0</div></div>
+    <div class="kpi gn"><div class="kl">本月通過</div><div class="kv" style="color:var(--grn)" id="rv-dn">0</div></div>
+  </div>
+  <div id="rv-list"></div>
+</div>
+
+<div class="vw" id="v-cal">
+  <div class="ph"><div><h1>行銷活動日曆</h1><p id="cal-lbl"></p></div>
+  <div class="ph-a"><button class="btn btn-g" onclick="calNav(-1)">◀</button><button class="btn btn-g" onclick="calToday()">今天</button><button class="btn btn-g" onclick="calNav(1)">▶</button><button class="btn btn-p" onclick="openCalM()">+ 新增活動</button></div></div>
+  <div class="cd" style="padding:10px">
+    <div class="calg" style="margin-bottom:3px">
+      <div class="caldh">日</div><div class="caldh">一</div><div class="caldh">二</div><div class="caldh">三</div><div class="caldh">四</div><div class="caldh">五</div><div class="caldh">六</div>
+    </div>
+    <div class="calg" id="cal-grid"></div>
+  </div>
+  <div style="display:flex;gap:12px;margin-top:9px;flex-wrap:wrap;font-size:11px;color:var(--tx3)">
+    <span>■ <span style="color:var(--acc)">截止日期</span></span><span>■ <span style="color:var(--red)">重要活動</span></span>
+    <span>■ <span style="color:var(--grn)">發送執行</span></span><span>■ <span style="color:var(--yel)">客戶會議</span></span><span>■ <span style="color:var(--pur)">KOL直播</span></span>
+    <span style="margin-left:auto;font-size:10px">💡 點日期新增 · 點活動刪除</span>
+  </div>
+</div>
+
+<div class="vw" id="v-gantt">
+  <div class="ph"><div><h1>時程甘特圖</h1><p>各品牌專案時程排程</p></div>
+  <div class="ph-a"><button class="btn btn-g" onclick="ganttNav(-1)">◀</button><button class="btn btn-g" onclick="ganttToday()">本月</button><button class="btn btn-g" onclick="ganttNav(1)">▶</button></div></div>
+  <div class="cd" style="overflow-x:auto"><div style="min-width:520px"><div class="gnt-mhd" id="g-mhd"></div><div id="g-rows"></div></div></div>
+</div>
+
+<div class="vw" id="v-brands">
+  <div class="ph"><div><h1>品牌管理</h1><p id="brands-sub">合作品牌資料庫</p></div>
+  <div class="ph-a"><button class="btn btn-p" onclick="openBrandM()">+ 新增品牌</button></div></div>
+  <div id="brands-grid"></div>
+</div>
+
+<div class="vw" id="v-kol">
+  <div class="ph"><div><h1>KOL 網紅資料庫</h1><p id="kol-sub">0 位網紅</p></div>
+  <div class="ph-a">
+    <select class="btn btn-g" style="padding:5px 9px;font-size:11.5px" onchange="renderKol(this.value)"><option value="">全部平台</option><option value="Instagram">Instagram</option><option value="YouTube">YouTube</option><option value="TikTok">TikTok</option><option value="Facebook">Facebook</option></select>
+    <button class="btn btn-p" onclick="openKolM()">+ 新增 KOL</button>
+  </div></div>
+  <div class="g4 mb12">
+    <div class="kpi bl"><div class="kl">合作中</div><div class="kv" style="color:var(--acc)" id="k-a">0</div></div>
+    <div class="kpi gn"><div class="kl">總粉絲</div><div class="kv" style="color:var(--grn)" id="k-f">0</div></div>
+    <div class="kpi yl"><div class="kl">平均互動率</div><div class="kv" style="color:var(--yel)" id="k-e">0%</div></div>
+    <div class="kpi pu"><div class="kl">本月合作</div><div class="kv" style="color:var(--pur)" id="k-c">0</div></div>
+  </div>
+  <div class="cd"><div class="cd-t"><div class="cd-tt">🌟 KOL 列表</div></div>
+    <div class="tw"><table class="tbl-t"><thead><tr><th>網紅</th><th>平台</th><th>粉絲</th><th>互動率</th><th>品牌</th><th>模式</th><th>費率</th><th>狀態</th><th>操作</th></tr></thead><tbody id="kol-tb"></tbody></table></div>
+  </div>
+</div>
+
+<div class="vw" id="v-comm">
+  <div class="ph"><div><h1>分潤管理</h1><p>網紅團購三層分潤核算系統</p></div>
+  <div class="ph-a"><button class="btn btn-g" onclick="expCSV('comm')">📤 匯出CSV</button><button class="btn btn-p" onclick="openCommM()">+ 新增紀錄</button></div></div>
+  <div class="cd mb12"><div class="cd-t"><div class="cd-tt">🧮 即時分潤計算機</div></div>
+    <div class="g2">
+      <div>
+        <div class="fg"><label>活動銷售額（元）</label><input class="fc" type="number" id="mc-s" placeholder="例：500000" oninput="mainCalc()" style="font-family:var(--mo);font-size:14px"></div>
+        <div class="fr"><div class="fg"><label>品牌給代操（%）</label><input class="fc" type="number" id="mc-b" value="5" step="0.1" oninput="mainCalc()" style="font-family:var(--mo)"></div>
+        <div class="fg"><label>代操給KOL（%）</label><input class="fc" type="number" id="mc-k" value="8" step="0.1" oninput="mainCalc()" style="font-family:var(--mo)"></div></div>
+        <div class="fg"><label>KOL 固定費（元）</label><input class="fc" type="number" id="mc-f" value="0" oninput="mainCalc()" style="font-family:var(--mo)"></div>
+      </div>
+      <div class="cbx" id="mc-out" style="display:flex;align-items:center;justify-content:center"><div style="font-size:12px;color:var(--tx3)">輸入銷售額後自動計算 ↑</div></div>
+    </div>
+  </div>
+  <div class="cd"><div class="cd-t"><div class="cd-tt">📊 分潤紀錄</div><span class="tag tyl" id="c-pend">0筆待確認</span></div>
+    <div class="tw"><table class="tbl-t"><thead><tr><th>KOL</th><th>品牌</th><th>活動</th><th>銷售額</th><th>品牌→代操</th><th>代操→KOL</th><th>代操淨利</th><th>截止</th><th>狀態</th><th>操作</th></tr></thead><tbody id="comm-tb"></tbody></table></div>
+    <div id="comm-tot" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<div class="vw" id="v-pay">
+  <div class="ph"><div><h1>匯款核算管理</h1><p>KOL款項 · 收款紀錄</p></div>
+  <div class="ph-a"><button class="btn btn-g" onclick="expCSV('pay')">📤 匯出對帳單</button></div></div>
+  <div class="g3 mb12">
+    <div class="kpi rd"><div class="kl">待匯給KOL</div><div class="kv" style="color:var(--red)" id="py-p">$0</div><div class="kd" id="py-pc" style="color:var(--tx3)">0筆</div></div>
+    <div class="kpi gn"><div class="kl">本月已匯出</div><div class="kv" style="color:var(--grn)" id="py-d">$0</div><div class="kd" id="py-dc" style="color:var(--tx3)">0筆</div></div>
+    <div class="kpi bl"><div class="kl">代操分潤淨利</div><div class="kv" style="color:var(--acc)" id="py-n">$0</div><div class="kd up">▲ 本月</div></div>
+  </div>
+  <div class="g2">
+    <div class="cd"><div class="cd-t"><div class="cd-tt">💳 待匯款</div></div><div id="py-pl"></div></div>
+    <div class="cd"><div class="cd-t"><div class="cd-tt">✅ 已匯款</div></div><div id="py-dl"></div></div>
+  </div>
+</div>
+
+<div class="vw" id="v-members">
+  <div class="ph"><div><h1>成員管理</h1><p id="mem-sub">團隊成員列表</p></div>
+  <div class="ph-a">
+    <div class="tabs"><button class="tb on" onclick="filterMem('all',this)">全部</button><button class="tb" onclick="filterMem('廣告投放',this)">廣告投放</button><button class="tb" onclick="filterMem('文案企劃',this)">文案企劃</button><button class="tb" onclick="filterMem('設計',this)">設計</button><button class="tb" onclick="filterMem('KOL媒合',this)">KOL媒合</button></div>
+    <button class="btn btn-p" onclick="openMemM()">+ 新增成員</button>
+  </div></div>
+  <div class="g3 mb12" id="mem-cards"></div>
+  <div class="cd"><div class="cd-t"><div class="cd-tt">📋 成員詳細列表</div></div>
+    <div class="tw"><table class="tbl-t"><thead><tr><th>姓名</th><th>職稱</th><th>部門</th><th>Email</th><th>權限</th><th>專長</th><th>任務數</th><th>操作</th></tr></thead><tbody id="mem-tb"></tbody></table></div>
+  </div>
+</div>
+
+<div class="vw" id="v-workload">
+  <div class="ph"><div><h1>工作負載分析</h1><p>各成員任務量與工時分佈</p></div></div>
+  <div class="g4 mb12">
+    <div class="kpi bl"><div class="kl">團隊總任務</div><div class="kv" style="color:var(--acc)" id="wl-t">0</div></div>
+    <div class="kpi gn"><div class="kl">平均完成率</div><div class="kv" style="color:var(--grn)" id="wl-r">0%</div></div>
+    <div class="kpi rd"><div class="kl">逾期任務</div><div class="kv" style="color:var(--red)" id="wl-o">0</div></div>
+    <div class="kpi yl"><div class="kl">超載成員</div><div class="kv" style="color:var(--yel)" id="wl-b">0</div></div>
+  </div>
+  <div class="cd mb12"><div class="cd-t"><div class="cd-tt">⚖️ 各成員工作負載</div><span style="font-size:11px;color:var(--tx3)">⚠️ 紅條=超載</span></div><div id="wl-bars"></div></div>
+  <div class="cd"><div class="cd-t"><div class="cd-tt">📋 成員任務分佈</div></div>
+    <div class="tw"><table class="tbl-t"><thead><tr><th>成員</th><th>待執行</th><th>進行中</th><th>待審核</th><th>已完成</th><th>逾期</th><th>總計</th></tr></thead><tbody id="wl-tb"></tbody></table></div>
+  </div>
+</div>
+
+<div class="vw" id="v-time">
+  <div class="ph"><div><h1>時間追蹤</h1><p>工時統計與效率分析</p></div>
+  <div class="ph-a"><button class="btn btn-g" onclick="expCSV('time')">📤 匯出工時表</button></div></div>
+  <div class="g4 mb12">
+    <div class="kpi bl"><div class="kl">本月總工時</div><div class="kv" style="color:var(--acc)" id="tt-t">0h</div></div>
+    <div class="kpi gn"><div class="kl">帳單工時</div><div class="kv" style="color:var(--grn)" id="tt-b">0h</div></div>
+    <div class="kpi yl"><div class="kl">工時效率</div><div class="kv" style="color:var(--yel)" id="tt-e">0%</div></div>
+    <div class="kpi pu"><div class="kl">每小時產值</div><div class="kv" style="color:var(--pur)" id="tt-v">$0</div></div>
+  </div>
+  <div class="g2 mb12">
+    <div class="cd"><div class="cd-t"><div class="cd-tt">📊 各成員工時</div></div><div id="tt-mb"></div></div>
+    <div class="cd"><div class="cd-t"><div class="cd-tt">🏷️ 各品牌工時</div></div><div id="tt-bb"></div></div>
+  </div>
+  <div class="cd"><div class="cd-t"><div class="cd-tt">📋 工時明細</div></div>
+    <div class="tw"><table class="tbl-t"><thead><tr><th>成員</th><th>本月工時</th><th>目標工時</th><th>加班時數</th><th>完成任務</th><th>效率</th></tr></thead><tbody id="tt-tb"></tbody></table></div>
+  </div>
+</div>
+
+<div class="vw" id="v-report">
+  <div class="ph"><div><h1>績效報告</h1><p id="rp-d"></p></div>
+  <div class="ph-a"><button class="btn btn-g" onclick="expCSV('report')">📤 匯出報告</button></div></div>
+  <div class="g4 mb12">
+    <div class="kpi bl"><div class="kl">廣告ROAS</div><div class="kv" style="color:var(--acc)" id="rp-ro">—</div><div class="kd up">目標4x</div></div>
+    <div class="kpi gn"><div class="kl">KOL帶貨GMV</div><div class="kv" style="color:var(--grn)" id="rp-gv">$0</div><div class="kd up">▲ 本月</div></div>
+    <div class="kpi yl"><div class="kl">任務完成率</div><div class="kv" style="color:var(--yel)" id="rp-rt">0%</div><div class="kd up">▲ 累計</div></div>
+    <div class="kpi pu"><div class="kl">分潤淨利</div><div class="kv" style="color:var(--pur)" id="rp-nt">$0</div><div class="kd up">▲ 本月</div></div>
+  </div>
+  <div class="g2 mb12">
+    <div class="cd"><div class="cd-t"><div class="cd-tt">📊 各品牌任務完成率</div></div><div id="rp-bb"></div></div>
+    <div class="cd"><div class="cd-t"><div class="cd-tt">🌟 KOL帶貨排行</div></div><div id="rp-kb"></div></div>
+  </div>
+  <div class="g2">
+    <div class="cd"><div class="cd-t"><div class="cd-tt">💰 各品牌分潤淨利</div></div><div id="rp-cb"></div></div>
+    <div class="cd"><div class="cd-t"><div class="cd-tt">👥 各成員完成任務數</div></div><div id="rp-mb"></div></div>
+  </div>
+</div>
+
+<div class="vw" id="v-inbox">
+  <div class="ph"><div><h1>通知中心</h1><p id="ib-sub">0則未讀</p></div>
+  <div class="ph-a"><button class="btn btn-g" onclick="rdAll()">全部已讀</button><button class="btn btn-d btn-sm" onclick="clrAll()">清除全部</button></div></div>
+  <div class="cd" id="ib-list"></div>
+</div>
+
+</div></div></div><script>
+/* EcomFlow Pro - Final Stable Version
+   All strings use helper functions to avoid template literal nesting issues */
+
+const DB_KEY = 'ef_v4';
+let DB = {
+  members:[], brands:[], tasks:[], kols:[],
+  commissions:[], calEvents:[], notifications:[],
+  ids:{m:1,b:1,t:1,k:1,c:1,e:1,n:1}
+};
+function saveDB(){try{localStorage.setItem(DB_KEY,JSON.stringify(DB));}catch(e){}}
+function loadDB(){try{const d=localStorage.getItem(DB_KEY);if(d){const p=JSON.parse(d);DB={...DB,...p};}}catch(e){}}
+
+/* ── Helpers ── */
+const el = id => document.getElementById(id);
+const fmt = n => Math.round(n||0).toLocaleString('zh-TW');
+const fmtK = n => n>=10000?(n/10000).toFixed(1)+'萬':n>=1000?(n/1000).toFixed(1)+'K':(n||0)+'';
+const today = () => new Date().toISOString().split('T')[0];
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const dash = s => s||'—';
+
+/* Label maps */
+const ST_LBL = {todo:'待執行',doing:'進行中',review:'待審核',done:'已完成',hold:'退改中'};
+const ST_TAG = {todo:'tbl',doing:'tcy',review:'tyl',done:'tgn',hold:'trd'};
+const ST_DOT = {todo:'dt',doing:'ddo',review:'drv',done:'ddn',hold:'dhl'};
+const PRI_LBL = {high:'🔴 急件',mid:'🟡 一般',low:'🟢 低'};
+const PRI_TAG = {high:'trd',mid:'tyl',low:'tgn'};
+const PERM_LBL = {admin:'管理員',manager:'主管',member:'一般成員',viewer:'檢視者'};
+const PERM_TAG = {admin:'tor',manager:'tpu',member:'tbl',viewer:'tgr'};
+const MODE_LBL = {fixed:'固定費',commission:'分潤制',both:'固定+分潤',product:'商品換貼'};
+const KST_LBL = {active:'合作中',pending:'接洽中',paused:'暫停',ended:'已結束'};
+const KST_TAG = {active:'tgn',pending:'tyl',paused:'trd',ended:'tgr'};
+const CAL_CLR = {deadline:'var(--acc)',event:'var(--red)',meeting:'var(--yel)',launch:'var(--pur)',report:'var(--grn)',kol:'var(--pur)'};
+
+const nextSt = s => ({todo:'doing',doing:'review',review:'done'}[s]||'done');
+const prevSt = s => ({doing:'todo',review:'doing',done:'review'}[s]||'todo');
+
+/* Build HTML safely using string concatenation */
+function tag(cls,txt){return '<span class="tag '+cls+'">'+esc(txt)+'</span>';}
+function dot(status){return '<span class="dot '+ST_DOT[status]+'"></span>';}
+function avHtml(color,initials,size){
+  var sc = size ? ' style="width:'+size+'px;height:'+size+'px;font-size:'+Math.round(size*0.4)+'px"' : '';
+  return '<div class="av"'+sc+' style="background:'+color+'">'+esc(initials)+'</div>';
+}
+function emptyHtml(icon,msg,btnHtml){
+  return '<div class="empty"><div class="empty-i">'+icon+'</div><div>'+esc(msg)+'</div>'+(btnHtml||'')+'</div>';
+}
+function barHtml(label,pct,color,valTxt){
+  return '<div class="brw"><div class="brl">'+esc(label)+'</div><div class="brt"><div class="brf" style="width:'+pct+'%;background:'+color+'">'+esc(valTxt)+'</div></div></div>';
+}
+function riHtml(content){return '<div class="ri">'+content+'</div>';}
+
+/* ── Toast ── */
+var _tt;
+function toast(msg,type){
+  var e=el('toast');
+  var ic={success:'✅',error:'❌',info:'ℹ️',warning:'⚠️',payment:'💰'};
+  e.innerHTML=(ic[type]||'ℹ️')+' '+esc(msg);
+  e.className='toast on '+(type||'info');
+  clearTimeout(_tt);
+  _tt=setTimeout(function(){e.classList.remove('on');},3200);
+}
+
+/* ── Confirm ── */
+var _cfCb=null;
+function showCf(title,msg,cb,okTxt,okCls,ico){
+  el('cf-ico').textContent=ico||'⚠️';
+  el('cf-title').textContent=title;
+  el('cf-msg').textContent=msg;
+  var btn=el('cf-ok');btn.textContent=okTxt||'確認刪除';btn.className='btn '+(okCls||'btn-d');
+  _cfCb=cb;el('cfbk').classList.add('on');
+}
+function cfYes(){el('cfbk').classList.remove('on');if(_cfCb)_cfCb();_cfCb=null;}
+function cfNo(){el('cfbk').classList.remove('on');_cfCb=null;}
+
+/* ── Modal ── */
+function openM(id){el(id).classList.add('on');}
+function closeM(id){el(id).classList.remove('on');}
+document.querySelectorAll('.mbk').forEach(function(m){
+  m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('on');});
+});
+
+/* ── Navigation ── */
+var VT={dash:'總覽儀表板',proj:'客戶專案管理',tasks:'任務看板',review:'審核流程',
+  cal:'行銷活動日曆',gantt:'時程甘特圖',brands:'品牌管理',kol:'KOL 資料庫',
+  comm:'分潤管理',pay:'匯款核算',members:'成員管理',workload:'工作負載分析',
+  time:'時間追蹤',report:'績效報告',inbox:'通知中心'};
+var curV='dash';
+
+function sv(name,navEl){
+  document.querySelectorAll('.vw').forEach(function(v){v.classList.remove('on');});
+  var ve=el('v-'+name);if(ve)ve.classList.add('on');
+  document.querySelectorAll('.ni').forEach(function(i){i.classList.remove('on');});
+  if(navEl)navEl.classList.add('on');
+  el('tbt').textContent=VT[name]||name;
+  el('pg').scrollTop=0;
+  curV=name;closeSb();renderV(name);
+}
+function renderV(n){
+  var m={dash:renderDash,proj:function(){renderProj();},tasks:renderKanban,review:renderReview,
+    cal:renderCal,gantt:renderGantt,brands:renderBrands,kol:function(){renderKol('');},
+    comm:renderComm,pay:renderPay,members:function(){renderMembers();},
+    workload:renderWorkload,time:renderTime,report:renderReport,inbox:renderInbox};
+  if(m[n])m[n]();
+}
+function toggleSb(){el('sb').classList.toggle('on');el('ov').classList.toggle('show');}
+function closeSb(){el('sb').classList.remove('on');el('ov').classList.remove('show');}
+
+/* ── Search ── */
+var _sActs=[];
+function openSrch(){el('srchp').classList.add('on');setTimeout(function(){el('srch-in').focus();},50);}
+function hideSrch(){el('srchp').classList.remove('on');el('srch-in').value='';el('srch-rs').innerHTML='';}
+function closeSrch(e){if(e.target===el('srchp'))hideSrch();}
+function doSrch(q){
+  if(!q.trim()){el('srch-rs').innerHTML='';return;}
+  var ql=q.toLowerCase();var rs=[];
+  DB.tasks.filter(function(t){return t.name.toLowerCase().indexOf(ql)>-1;}).slice(0,4).forEach(function(t){
+    rs.push({ico:'✅',title:t.name,sub:'任務 · '+(t.brand||'—')+' · '+t.owner,fn:function(){hideSrch();openDp(t.id);}});
+  });
+  DB.kols.filter(function(k){return k.name.toLowerCase().indexOf(ql)>-1;}).slice(0,3).forEach(function(k){
+    rs.push({ico:'🌟',title:k.name,sub:'KOL · '+k.platform+' · '+fmtK(k.fans)+'粉絲',fn:function(){hideSrch();sv('kol',null);}});
+  });
+  DB.brands.filter(function(b){return (b.name+b.short).toLowerCase().indexOf(ql)>-1;}).slice(0,3).forEach(function(b){
+    rs.push({ico:b.emoji||'📦',title:b.name,sub:'品牌 · '+b.cat+' · '+(b.contact||'—'),fn:function(){hideSrch();sv('brands',null);}});
+  });
+  DB.members.filter(function(m){return m.name.toLowerCase().indexOf(ql)>-1;}).slice(0,3).forEach(function(m){
+    rs.push({ico:'👤',title:m.name,sub:'成員 · '+m.role+' · '+m.dept,fn:function(){hideSrch();sv('members',null);}});
+  });
+  _sActs=rs;
+  if(!rs.length){el('srch-rs').innerHTML='<div style="padding:16px;text-align:center;color:var(--tx3);font-size:12.5px">找不到相關結果</div>';return;}
+  var h='';
+  rs.forEach(function(r,i){
+    h+='<div class="srch-ri" onclick="_sActs['+i+'].fn()">';
+    h+='<div style="font-size:18px;flex-shrink:0">'+r.ico+'</div>';
+    h+='<div><div style="font-size:13px;font-weight:600">'+esc(r.title)+'</div>';
+    h+='<div style="font-size:11px;color:var(--tx3)">'+esc(r.sub)+'</div></div></div>';
+  });
+  el('srch-rs').innerHTML=h;
+}
+
+/* ── Detail Panel ── */
+function openDp(taskId){
+  var t=DB.tasks.find(function(x){return x.id===taskId;});
+  if(!t)return;
+  el('dp-t').textContent=t.name;
+  el('dp-s').textContent=(t.brand||'—')+' · '+ST_LBL[t.status]+' · '+(t.due||'無截止');
+  el('dpov').classList.add('on');el('dpp').classList.add('on');
+  var m=DB.members.find(function(x){return x.name===t.owner;});
+  var comments=t.comments||[];var tags=t.tags||[];var collab=t.collab||[];
+  var h='';
+  // Info section
+  h+='<div class="dps"><div class="dpst">基本資訊</div>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12.5px">';
+  h+='<div><span style="color:var(--tx3)">負責人：</span>'+esc(t.owner||'—')+'</div>';
+  h+='<div><span style="color:var(--tx3)">截止：</span>'+esc(t.due||'未設定')+'</div>';
+  h+='<div><span style="color:var(--tx3)">優先：</span>'+tag(PRI_TAG[t.priority],PRI_LBL[t.priority])+'</div>';
+  h+='<div><span style="color:var(--tx3)">狀態：</span>'+tag(ST_TAG[t.status],ST_LBL[t.status])+'</div>';
+  h+='<div><span style="color:var(--tx3)">類型：</span>'+esc(t.type||'—')+'</div>';
+  h+='<div><span style="color:var(--tx3)">工時：</span>'+esc(t.hours||0)+'h</div>';
+  h+='</div></div>';
+  if(collab.length){h+='<div class="dps"><div class="dpst">協作者</div>';collab.forEach(function(c){h+='<span class="sk">👤 '+esc(c)+'</span>';});h+='</div>';}
+  if(tags.length){h+='<div class="dps"><div class="dpst">標籤</div>';tags.forEach(function(tg){h+='<span class="sk"># '+esc(tg)+'</span>';});h+='</div>';}
+  if(t.desc){h+='<div class="dps"><div class="dpst">任務說明</div><div style="font-size:12.5px;color:var(--tx2);line-height:1.7;background:var(--s3);padding:10px;border-radius:7px">'+esc(t.desc)+'</div></div>';}
+  // Actions
+  h+='<div class="dps"><div class="dpst">快速操作</div><div style="display:flex;gap:6px;flex-wrap:wrap">';
+  if(t.status!=='todo')h+='<button class="btn btn-g btn-sm" onclick="mvTask('+t.id+',\''+prevSt(t.status)+'\');openDp('+t.id+')">◀ '+ST_LBL[prevSt(t.status)]+'</button>';
+  if(t.status!=='done')h+='<button class="btn btn-p btn-sm" onclick="mvTask('+t.id+',\''+nextSt(t.status)+'\');openDp('+t.id+')">▶ '+ST_LBL[nextSt(t.status)]+'</button>';
+  h+='<button class="btn btn-g btn-sm" onclick="openTaskM('+t.id+');closeDp()">✏️ 編輯</button>';
+  h+='<button class="btn btn-d btn-sm" onclick="delTask('+t.id+');closeDp()">🗑️ 刪除</button>';
+  h+='</div></div>';
+  // Comments
+  h+='<div class="dps"><div class="dpst">留言討論（'+comments.length+'）</div>';
+  comments.forEach(function(c){
+    var mData=DB.members.find(function(mx){return mx.name===c.author;});
+    var clr=mData?mData.color:'var(--acc)';
+    h+='<div class="cmt"><div class="cmt-h">';
+    h+='<div class="av" style="background:'+clr+';width:20px;height:20px;font-size:9px">'+esc(c.author[0])+'</div>';
+    h+='<div class="cmt-n">'+esc(c.author)+'</div>';
+    h+='<div class="cmt-t">'+esc(c.time)+'</div></div>';
+    h+='<div class="cmt-x">'+esc(c.text)+'</div></div>';
+  });
+  h+='<div class="cmt-in"><input id="ci-'+t.id+'" placeholder="新增留言..." onkeydown="if(event.key===\'Enter\')addCmt('+t.id+')"><button class="btn btn-p btn-sm" onclick="addCmt('+t.id+')">送出</button></div>';
+  h+='</div>';
+  el('dp-b').innerHTML=h;
+}
+function closeDp(){el('dpp').classList.remove('on');el('dpov').classList.remove('on');}
+function addCmt(tid){
+  var inp=el('ci-'+tid);var txt=inp&&inp.value&&inp.value.trim();if(!txt)return;
+  var t=DB.tasks.find(function(x){return x.id===tid;});if(!t)return;
+  if(!t.comments)t.comments=[];
+  var now=new Date();
+  t.comments.push({author:DB.members[0]?DB.members[0].name:'管理員',text:txt,time:now.toLocaleString('zh-TW',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})});
+  saveDB();openDp(tid);toast('留言已送出','success');
+}
+
+/* ── Populate selects ── */
+function populateSels(){
+  var bOpts=DB.brands.map(function(b){return '<option value="'+esc(b.short)+'">'+esc(b.short)+'</option>';}).join('');
+  var bAll='<option value="">（全體）</option>'+bOpts;
+  var mOpts=DB.members.map(function(m){return '<option value="'+esc(m.name)+'">'+esc(m.name)+'</option>';}).join('');
+  var kOpts=DB.kols.map(function(k){return '<option value="'+esc(k.name)+'">'+esc(k.name)+'</option>';}).join('')||'<option>（請先新增KOL）</option>';
+  var ids={
+    't-brand':bOpts,'t-owner':mOpts,'t-collab':mOpts,
+    'k-brand':bAll,'c-kol':kOpts,'c-brand':bOpts,
+    'cal-brand':bAll,'cal-owner':mOpts
+  };
+  Object.keys(ids).forEach(function(id){var e=el(id);if(e)e.innerHTML=ids[id];});
+  var ftb=el('ft-brand');if(ftb)ftb.innerHTML='<option value="">全部品牌</option>'+bOpts;
+  var fto=el('ft-owner');if(fto)fto.innerHTML='<option value="">全部成員</option>'+mOpts;
+}
+
+/* ── Notifications ── */
+function addNotif(msg,type){
+  DB.notifications.unshift({id:DB.ids.n++,msg:msg,type:type||'info',read:false,time:new Date().toISOString()});
+  saveDB();updateBadges();
+}
+
+/* ── Badges ── */
+function updateBadges(){
+  el('nb-b').textContent=DB.brands.length;
+  el('nb-br').textContent=DB.brands.length;
+  el('nb-t').textContent=DB.tasks.filter(function(t){return t.status!=='done'&&t.priority==='high';}).length;
+  el('nb-rv').textContent=DB.tasks.filter(function(t){return t.status==='review'||t.status==='hold';}).length;
+  el('nb-k').textContent=DB.kols.filter(function(k){return k.status==='active';}).length;
+  el('nb-c').textContent=DB.commissions.filter(function(c){return c.status==='pending';}).length;
+  el('nb-m').textContent=DB.members.length;
+  el('nb-n').textContent=DB.notifications.filter(function(n){return !n.read;}).length;
+  var u=DB.members[0];
+  if(u){
+    el('ua').style.background=u.color;el('ua').textContent=u.name[0];
+    el('un').textContent=u.name;el('ur').textContent=u.role;
+  }
+}
+
+/* ── TASK CRUD ── */
+function openTaskM(editId){
+  populateSels();
+  el('t-eid').value='';el('mt-title').textContent='✅ 新增任務';
+  ['t-name','t-desc','t-tags'].forEach(function(id){el(id).value='';});
+  el('t-hours').value='';el('t-due').value=today();el('t-pri').value='mid';el('t-status').value='todo';
+  if(editId){
+    var t=DB.tasks.find(function(x){return x.id===editId;});if(!t)return;
+    el('t-eid').value=editId;el('mt-title').textContent='✏️ 編輯任務';
+    el('t-name').value=t.name||'';el('t-brand').value=t.brand||'';el('t-type').value=t.type||'';
+    el('t-owner').value=t.owner||'';el('t-due').value=t.due||'';el('t-hours').value=t.hours||'';
+    el('t-pri').value=t.priority||'mid';el('t-status').value=t.status||'todo';
+    el('t-desc').value=t.desc||'';el('t-tags').value=(t.tags||[]).join(',');
+    Array.from(el('t-collab').options).forEach(function(o){o.selected=(t.collab||[]).indexOf(o.value)>-1;});
+  }
+  openM('m-task');
+}
+function saveTask(){
+  var name=el('t-name').value.trim();if(!name){toast('請填寫任務名稱','error');return;}
+  var eid=parseInt(el('t-eid').value)||null;
+  var collab=Array.from(el('t-collab').selectedOptions).map(function(o){return o.value;});
+  var rawTags=el('t-tags').value.trim();
+  var data={name:name,brand:el('t-brand').value,type:el('t-type').value,owner:el('t-owner').value,
+    collab:collab,due:el('t-due').value,hours:parseFloat(el('t-hours').value)||0,
+    priority:el('t-pri').value,status:el('t-status').value,desc:el('t-desc').value.trim(),
+    tags:rawTags?rawTags.split(',').map(function(s){return s.trim();}).filter(Boolean):[]};
+  if(eid){
+    var idx=DB.tasks.findIndex(function(x){return x.id===eid;});
+    if(idx>-1){var old=DB.tasks[idx];DB.tasks[idx]={id:old.id,comments:old.comments||[],...data};}
+    toast('任務已更新','success');
+  }else{data.id=DB.ids.t++;data.comments=[];DB.tasks.push(data);addNotif('✅ 新任務「'+name+'」已建立','info');toast('任務已新增','success');}
+  saveDB();closeM('m-task');updateBadges();renderV(curV);
+}
+function delTask(id){
+  var t=DB.tasks.find(function(x){return x.id===id;});
+  showCf('刪除任務？','確定要刪除「'+(t?t.name:'')+'」嗎？此操作無法復原。',function(){
+    DB.tasks=DB.tasks.filter(function(x){return x.id!==id;});
+    saveDB();updateBadges();renderV(curV);toast('任務已刪除','info');
+  });
+}
+function mvTask(id,status){
+  var t=DB.tasks.find(function(x){return x.id===id;});if(!t)return;
+  t.status=status;saveDB();renderKanban();updateBadges();
+  toast('任務移至「'+ST_LBL[status]+'」','info');
+  if(status==='done')addNotif('✅ 任務「'+t.name+'」已完成！','success');
+  if(status==='review')addNotif('🔍 任務「'+t.name+'」等待審核','warning');
+}
+
+/* ── BRAND CRUD ── */
+function openBrandM(eid){
+  el('b-eid').value='';el('mb-title').textContent='🏷️ 新增品牌';
+  ['b-name','b-short','b-contact','b-email','b-phone','b-note'].forEach(function(id){el(id).value='';});
+  el('b-color').value='var(--acc)';el('b-emoji').value='📦';
+  if(eid){
+    var b=DB.brands.find(function(x){return x.id===eid;});if(!b)return;
+    el('b-eid').value=eid;el('mb-title').textContent='✏️ 編輯品牌';
+    el('b-name').value=b.name||'';el('b-short').value=b.short||'';el('b-cat').value=b.cat||'其他';
+    el('b-emoji').value=b.emoji||'📦';el('b-contact').value=b.contact||'';
+    el('b-email').value=b.email||'';el('b-phone').value=b.phone||'';
+    el('b-color').value=b.color||'var(--acc)';el('b-note').value=b.note||'';
+  }
+  openM('m-brand');
+}
+function saveBrand(){
+  var name=el('b-name').value.trim();if(!name){toast('請填寫品牌名稱','error');return;}
+  var eid=parseInt(el('b-eid').value)||null;
+  var data={name:name,short:el('b-short').value.trim()||name,cat:el('b-cat').value,
+    emoji:el('b-emoji').value,color:el('b-color').value,contact:el('b-contact').value.trim(),
+    email:el('b-email').value.trim(),phone:el('b-phone').value.trim(),note:el('b-note').value.trim()};
+  if(eid){var idx=DB.brands.findIndex(function(x){return x.id===eid;});if(idx>-1)DB.brands[idx]={id:DB.brands[idx].id,...data};toast('品牌已更新','success');}
+  else{data.id=DB.ids.b++;DB.brands.push(data);addNotif('🏷️ 新品牌「'+name+'」已建立','info');toast('品牌已新增','success');}
+  saveDB();closeM('m-brand');updateBadges();renderV(curV);populateSels();
+}
+function delBrand(id){
+  var b=DB.brands.find(function(x){return x.id===id;});
+  showCf('刪除品牌？','確定要移除「'+(b?b.name:'')+'」嗎？相關任務不受影響。',function(){
+    DB.brands=DB.brands.filter(function(x){return x.id!==id;});
+    saveDB();updateBadges();renderV(curV);populateSels();toast('品牌已刪除','info');
+  });
+}
+
+/* ── MEMBER CRUD ── */
+function openMemM(eid){
+  el('me-eid').value='';el('mm-title').textContent='👤 新增成員';
+  ['me-name','me-ename','me-role','me-email','me-phone','me-skills'].forEach(function(id){el(id).value='';});
+  el('me-hours').value='160';el('me-perm').value='member';el('me-dept').value='廣告投放';
+  el('me-color').value='linear-gradient(135deg,#4a85ff,#a855f7)';
+  if(eid){
+    var m=DB.members.find(function(x){return x.id===eid;});if(!m)return;
+    el('me-eid').value=eid;el('mm-title').textContent='✏️ 編輯成員';
+    el('me-name').value=m.name||'';el('me-ename').value=m.ename||'';el('me-role').value=m.role||'';
+    el('me-dept').value=m.dept||'廣告投放';el('me-email').value=m.email||'';el('me-phone').value=m.phone||'';
+    el('me-perm').value=m.perm||'member';el('me-hours').value=m.hours||160;
+    el('me-join').value=m.join||'';el('me-color').value=m.color||'linear-gradient(135deg,#4a85ff,#a855f7)';
+    el('me-skills').value=m.skills||'';
+  }
+  openM('m-member');
+}
+function saveMember(){
+  var name=el('me-name').value.trim();if(!name){toast('請填寫成員姓名','error');return;}
+  var eid=parseInt(el('me-eid').value)||null;
+  var data={name:name,ename:el('me-ename').value.trim(),role:el('me-role').value.trim()||'成員',
+    dept:el('me-dept').value,email:el('me-email').value.trim(),phone:el('me-phone').value.trim(),
+    perm:el('me-perm').value,hours:parseInt(el('me-hours').value)||160,
+    join:el('me-join').value,color:el('me-color').value,skills:el('me-skills').value.trim()};
+  if(eid){var idx=DB.members.findIndex(function(x){return x.id===eid;});if(idx>-1)DB.members[idx]={id:DB.members[idx].id,...data};toast('成員已更新','success');}
+  else{data.id=DB.ids.m++;DB.members.push(data);addNotif('👤 新成員「'+name+'」已加入團隊','info');toast('成員已新增','success');}
+  saveDB();closeM('m-member');updateBadges();renderV(curV);populateSels();
+}
+function delMember(id){
+  var m=DB.members.find(function(x){return x.id===id;});
+  showCf('刪除成員？','確定要移除「'+(m?m.name:'')+'」嗎？',function(){
+    DB.members=DB.members.filter(function(x){return x.id!==id;});
+    saveDB();updateBadges();renderV(curV);populateSels();toast('成員已刪除','info');
+  });
+}
+
+/* ── KOL CRUD ── */
+function openKolM(eid){
+  populateSels();
+  el('k-eid').value='';el('mk-title').textContent='🌟 新增 KOL';
+  ['k-name','k-handle','k-email','k-line','k-tags','k-note'].forEach(function(id){el(id).value='';});
+  ['k-fans','k-er','k-views'].forEach(function(id){el(id).value='';});
+  el('k-fixed').value='0';el('k-rate').value='0';el('k-status').value='active';
+  if(eid){
+    var k=DB.kols.find(function(x){return x.id===eid;});if(!k)return;
+    el('k-eid').value=eid;el('mk-title').textContent='✏️ 編輯 KOL';
+    el('k-name').value=k.name||'';el('k-handle').value=k.handle||'';el('k-plat').value=k.platform||'Instagram';
+    el('k-fans').value=k.fans||'';el('k-er').value=k.er||'';el('k-views').value=k.views||'';
+    el('k-email').value=k.email||'';el('k-line').value=k.line||'';
+    el('k-brand').value=k.brand||'';el('k-mode').value=k.mode||'fixed';
+    el('k-fixed').value=k.fixed||0;el('k-rate').value=k.rate||0;
+    el('k-status').value=k.status||'active';el('k-tags').value=k.tags||'';el('k-note').value=k.note||'';
+  }
+  openM('m-kol');
+}
+function saveKol(){
+  var name=el('k-name').value.trim();if(!name){toast('請填寫網紅名稱','error');return;}
+  var eid=parseInt(el('k-eid').value)||null;
+  var data={name:name,handle:el('k-handle').value.trim(),platform:el('k-plat').value,
+    fans:parseInt(el('k-fans').value)||0,er:parseFloat(el('k-er').value)||0,
+    views:parseInt(el('k-views').value)||0,email:el('k-email').value.trim(),
+    line:el('k-line').value.trim(),brand:el('k-brand').value,mode:el('k-mode').value,
+    fixed:parseFloat(el('k-fixed').value)||0,rate:parseFloat(el('k-rate').value)||0,
+    status:el('k-status').value,tags:el('k-tags').value.trim(),note:el('k-note').value.trim()};
+  if(eid){var idx=DB.kols.findIndex(function(x){return x.id===eid;});if(idx>-1)DB.kols[idx]={id:DB.kols[idx].id,...data};toast('KOL已更新','success');}
+  else{data.id=DB.ids.k++;DB.kols.push(data);addNotif('🌟 新KOL「'+name+'」已加入','info');toast('KOL已新增','success');}
+  saveDB();closeM('m-kol');updateBadges();renderV(curV);populateSels();
+}
+function delKol(id){
+  var k=DB.kols.find(function(x){return x.id===id;});
+  showCf('刪除KOL？','確定要移除「'+(k?k.name:'')+'」嗎？',function(){
+    DB.kols=DB.kols.filter(function(x){return x.id!==id;});
+    saveDB();updateBadges();renderV(curV);toast('KOL已刪除','info');
+  });
+}
+
+/* ── COMMISSION CRUD ── */
+function openCommM(){
+  populateSels();
+  ['c-act','c-note'].forEach(function(id){el(id).value='';});
+  el('c-sales').value='';el('c-br').value=5;el('c-kr').value=8;el('c-kf').value=0;
+  el('c-due').value=today();el('c-preview').innerHTML='';
+  openM('m-comm');
+}
+function liveCalc(){
+  var s=parseFloat(el('c-sales').value)||0;
+  var br=parseFloat(el('c-br').value)||0;
+  var kr=parseFloat(el('c-kr').value)||0;
+  var kf=parseFloat(el('c-kf').value)||0;
+  if(!s){el('c-preview').innerHTML='';return;}
+  var fB=s*br/100,tK=s*kr/100+kf,net=fB-tK;
+  var h='<div class="cbx">';
+  h+='<div class="cl"><span>銷售額</span><span style="font-family:var(--mo)">$'+fmt(s)+'</span></div>';
+  h+='<div class="cl"><span>品牌給代操 ('+br+'%)</span><span style="font-family:var(--mo);color:var(--grn)">+$'+fmt(fB)+'</span></div>';
+  h+='<div class="cl"><span>代操給KOL ('+kr+'%'+(kf?'+固定$'+fmt(kf):'')+' )</span><span style="font-family:var(--mo);color:var(--red)">-$'+fmt(tK)+'</span></div>';
+  h+='<div class="cl tot"><span>代操淨利</span><span style="font-family:var(--mo);color:'+(net>=0?'var(--grn)':'var(--red)')+'">$'+fmt(net)+'</span></div>';
+  h+='</div>';
+  el('c-preview').innerHTML=h;
+}
+function saveComm(){
+  var kol=el('c-kol').value;var sales=parseFloat(el('c-sales').value)||0;
+  if(!kol||!sales){toast('請填寫KOL和銷售額','error');return;}
+  var kr=parseFloat(el('c-kr').value)||0,kf=parseFloat(el('c-kf').value)||0;
+  var toK=sales*kr/100+kf;
+  var data={id:DB.ids.c++,kol:kol,brand:el('c-brand').value,
+    activity:el('c-act').value.trim()||'未命名活動',sales:sales,
+    br:parseFloat(el('c-br').value)||0,kr:kr,kf:kf,
+    due:el('c-due').value,status:'pending',note:el('c-note').value.trim()};
+  DB.commissions.push(data);
+  addNotif('💰 '+kol+' 分潤 $'+fmt(toK)+' 待確認匯款','payment');
+  saveDB();closeM('m-comm');updateBadges();renderV(curV);toast('分潤紀錄已新增','success');
+}
+function payComm(id){
+  showCf('確認匯款？','確認標記此筆為已匯款？',function(){
+    var c=DB.commissions.find(function(x){return x.id===id;});
+    if(c){c.status='paid';c.paidDate=today();}
+    saveDB();renderV(curV);toast('匯款已標記完成','success');
+  },'✅ 確認匯款','btn-s','💳');
+}
+function delComm(id){
+  showCf('刪除紀錄？','確定刪除此分潤紀錄嗎？',function(){
+    DB.commissions=DB.commissions.filter(function(x){return x.id!==id;});
+    saveDB();renderV(curV);toast('紀錄已刪除','info');
+  });
+}
+
+/* ── Main Calc ── */
+function mainCalc(){
+  var s=parseFloat(el('mc-s').value)||0;
+  var b=parseFloat(el('mc-b').value)||0;
+  var k=parseFloat(el('mc-k').value)||0;
+  var f=parseFloat(el('mc-f').value)||0;
+  var out=el('mc-out');
+  if(!s){out.innerHTML='<div style="font-size:12px;color:var(--tx3)">輸入銷售額後自動計算 ↑</div>';return;}
+  var fB=s*b/100,tK=s*k/100+f,net=fB-tK;
+  var h='';
+  h+='<div class="cl"><span>活動銷售額</span><span style="font-family:var(--mo)">$'+fmt(s)+'</span></div>';
+  h+='<div class="cl"><span>品牌給代操 ('+b+'%)</span><span style="font-family:var(--mo);color:var(--grn)">+$'+fmt(fB)+'</span></div>';
+  h+='<div class="cl"><span>代操給KOL ('+k+'%'+(f?'+固定$'+fmt(f):'')+' )</span><span style="font-family:var(--mo);color:var(--red)">-$'+fmt(tK)+'</span></div>';
+  h+='<div class="cl tot"><span>代操淨利</span><span style="font-family:var(--mo);color:'+(net>=0?'var(--grn)':'var(--red)')+'">$'+fmt(net)+'</span></div>';
+  out.innerHTML=h;
+}
+
+/* ── CALENDAR ── */
+var calY=new Date().getFullYear(),calM=new Date().getMonth()+1;
+function openCalM(date){
+  populateSels();el('cal-name').value='';el('cal-date').value=date||today();
+  el('cal-type').value='deadline';el('cal-note').value='';openM('m-cal');
+}
+function saveCalEv(){
+  var name=el('cal-name').value.trim();var date=el('cal-date').value;
+  if(!name||!date){toast('請填寫活動名稱和日期','error');return;}
+  DB.calEvents.push({id:DB.ids.e++,name:name,date:date,type:el('cal-type').value,
+    brand:el('cal-brand').value,owner:el('cal-owner').value,note:el('cal-note').value.trim()});
+  saveDB();closeM('m-cal');renderCal();toast('活動已新增','success');
+}
+function delCalEv(id){
+  DB.calEvents=DB.calEvents.filter(function(e){return e.id!==id;});
+  saveDB();renderCal();toast('活動已刪除','info');
+}
+function calNav(d){calM+=d;if(calM<1){calM=12;calY--;}if(calM>12){calM=1;calY++;}renderCal();}
+function calToday(){var n=new Date();calY=n.getFullYear();calM=n.getMonth()+1;renderCal();}
+
+/* ── GANTT ── */
+var ganttY=new Date().getFullYear(),ganttM=new Date().getMonth()+1;
+function ganttNav(d){ganttM+=d;if(ganttM<1){ganttM=12;ganttY--;}if(ganttM>12){ganttM=1;ganttY++;}renderGantt();}
+function ganttToday(){var n=new Date();ganttY=n.getFullYear();ganttM=n.getMonth()+1;renderGantt();}
+
+/* ── MEMBER FILTER ── */
+var memF='all';
+function filterMem(dept,btnEl){
+  memF=dept;
+  document.querySelectorAll('#v-members .tb').forEach(function(t){t.classList.remove('on');});
+  if(btnEl)btnEl.classList.add('on');
+  renderMembers();
+}
+
+/* ── NOTIFICATIONS ── */
+function rdAll(){DB.notifications.forEach(function(n){n.read=true;});saveDB();renderInbox();updateBadges();toast('全部標為已讀','success');}
+function clrAll(){showCf('清除所有通知？','確定要清除嗎？',function(){DB.notifications=[];saveDB();renderInbox();updateBadges();toast('通知已清除','info');});}
+function rdN(id){var n=DB.notifications.find(function(x){return x.id===id;});if(n)n.read=true;saveDB();renderInbox();updateBadges();}
+
+/* ── CSV EXPORT ── */
+function expCSV(type){
+  var rows=[],fn='export.csv';
+  if(type==='comm'){
+    fn='commission.csv';rows=[['KOL','品牌','活動','銷售額','品牌給代操','代操給KOL','代操淨利','截止','狀態']];
+    DB.commissions.forEach(function(c){var fB=c.sales*c.br/100,tK=c.sales*c.kr/100+c.kf;rows.push([c.kol,c.brand,c.activity,c.sales,fB,tK,fB-tK,c.due||'',c.status==='paid'?'已匯款':'待匯款']);});
+  }else if(type==='pay'){
+    fn='payment.csv';rows=[['KOL','品牌','應付金額','截止','狀態','匯款日期']];
+    DB.commissions.forEach(function(c){rows.push([c.kol,c.brand,c.sales*c.kr/100+c.kf,c.due||'',c.status==='paid'?'已匯款':'待匯款',c.paidDate||'']);});
+  }else if(type==='time'){
+    fn='worktime.csv';rows=[['成員','部門','月工時','完成任務','效率%']];
+    DB.members.forEach(function(m){var mt=DB.tasks.filter(function(t){return t.owner===m.name;}),md=mt.filter(function(t){return t.status==='done';}).length;rows.push([m.name,m.dept,m.hours,md,mt.length?Math.round(md/mt.length*100):0]);});
+  }else if(type==='report'){
+    fn='report.csv';rows=[['指標','數值']];
+    var tot=DB.tasks.length,dn=DB.tasks.filter(function(t){return t.status==='done';}).length;
+    var gmv=0,net=0;DB.commissions.forEach(function(c){gmv+=c.sales;net+=c.sales*c.br/100-(c.sales*c.kr/100+c.kf);});
+    rows.push(['任務總數',tot],['已完成',dn],['完成率%',tot?Math.round(dn/tot*100):0],['KOL帶貨GMV',gmv],['代操分潤淨利',net]);
+  }
+  var csv=rows.map(function(r){return r.map(function(c){return '"'+c+'"';}).join(',');}).join('\n');
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'}));
+  a.download=fn;a.click();toast('CSV已匯出','success');
+}
+
+/* ══════════════════════════════════════════════════
+   RENDER FUNCTIONS
+══════════════════════════════════════════════════ */
+
+/* ── DASHBOARD ── */
+function renderDash(){
+  var now=new Date(),hr=now.getHours();
+  var gr=hr<12?'早安':hr<18?'午安':'晚安';
+  var u=DB.members[0];
+  el('dg').textContent=gr+'，'+(u?u.name:'用戶')+' 👋';
+  el('dd').textContent=now.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'short'})+' · 今日待辦 '+DB.tasks.filter(function(t){return t.status!=='done';}).length+' 件';
+  el('kpi-b').textContent=DB.brands.length;
+  var pend=DB.tasks.filter(function(t){return t.status!=='done';});
+  var done=DB.tasks.filter(function(t){return t.status==='done';});
+  el('kpi-t').textContent=pend.length;
+  var tot=DB.tasks.length;
+  el('kpi-r').textContent=tot?Math.round(done.length/tot*100)+'%':'0%';
+  el('kpi-k').textContent=DB.kols.filter(function(k){return k.status==='active';}).length;
+  var netP=0;DB.commissions.forEach(function(c){netP+=c.sales*c.br/100-(c.sales*c.kr/100+c.kf);});
+  el('kpi-p').textContent=(netP>=0?'+':'')+'$'+fmt(netP);
+  // Todos
+  var todos=pend.slice(0,6);
+  el('d-tc').textContent=todos.length+'件';
+  if(!todos.length){el('d-td').innerHTML=emptyHtml('🎉','所有任務已完成！');return;}
+  var h='';
+  todos.forEach(function(t){
+    h+='<div class="ri" onclick="openDp('+t.id+')" style="cursor:pointer">';
+    h+=dot(t.status);
+    h+='<div class="rim"><div class="rit">'+esc(t.name)+'</div>';
+    h+='<div class="ris">'+esc(t.brand||'—')+' · '+esc(t.owner)+(t.due?' · '+t.due:'')+'</div></div>';
+    h+=tag(PRI_TAG[t.priority],PRI_LBL[t.priority]);
+    h+='</div>';
+  });
+  el('d-td').innerHTML=h;
+  // Brand progress
+  var bh='';
+  DB.brands.slice(0,5).forEach(function(b){
+    var bt=DB.tasks.filter(function(t){return t.brand===b.short;}),bd=bt.filter(function(t){return t.status==='done';}).length;
+    var rate=bt.length>0?Math.round(bd/bt.length*100):0;
+    bh+='<div class="ri">';
+    bh+='<div class="dot" style="background:'+b.color+';width:9px;height:9px;border-radius:50%"></div>';
+    bh+='<div class="rim"><div class="rit">'+esc(b.emoji)+' '+esc(b.short)+'</div>';
+    bh+='<div class="ris">'+esc(b.contact||'—')+'</div></div>';
+    bh+='<div style="width:80px;flex-shrink:0">';
+    bh+='<div class="pb" style="margin-bottom:2px"><div class="pbf" style="width:'+rate+'%;background:'+b.color+'"></div></div>';
+    bh+='<div style="font-size:9.5px;color:var(--tx3);font-family:var(--mo);text-align:right">'+rate+'%</div>';
+    bh+='</div></div>';
+  });
+  el('d-bp').innerHTML=bh||emptyHtml('🏷️','尚無品牌，請先新增品牌');
+  // Commission summary
+  var tIn=0,tOut=0;
+  DB.commissions.forEach(function(c){tIn+=c.sales*c.br/100;tOut+=c.sales*c.kr/100+c.kf;});
+  var net=tIn-tOut;
+  var csh='<div class="cl"><span>品牌方給代操</span><span style="font-family:var(--mo);color:var(--grn)">+$'+fmt(tIn)+'</span></div>';
+  csh+='<div class="cl"><span>代操給網紅</span><span style="font-family:var(--mo);color:var(--red)">-$'+fmt(tOut)+'</span></div>';
+  csh+='<div class="cl tot"><span>代操淨利</span><span style="font-family:var(--mo);color:'+(net>=0?'var(--grn)':'var(--red)')+'">$'+fmt(net)+'</span></div>';
+  el('d-cs').innerHTML=csh;
+  // Task stats
+  var ss={todo:0,doing:0,review:0,done:0};
+  DB.tasks.forEach(function(t){if(ss[t.status]!==undefined)ss[t.status]++;});
+  var mx=Math.max.apply(null,Object.values(ss).concat([1]));
+  var clrs={todo:'var(--tx3)',doing:'var(--acc)',review:'var(--yel)',done:'var(--grn)'};
+  var tsh='';
+  Object.keys(ss).forEach(function(s){
+    var v=ss[s];
+    tsh+=barHtml(ST_LBL[s],Math.max(v/mx*100,v>0?8:0),clrs[s],''+v);
+  });
+  el('d-ts').innerHTML=tsh;
+  // Notifications
+  var ICONS={info:'🔵',success:'✅',warning:'🟡',payment:'💰',error:'🔴'};
+  var unrd=DB.notifications.filter(function(n){return !n.read;}).slice(0,3);
+  var nh='';
+  unrd.forEach(function(n){
+    nh+='<div class="ri"><div style="font-size:16px;flex-shrink:0">'+(ICONS[n.type]||'🔔')+'</div>';
+    nh+='<div class="rim"><div class="rit" style="font-size:12px">'+esc(n.msg)+'</div>';
+    nh+='<div class="ris">'+new Date(n.time).toLocaleString('zh-TW',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})+'</div></div></div>';
+  });
+  el('d-ns').innerHTML=nh||emptyHtml('🔔','暫無未讀通知');
+}
+
+/* ── PROJECTS ── */
+function renderProj(statusFilter){
+  statusFilter=statusFilter||'all';
+  el('proj-sub').textContent='共 '+DB.brands.length+' 個品牌';
+  if(!DB.brands.length){el('proj-list').innerHTML=emptyHtml('📁','尚無品牌資料','<button class="btn btn-p" onclick="openBrandM()">+ 新增第一個品牌</button>');return;}
+  var h='';
+  DB.brands.forEach(function(b){
+    var bt=DB.tasks.filter(function(t){return t.brand===b.short;}),bd=bt.filter(function(t){return t.status==='done';}).length;
+    var rate=bt.length>0?Math.round(bd/bt.length*100):0;
+    var ov=bt.filter(function(t){return t.status!=='done'&&t.due&&t.due<today();}).length;
+    var bComms=DB.commissions.filter(function(c){return c.brand===b.short;});
+    var bNet=0;bComms.forEach(function(c){bNet+=c.sales*c.br/100-(c.sales*c.kr/100+c.kf);});
+    h+='<div class="cd mb12" style="padding:0;overflow:hidden">';
+    h+='<div style="display:flex;align-items:center;gap:11px;padding:13px 15px;border-bottom:1px solid var(--b1)">';
+    h+='<div style="width:36px;height:36px;border-radius:8px;background:'+b.color+';display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0">'+esc(b.emoji)+'</div>';
+    h+='<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:800">'+esc(b.name)+'</div>';
+    h+='<div style="font-size:11px;color:var(--tx3)">'+esc(b.cat)+' · 聯絡：'+esc(dash(b.contact))+' · '+esc(dash(b.email))+'</div></div>';
+    h+='<button class="btn btn-g btn-sm" onclick="openBrandM('+b.id+')">✏️</button>';
+    h+='<button class="btn btn-sm" style="background:var(--rl);color:var(--red)" onclick="delBrand('+b.id+')">🗑️</button>';
+    h+='</div>';
+    h+='<div style="display:grid;grid-template-columns:repeat(5,1fr);padding:12px 15px;border-bottom:1px solid var(--b1)">';
+    h+='<div><div style="font-size:18px;font-weight:900">'+bt.length+'</div><div style="font-size:10px;color:var(--tx3)">總任務</div></div>';
+    h+='<div><div style="font-size:18px;font-weight:900;color:var(--grn)">'+bd+'</div><div style="font-size:10px;color:var(--tx3)">已完成</div></div>';
+    h+='<div><div style="font-size:18px;font-weight:900;color:'+(ov>0?'var(--red)':'var(--tx3)')+'">'+ov+'</div><div style="font-size:10px;color:var(--tx3)">逾期</div></div>';
+    h+='<div><div style="font-size:18px;font-weight:900;color:var(--pur)">'+bComms.length+'</div><div style="font-size:10px;color:var(--tx3)">分潤紀錄</div></div>';
+    h+='<div><div class="pb" style="margin-top:6px"><div class="pbf" style="width:'+rate+'%;background:'+b.color+'"></div></div>';
+    h+='<div style="font-size:9.5px;color:var(--tx3);text-align:right;font-family:var(--mo)">'+rate+'%</div></div>';
+    h+='</div>';
+    if(b.note)h+='<div style="padding:8px 15px;font-size:11.5px;color:var(--tx2);border-bottom:1px solid var(--b1)">📝 '+esc(b.note)+'</div>';
+    h+='<div style="padding:9px 15px;display:flex;gap:7px;flex-wrap:wrap;align-items:center">';
+    h+='<span style="font-size:12.5px;font-weight:700;color:'+(bNet>=0?'var(--grn)':'var(--red)')+'">分潤淨利 '+(bNet>=0?'+':'')+'$'+fmt(bNet)+'</span>';
+    h+='<button class="btn btn-p btn-sm" style="margin-left:auto" onclick="openTaskM()">+ 新增任務</button>';
+    h+='</div></div>';
+  });
+  el('proj-list').innerHTML=h;
+}
+
+/* ── KANBAN ── */
+function renderKanban(){
+  populateSels();
+  var fb=el('ft-brand')&&el('ft-brand').value||'';
+  var fo=el('ft-owner')&&el('ft-owner').value||'';
+  var COLS=[{s:'todo',l:'待執行',dot:'dt'},{s:'doing',l:'進行中',dot:'ddo'},{s:'review',l:'待審核',dot:'drv'},{s:'done',l:'已完成',dot:'ddn'}];
+  var h='';
+  COLS.forEach(function(col){
+    var tasks=DB.tasks.filter(function(t){return t.status===col.s;});
+    if(fb)tasks=tasks.filter(function(t){return t.brand===fb;});
+    if(fo)tasks=tasks.filter(function(t){return t.owner===fo;});
+    h+='<div class="kbc">';
+    h+='<div class="kbh"><div class="kbt"><span class="dot '+col.dot+'"></span>'+col.l+'</div><span class="kbn">'+tasks.length+'</span></div>';
+    if(!tasks.length)h+='<div style="color:var(--tx3);font-size:11px;text-align:center;padding:16px">暫無任務</div>';
+    tasks.forEach(function(t){
+      h+='<div class="kc" onclick="openDp('+t.id+')">';
+      h+='<div class="kct">'+esc(t.name)+'</div>';
+      h+='<div class="kcf">'+tag(PRI_TAG[t.priority],PRI_LBL[t.priority])+tag('tbl',t.brand||'—')+'</div>';
+      h+='<div style="font-size:10px;color:var(--tx3);margin-top:7px;display:flex;justify-content:space-between;align-items:center">';
+      h+='<span>'+esc(t.owner)+(t.due?' · '+t.due:'')+'</span>';
+      h+='<div style="display:flex;gap:3px" onclick="event.stopPropagation()">';
+      if(col.s!=='todo')h+='<button onclick="mvTask('+t.id+',\''+prevSt(col.s)+'\')" style="background:var(--s3);border:none;border-radius:3px;padding:2px 5px;font-size:10px;cursor:pointer;color:var(--tx2)">◀</button>';
+      if(col.s!=='done')h+='<button onclick="mvTask('+t.id+',\''+nextSt(col.s)+'\')" style="background:var(--acg);border:none;border-radius:3px;padding:2px 5px;font-size:10px;cursor:pointer;color:var(--acc)">▶</button>';
+      h+='<button onclick="openTaskM('+t.id+')" style="background:var(--s3);border:none;border-radius:3px;padding:2px 5px;font-size:10px;cursor:pointer;color:var(--tx2)">✏️</button>';
+      h+='<button onclick="delTask('+t.id+')" style="background:var(--rl);border:none;border-radius:3px;padding:2px 5px;font-size:10px;cursor:pointer;color:var(--red)">✕</button>';
+      h+='</div></div></div>';
+    });
+    h+='<button class="addc" onclick="openTaskM()">+ 新增任務</button>';
+    h+='</div>';
+  });
+  el('kanban').innerHTML=h;
+}
+
+/* ── REVIEW ── */
+function renderReview(){
+  var hl=DB.tasks.filter(function(t){return t.status==='hold';}).length;
+  var rv=DB.tasks.filter(function(t){return t.status==='review';}).length;
+  var dn=DB.tasks.filter(function(t){return t.status==='done';}).length;
+  el('rv-h').textContent=hl;el('rv-rv').textContent=rv;el('rv-dn').textContent=dn;
+  el('rv-sub').textContent=rv+'件待審核 · '+hl+'件退改中';
+  var list=DB.tasks.filter(function(t){return t.status==='review'||t.status==='hold';});
+  if(!list.length){el('rv-list').innerHTML=emptyHtml('🎉','沒有待審核的任務！');return;}
+  var h='';
+  list.forEach(function(t){
+    var m=DB.members.find(function(x){return x.name===t.owner;});
+    var clr=m?m.color:'var(--acc)';
+    h+='<div class="cd mb12">';
+    h+='<div style="display:flex;align-items:center;gap:9px;margin-bottom:9px">';
+    h+='<div class="av" style="background:'+clr+'">'+esc((t.owner||'?')[0])+'</div>';
+    h+='<div style="flex:1"><div style="font-weight:800;font-size:13.5px">'+esc(t.name)+'</div>';
+    h+='<div style="font-size:11px;color:var(--tx3)">'+esc(t.brand||'—')+' · '+esc(t.owner)+' · 截止 '+esc(t.due||'未設定')+'</div></div>';
+    h+=tag(t.status==='hold'?'trd':'tyl',t.status==='hold'?'退改中':'待審核');
+    h+='</div>';
+    if(t.desc)h+='<div style="font-size:12.5px;color:var(--tx2);margin-bottom:10px;padding:8px;background:var(--s3);border-radius:6px;line-height:1.6">'+esc(t.desc)+'</div>';
+    h+='<div style="display:flex;gap:6px;flex-wrap:wrap">';
+    h+='<button class="btn btn-d btn-sm" onclick="mvTask('+t.id+',\'hold\');renderReview()">退回修改</button>';
+    h+='<button class="btn btn-g btn-sm" onclick="openTaskM('+t.id+')">✏️ 編輯</button>';
+    h+='<button class="btn btn-g btn-sm" onclick="openDp('+t.id+')">💬 查看詳情</button>';
+    h+='<button class="btn btn-s btn-sm" onclick="mvTask('+t.id+',\'done\');renderReview()">✅ 通過</button>';
+    h+='<button class="btn btn-sm" style="background:var(--rl);color:var(--red)" onclick="delTask('+t.id+')">🗑️</button>';
+    h+='</div></div>';
+  });
+  el('rv-list').innerHTML=h;
+}
+
+/* ── CALENDAR ── */
+function renderCal(){
+  var MN=['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+  el('cal-lbl').textContent=calY+'年 '+MN[calM-1];
+  var first=new Date(calY,calM-1,1).getDay(),days=new Date(calY,calM,0).getDate();
+  var tn=new Date();var h='';
+  for(var i=0;i<first;i++)h+='<div class="cald oth"></div>';
+  for(var d=1;d<=days;d++){
+    var ds=calY+'-'+String(calM).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    var isT=tn.getFullYear()===calY&&tn.getMonth()+1===calM&&tn.getDate()===d;
+    var evts=DB.calEvents.filter(function(e){return e.date===ds;});
+    h+='<div class="cald'+(isT?' tod':'')+'" onclick="openCalM(\''+ds+'\')>';
+    h+='<div class="caldn" style="'+(isT?'color:var(--acc);font-weight:900;':'')+'">'+(isT?d:d)+'</div>';
+    evts.forEach(function(ev){
+      var clr=CAL_CLR[ev.type]||'var(--acc)';
+      // Use data attribute for delete to avoid quote issues
+      h+='<div class="calev" style="background:'+clr+'22;color:'+clr+'" data-eid="'+ev.id+'" onclick="event.stopPropagation();delCalEv('+ev.id+')" title="點擊刪除：'+esc(ev.name)+'">'+esc(ev.name)+'</div>';
+    });
+    h+='</div>';
+  }
+  el('cal-grid').innerHTML=h;
+}
+
+/* ── GANTT ── */
+function renderGantt(){
+  var months=[];
+  for(var i=0;i<6;i++){var m=ganttM+i,y=ganttY;if(m>12){m-=12;y++;}months.push(y+'/'+m+'月');}
+  el('g-mhd').innerHTML=months.map(function(m){return '<div class="gnt-m">'+m+'</div>';}).join('');
+  if(!DB.brands.length){el('g-rows').innerHTML=emptyHtml('📉','新增品牌後自動生成甘特圖');return;}
+  var h='';
+  DB.brands.forEach(function(b,i){
+    var left=Math.min((i*12)%55,50),width=Math.min(28+(i%4)*16,78);
+    h+='<div class="gnt-row">';
+    h+='<div class="gnt-lbl">'+esc(b.emoji)+' '+esc(b.short)+'</div>';
+    h+='<div class="gnt-trk"><div class="gnt-bar" style="left:'+left+'%;width:'+width+'%;background:'+b.color+'">'+esc(b.short)+'</div></div>';
+    h+='</div>';
+  });
+  el('g-rows').innerHTML=h;
+}
+
+/* ── BRANDS ── */
+function renderBrands(){
+  el('brands-sub').textContent=DB.brands.length+' 個合作品牌';
+  if(!DB.brands.length){el('brands-grid').innerHTML=emptyHtml('🏷️','尚無品牌資料','<button class="btn btn-p" onclick="openBrandM()">+ 新增第一個品牌</button>');return;}
+  var h='<div class="g3">';
+  DB.brands.forEach(function(b){
+    var bt=DB.tasks.filter(function(t){return t.brand===b.short;}),bd=bt.filter(function(t){return t.status==='done';}).length;
+    h+='<div class="cd">';
+    h+='<div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">';
+    h+='<div style="width:36px;height:36px;border-radius:8px;background:'+b.color+';display:flex;align-items:center;justify-content:center;font-size:17px">'+esc(b.emoji)+'</div>';
+    h+='<div style="flex:1;min-width:0"><div style="font-weight:800;font-size:14px">'+esc(b.name)+'</div>';
+    h+='<div style="font-size:11px;color:var(--tx3)">'+esc(b.cat)+'</div></div></div>';
+    h+='<div style="font-size:12.5px;margin-bottom:5px"><span style="color:var(--tx3)">聯絡：</span>'+esc(dash(b.contact))+'</div>';
+    h+='<div style="font-size:12.5px;margin-bottom:5px"><span style="color:var(--tx3)">Email：</span>'+esc(dash(b.email))+'</div>';
+    h+='<div style="font-size:12.5px;margin-bottom:5px"><span style="color:var(--tx3)">電話：</span>'+esc(dash(b.phone))+'</div>';
+    if(b.note)h+='<div style="font-size:11.5px;color:var(--tx3);padding:7px;background:var(--s3);border-radius:6px;margin-bottom:8px;line-height:1.5">'+esc(b.note)+'</div>';
+    h+='<hr><div style="display:flex;justify-content:space-between;font-size:12.5px">';
+    h+='<span><span style="font-size:17px;font-weight:900;color:var(--acc)">'+bt.length+'</span> 任務</span>';
+    h+='<span><span style="font-size:17px;font-weight:900;color:var(--grn)">'+bd+'</span> 完成</span></div>';
+    h+='<div style="display:flex;gap:5px;margin-top:9px">';
+    h+='<button class="btn btn-g btn-sm" style="flex:1" onclick="openBrandM('+b.id+')">✏️ 編輯</button>';
+    h+='<button class="btn btn-sm" style="background:var(--rl);color:var(--red)" onclick="delBrand('+b.id+')">🗑️</button>';
+    h+='</div></div>';
+  });
+  h+='</div>';
+  el('brands-grid').innerHTML=h;
+}
+
+/* ── KOL ── */
+function renderKol(platformFilter){
+  platformFilter=platformFilter||'';
+  var list=platformFilter?DB.kols.filter(function(k){return k.platform===platformFilter;}):DB.kols;
+  el('kol-sub').textContent=DB.kols.length+' 位網紅';
+  var active=DB.kols.filter(function(k){return k.status==='active';});
+  el('k-a').textContent=active.length;
+  var tf=DB.kols.reduce(function(s,k){return s+k.fans;},0);el('k-f').textContent=fmtK(tf);
+  var ae=DB.kols.length?DB.kols.reduce(function(s,k){return s+k.er;},0)/DB.kols.length:0;
+  el('k-e').textContent=ae.toFixed(1)+'%';
+  el('k-c').textContent=DB.commissions.length;
+  var h='';
+  if(!list.length){el('kol-tb').innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--tx3);padding:28px">尚無KOL資料</td></tr>';return;}
+  list.forEach(function(k){
+    h+='<tr onclick="openKolM('+k.id+')">';
+    h+='<td><div style="font-weight:700">'+esc(k.name)+'</div>';
+    h+='<div style="font-size:10px;color:var(--tx3)">'+esc(k.handle||'')+'</div></td>';
+    h+='<td>'+esc(k.platform)+'</td>';
+    h+='<td style="font-family:var(--mo)">'+fmtK(k.fans)+'</td>';
+    h+='<td>'+tag(k.er>=5?'tgn':k.er>=3?'tbl':'tyl',k.er+'%')+'</td>';
+    h+='<td>'+(k.brand?tag('tbl',k.brand):'—')+'</td>';
+    h+='<td>'+tag('tcy',MODE_LBL[k.mode]||k.mode)+'</td>';
+    h+='<td style="font-family:var(--mo);font-size:12px">'+(k.rate>0?k.rate+'%':'—')+(k.fixed>0?' +$'+fmt(k.fixed):'')+'</td>';
+    h+='<td>'+tag(KST_TAG[k.status]||'tgr',KST_LBL[k.status]||k.status)+'</td>';
+    h+='<td onclick="event.stopPropagation()"><div style="display:flex;gap:4px">';
+    h+='<button class="btn btn-g btn-sm" onclick="openKolM('+k.id+')">✏️</button>';
+    h+='<button class="btn btn-sm" style="background:var(--rl);color:var(--red)" onclick="delKol('+k.id+')">🗑️</button>';
+    h+='</div></td></tr>';
+  });
+  el('kol-tb').innerHTML=h;
+}
+
+/* ── COMMISSION ── */
+function renderComm(){
+  var tS=0,tIn=0,tOut=0;
+  var pend=DB.commissions.filter(function(c){return c.status==='pending';});
+  el('c-pend').textContent=pend.length+'筆待確認';
+  var h='';
+  if(!DB.commissions.length){el('comm-tb').innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--tx3);padding:28px">尚無分潤紀錄</td></tr>';}
+  else{
+    DB.commissions.forEach(function(c){
+      var fB=c.sales*c.br/100,tK=c.sales*c.kr/100+c.kf,net=fB-tK;
+      tS+=c.sales;tIn+=fB;tOut+=tK;
+      h+='<tr>';
+      h+='<td style="font-weight:700">'+esc(c.kol)+'</td>';
+      h+='<td>'+tag('tbl',c.brand)+'</td>';
+      h+='<td>'+esc(c.activity)+'</td>';
+      h+='<td style="font-family:var(--mo)">$'+fmt(c.sales)+'</td>';
+      h+='<td style="font-family:var(--mo);color:var(--grn)">+$'+fmt(fB)+'</td>';
+      h+='<td style="font-family:var(--mo);color:var(--red)">-$'+fmt(tK)+'</td>';
+      h+='<td style="font-family:var(--mo);color:'+(net>=0?'var(--grn)':'var(--red)')+';font-weight:700">$'+fmt(net)+'</td>';
+      h+='<td style="font-size:11px;color:var(--tx3);font-family:var(--mo)">'+esc(c.due||'—')+'</td>';
+      h+='<td>'+(c.status==='paid'?tag('tgn','✓ 已匯款'):tag('tyl','待匯款'))+'</td>';
+      h+='<td><div style="display:flex;gap:3px">';
+      if(c.status==='pending')h+='<button class="btn btn-s btn-sm" onclick="payComm('+c.id+')">匯款</button>';
+      h+='<button class="btn btn-sm" style="background:var(--rl);color:var(--red)" onclick="delComm('+c.id+')">✕</button>';
+      h+='</div></td></tr>';
+    });
+    el('comm-tb').innerHTML=h;
+  }
+  var net=tIn-tOut;
+  var th='<div class="cbx">';
+  th+='<div class="cl"><span>本月總銷售額</span><span style="font-family:var(--mo)">$'+fmt(tS)+'</span></div>';
+  th+='<div class="cl"><span>品牌方給代操</span><span style="font-family:var(--mo);color:var(--grn)">+$'+fmt(tIn)+'</span></div>';
+  th+='<div class="cl"><span>代操給網紅</span><span style="font-family:var(--mo);color:var(--red)">-$'+fmt(tOut)+'</span></div>';
+  th+='<div class="cl tot"><span>代操分潤淨利</span><span style="font-family:var(--mo);color:'+(net>=0?'var(--grn)':'var(--red)')+'">$'+fmt(net)+'</span></div>';
+  th+='</div>';
+  el('comm-tot').innerHTML=th;
+}
+
+/* ── PAYMENT ── */
+function renderPay(){
+  var pend=DB.commissions.filter(function(c){return c.status==='pending';});
+  var paid=DB.commissions.filter(function(c){return c.status==='paid';});
+  var pA=0,dA=0,net=0;
+  pend.forEach(function(c){pA+=c.sales*c.kr/100+c.kf;});
+  paid.forEach(function(c){dA+=c.sales*c.kr/100+c.kf;});
+  DB.commissions.forEach(function(c){net+=c.sales*c.br/100-(c.sales*c.kr/100+c.kf);});
+  el('py-p').textContent='$'+fmt(pA);el('py-pc').textContent=pend.length+'筆';
+  el('py-d').textContent='$'+fmt(dA);el('py-dc').textContent=paid.length+'筆';
+  el('py-n').textContent='$'+fmt(net);
+  var ph='';
+  if(!pend.length)ph=emptyHtml('🎉','暫無待匯款');
+  else pend.forEach(function(c){
+    var toK=c.sales*c.kr/100+c.kf;
+    ph+='<div class="ri">';
+    ph+='<div class="av" style="background:var(--acc);font-size:10px">'+esc(c.kol[0])+'</div>';
+    ph+='<div class="rim"><div class="rit">'+esc(c.kol)+'</div><div class="ris">'+esc(c.brand)+' · '+esc(c.activity)+'</div></div>';
+    ph+='<div style="text-align:right;flex-shrink:0"><div style="font-family:var(--mo);font-weight:800;color:var(--red)">$'+fmt(toK)+'</div>';
+    ph+='<div style="font-size:10px;color:var(--tx3)">'+esc(c.due||'無截止')+'</div></div>';
+    ph+='<button class="btn btn-s btn-sm" onclick="payComm('+c.id+')">匯款</button>';
+    ph+='</div>';
+  });
+  el('py-pl').innerHTML=ph;
+  var dh='';
+  if(!paid.length)dh=emptyHtml('💳','暫無匯款記錄');
+  else paid.forEach(function(c){
+    var toK=c.sales*c.kr/100+c.kf;
+    dh+='<div class="ri" style="opacity:.65">';
+    dh+='<div class="av" style="background:var(--grn);font-size:10px">'+esc(c.kol[0])+'</div>';
+    dh+='<div class="rim"><div class="rit">'+esc(c.kol)+'</div><div class="ris">'+esc(c.brand)+' · 已匯 '+esc(c.paidDate||'—')+'</div></div>';
+    dh+='<div style="font-family:var(--mo);font-weight:800;color:var(--grn)">$'+fmt(toK)+'</div>';
+    dh+=tag('tgn','✓');
+    dh+='</div>';
+  });
+  el('py-dl').innerHTML=dh;
+}
+
+/* ── MEMBERS ── */
+function renderMembers(){
+  var list=memF==='all'?DB.members:DB.members.filter(function(m){return m.dept===memF;});
+  el('mem-sub').textContent=DB.members.length+' 位成員';
+  var ch='';
+  list.forEach(function(m){
+    var mt=DB.tasks.filter(function(t){return t.owner===m.name;}),md=mt.filter(function(t){return t.status==='done';}).length;
+    var skills=(m.skills||'').split(',').filter(Boolean);
+    ch+='<div class="mc">';
+    ch+='<div class="av av-lg" style="background:'+m.color+';margin:0 auto 8px">'+esc(m.name[0])+'</div>';
+    ch+='<div style="font-size:14px;font-weight:800;text-align:center">'+esc(m.name)+'</div>';
+    if(m.ename)ch+='<div style="font-size:11px;color:var(--tx2);text-align:center;margin-bottom:4px">'+esc(m.ename)+'</div>';
+    ch+='<div style="font-size:11px;color:var(--tx3);text-align:center;margin-bottom:7px">'+esc(m.role)+'</div>';
+    ch+='<div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;margin-bottom:6px">';
+    ch+=tag(PERM_TAG[m.perm]||'tbl',PERM_LBL[m.perm]||m.perm);
+    ch+=tag('tcy',m.dept);
+    ch+='</div>';
+    if(skills.length){ch+='<div style="text-align:center">';skills.forEach(function(s){ch+='<span class="sk">'+esc(s.trim())+'</span>';});ch+='</div>';}
+    ch+='<div class="mcs">';
+    ch+='<div><div class="mcsv" style="color:var(--acc)">'+mt.length+'</div><div class="mcsl">任務</div></div>';
+    ch+='<div><div class="mcsv" style="color:var(--grn)">'+md+'</div><div class="mcsl">完成</div></div>';
+    ch+='<div><div class="mcsv" style="color:var(--yel)">'+m.hours+'h</div><div class="mcsl">工時</div></div>';
+    ch+='</div>';
+    ch+='<div style="display:flex;gap:5px;margin-top:9px">';
+    ch+='<button class="btn btn-g btn-sm" style="flex:1" onclick="openMemM('+m.id+')">✏️ 編輯</button>';
+    ch+='<button class="btn btn-sm" style="background:var(--rl);color:var(--red)" onclick="delMember('+m.id+')">🗑️</button>';
+    ch+='</div></div>';
+  });
+  el('mem-cards').innerHTML=ch||emptyHtml('👥','此部門暫無成員');
+  var tb='';
+  list.forEach(function(m){
+    var mt=DB.tasks.filter(function(t){return t.owner===m.name;});
+    var skills=(m.skills||'').split(',').filter(Boolean).slice(0,2).join(', ');
+    tb+='<tr onclick="openMemM('+m.id+')">';
+    tb+='<td><div style="display:flex;align-items:center;gap:7px">';
+    tb+='<div class="av" style="background:'+m.color+';width:22px;height:22px;font-size:9px">'+esc(m.name[0])+'</div>'+esc(m.name)+'</div></td>';
+    tb+='<td>'+esc(m.role)+'</td><td>'+esc(m.dept)+'</td>';
+    tb+='<td><a href="mailto:'+esc(m.email)+'" style="color:var(--acc)" onclick="event.stopPropagation()">'+esc(m.email||'—')+'</a></td>';
+    tb+='<td>'+tag(PERM_TAG[m.perm]||'tbl',PERM_LBL[m.perm])+'</td>';
+    tb+='<td style="font-size:11.5px;color:var(--tx3)">'+esc(skills||'—')+'</td>';
+    tb+='<td>'+tag('tbl',mt.length+' 件')+'</td>';
+    tb+='<td onclick="event.stopPropagation()"><div style="display:flex;gap:4px">';
+    tb+='<button class="btn btn-g btn-sm" onclick="openMemM('+m.id+')">✏️</button>';
+    tb+='<button class="btn btn-sm" style="background:var(--rl);color:var(--red)" onclick="delMember('+m.id+')">🗑️</button>';
+    tb+='</div></td></tr>';
+  });
+  el('mem-tb').innerHTML=tb||'<tr><td colspan="8" style="text-align:center;color:var(--tx3);padding:20px">此部門暫無成員</td></tr>';
+}
+
+/* ── WORKLOAD ── */
+function renderWorkload(){
+  var tot=DB.tasks.length,dn=DB.tasks.filter(function(t){return t.status==='done';}).length;
+  var ov=DB.tasks.filter(function(t){return t.status!=='done'&&t.due&&t.due<today();}).length;
+  el('wl-t').textContent=tot;el('wl-r').textContent=tot?Math.round(dn/tot*100)+'%':'0%';
+  el('wl-o').textContent=ov;
+  var busy=DB.members.filter(function(m){return DB.tasks.filter(function(t){return t.owner===m.name&&t.status!=='done';}).length>5;}).length;
+  el('wl-b').textContent=busy;
+  var mx=Math.max.apply(null,DB.members.map(function(m){return DB.tasks.filter(function(t){return t.owner===m.name;}).length;}).concat([1]));
+  var bh='';
+  DB.members.forEach(function(m){
+    var mt=DB.tasks.filter(function(t){return t.owner===m.name;}),pend=mt.filter(function(t){return t.status!=='done';}).length;
+    var pct=Math.max(mt.length/mx*100,mt.length>0?6:0);
+    var isOver=pend>5;
+    bh+='<div class="wlr"><div class="wln">'+esc(m.name)+'</div>';
+    bh+='<div class="wlb"><div class="wlf'+(isOver?' ov':'')+'" style="width:'+pct+'%;'+(isOver?'':'background:'+m.color)+'">'+mt.length+'件'+(isOver?' ⚠️':'')+'</div></div>';
+    bh+='<div class="wlc">'+pend+'待</div></div>';
+  });
+  el('wl-bars').innerHTML=bh||emptyHtml('⚖️','尚無成員資料');
+  var tb='';
+  DB.members.forEach(function(m){
+    var mt=DB.tasks.filter(function(t){return t.owner===m.name;});
+    var ss={todo:0,doing:0,review:0,done:0};mt.forEach(function(t){if(ss[t.status]!==undefined)ss[t.status]++;});
+    var ov2=mt.filter(function(t){return t.status!=='done'&&t.due&&t.due<today();}).length;
+    tb+='<tr><td><div style="display:flex;align-items:center;gap:6px"><div class="av" style="background:'+m.color+';width:20px;height:20px;font-size:8px">'+esc(m.name[0])+'</div>'+esc(m.name)+'</div></td>';
+    tb+='<td>'+tag('tbl',''+ss.todo)+'</td><td>'+tag('tcy',''+ss.doing)+'</td><td>'+tag('tyl',''+ss.review)+'</td><td>'+tag('tgn',''+ss.done)+'</td>';
+    tb+='<td>'+tag(ov2>0?'trd':'tbl',''+ov2)+'</td><td style="font-weight:700">'+mt.length+'</td></tr>';
+  });
+  el('wl-tb').innerHTML=tb||'<tr><td colspan="7" style="text-align:center;color:var(--tx3);padding:20px">尚無成員資料</td></tr>';
+}
+
+/* ── TIME ── */
+function renderTime(){
+  var totalH=DB.members.reduce(function(s,m){return s+m.hours;},0);
+  var billH=Math.round(totalH*.77);
+  el('tt-t').textContent=totalH+'h';el('tt-b').textContent=billH+'h';el('tt-e').textContent='77%';
+  var totalFee=DB.brands.length*65000;
+  el('tt-v').textContent='$'+fmt(totalH>0?Math.round(totalFee/totalH):0);
+  var mx=Math.max.apply(null,DB.members.map(function(m){return m.hours;}).concat([1]));
+  var mbh='';
+  DB.members.forEach(function(m){mbh+=barHtml(m.name,m.hours/mx*100,m.color,m.hours+'h');});
+  el('tt-mb').innerHTML=mbh||emptyHtml('⏱','尚無成員');
+  var bbh='';
+  DB.brands.forEach(function(b){var h=Math.round(totalH/Math.max(DB.brands.length,1)*(0.7+Math.random()*.5));bbh+=barHtml(b.short,Math.min(h/Math.max(totalH,1)*120,100),b.color,h+'h');});
+  el('tt-bb').innerHTML=bbh||emptyHtml('🏷️','尚無品牌');
+  var tb='';
+  DB.members.forEach(function(m){
+    var mt=DB.tasks.filter(function(t){return t.owner===m.name;}),md=mt.filter(function(t){return t.status==='done';}).length;
+    var eff=mt.length?Math.round(md/mt.length*100):0,ot=m.hours>160?m.hours-160:0;
+    tb+='<tr><td><div style="display:flex;align-items:center;gap:6px"><div class="av" style="background:'+m.color+';width:20px;height:20px;font-size:8px">'+esc(m.name[0])+'</div>'+esc(m.name)+'</div></td>';
+    tb+='<td>'+tag('tbl',m.hours+'h')+'</td><td style="color:var(--tx3)">'+m.hours+'h</td>';
+    tb+='<td>'+tag(ot>0?'trd':'tgn',ot+'h')+'</td><td>'+tag('tgn',md+' 件')+'</td>';
+    tb+='<td>'+tag(eff>=80?'tgn':eff>=50?'tyl':'trd',eff+'%')+'</td></tr>';
+  });
+  el('tt-tb').innerHTML=tb||'<tr><td colspan="6" style="text-align:center;color:var(--tx3);padding:20px">尚無成員</td></tr>';
+}
+
+/* ── REPORT ── */
+function renderReport(){
+  el('rp-d').textContent=new Date().toLocaleDateString('zh-TW',{year:'numeric',month:'long'})+' · 電商代操成效總覽';
+  var tot=DB.tasks.length,dn=DB.tasks.filter(function(t){return t.status==='done';}).length;
+  el('rp-rt').textContent=tot?Math.round(dn/tot*100)+'%':'0%';
+  var gmv=0,net=0;DB.commissions.forEach(function(c){gmv+=c.sales;net+=c.sales*c.br/100-(c.sales*c.kr/100+c.kf);});
+  el('rp-gv').textContent='$'+fmt(gmv);el('rp-nt').textContent=(net>=0?'+':'')+'$'+fmt(net);
+  var totalFee=DB.brands.reduce(function(s){return s+65000;},0);
+  el('rp-ro').textContent=gmv>0?(gmv/Math.max(totalFee,1)).toFixed(1)+'x':'—';
+  // Brand task bars
+  var bbh='';
+  DB.brands.forEach(function(b){
+    var bt=DB.tasks.filter(function(t){return t.brand===b.short;}),bd=bt.filter(function(t){return t.status==='done';}).length;
+    var rate=bt.length?Math.round(bd/bt.length*100):0;
+    bbh+=barHtml(b.short,Math.max(rate,5),b.color,rate+'%');
+  });
+  el('rp-bb').innerHTML=bbh||emptyHtml('📊','新增任務後自動呈現');
+  // KOL bars
+  var kg={};DB.commissions.forEach(function(c){kg[c.kol]=(kg[c.kol]||0)+c.sales;});
+  var ks=Object.keys(kg).sort(function(a,b){return kg[b]-kg[a];});
+  var kmx=ks.length?kg[ks[0]]:1;var kbh='';
+  ks.forEach(function(n){kbh+=barHtml(n,Math.max(kg[n]/kmx*100,8),'var(--acc)','$'+fmt(kg[n]));});
+  el('rp-kb').innerHTML=kbh||emptyHtml('🌟','新增分潤紀錄後呈現');
+  // Brand commission
+  var bc={};DB.commissions.forEach(function(c){var n=c.sales*c.br/100-(c.sales*c.kr/100+c.kf);bc[c.brand]=(bc[c.brand]||0)+n;});
+  var bmx=Math.max.apply(null,Object.values(bc).map(Math.abs).concat([1]));var cbh='';
+  Object.keys(bc).forEach(function(n){var v=bc[n];cbh+=barHtml(n,Math.max(Math.abs(v)/bmx*100,5),v>=0?'var(--grn)':'var(--red)','$'+fmt(v));});
+  el('rp-cb').innerHTML=cbh||emptyHtml('💰','新增分潤紀錄後呈現');
+  // Member bars
+  var mmx=Math.max.apply(null,DB.members.map(function(m){return DB.tasks.filter(function(t){return t.owner===m.name&&t.status==='done';}).length;}).concat([1]));
+  var mbh2='';
+  DB.members.forEach(function(m){
+    var dn2=DB.tasks.filter(function(t){return t.owner===m.name&&t.status==='done';}).length;
+    mbh2+=barHtml(m.name,Math.max(dn2/mmx*100,dn2>0?5:0),m.color,dn2+' 件');
+  });
+  el('rp-mb').innerHTML=mbh2||emptyHtml('👥','新增成員後呈現');
+}
+
+/* ── INBOX ── */
+function renderInbox(){
+  var unrd=DB.notifications.filter(function(n){return !n.read;}).length;
+  el('ib-sub').textContent=unrd+'則未讀';
+  var ICONS={info:'🔵',success:'✅',warning:'🟡',payment:'💰',error:'🔴'};
+  var h='';
+  DB.notifications.forEach(function(n){
+    h+='<div class="ri" style="'+(n.read?'opacity:.45':'')+'"><div style="font-size:18px;flex-shrink:0">'+(ICONS[n.type]||'🔔')+'</div>';
+    h+='<div class="rim"><div class="rit" style="font-size:12.5px">'+esc(n.msg)+'</div>';
+    h+='<div class="ris">'+new Date(n.time).toLocaleString('zh-TW',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})+'</div></div>';
+    if(!n.read)h+='<button class="btn btn-g btn-sm" onclick="rdN('+n.id+')">已讀</button>';
+    h+='</div>';
+  });
+  el('ib-list').innerHTML=h||emptyHtml('🔔','暫無通知');
+}
+
+/* ══════════════════════════════════════════════════
+   SAMPLE DATA
+══════════════════════════════════════════════════ */
+function initSample(){
+  if(DB.members.length>0)return;
+  var ms=[
+    {id:1,name:'王小明',ename:'Michael Wang',role:'代操主管',dept:'管理',email:'michael@ecomflow.tw',phone:'0912-001-001',perm:'admin',hours:168,join:'2023-01-01',color:'linear-gradient(135deg,#4a85ff,#a855f7)',skills:'策略規劃,客戶管理,廣告投放'},
+    {id:2,name:'陳小美',ename:'Alice Chen',role:'文案企劃',dept:'文案企劃',email:'alice@ecomflow.tw',phone:'0912-002-002',perm:'member',hours:160,join:'2023-03-15',color:'linear-gradient(135deg,#f33f5c,#f97316)',skills:'文案撰寫,品牌策略,IG內容'},
+    {id:3,name:'林大維',ename:'David Lin',role:'廣告投放專員',dept:'廣告投放',email:'david@ecomflow.tw',phone:'0912-003-003',perm:'member',hours:180,join:'2023-02-01',color:'linear-gradient(135deg,#21c55d,#4a85ff)',skills:'FB廣告,Google Ads,數據分析'},
+    {id:4,name:'張文明',ename:'Ben Chang',role:'設計師',dept:'設計',email:'ben@ecomflow.tw',phone:'0912-004-004',perm:'member',hours:160,join:'2023-06-01',color:'linear-gradient(135deg,#f59e0b,#ef4444)',skills:'Figma,素材設計,影片剪輯'},
+    {id:5,name:'劉曉燕',ename:'Yumi Liu',role:'KOL媒合專員',dept:'KOL媒合',email:'yumi@ecomflow.tw',phone:'0912-005-005',perm:'member',hours:152,join:'2024-01-10',color:'linear-gradient(135deg,#a855f7,#06b6d4)',skills:'KOL洽談,合約談判,分潤計算'},
+  ];
+  ms.forEach(function(m){DB.members.push(m);DB.ids.m=Math.max(DB.ids.m,m.id+1);});
+  var bs=[
+    {id:1,name:'美妝品牌 A',short:'A品牌',cat:'美妝保養',emoji:'💄',color:'var(--acc)',contact:'林小姐',email:'brandA@email.com',phone:'02-1234-5678',note:'母親節主攻檔期，KOL合作為主'},
+    {id:2,name:'服飾品牌 B',short:'B品牌',cat:'服飾配件',emoji:'👗',color:'var(--red)',contact:'陳先生',email:'brandB@email.com',phone:'02-2345-6789',note:'夏季新品上市，Shopee主力平台'},
+    {id:3,name:'食品品牌 C',short:'C品牌',cat:'食品飲料',emoji:'🥗',color:'var(--grn)',contact:'張小姐',email:'brandC@email.com',phone:'02-3456-7890',note:'年度會員經營計畫，EDM為主'},
+    {id:4,name:'3C品牌 D',short:'D品牌',cat:'3C家電',emoji:'📱',color:'var(--yel)',contact:'王先生',email:'brandD@email.com',phone:'02-4567-8901',note:'新品發布，YouTube開箱KOL合作'},
+    {id:5,name:'保健品牌 E',short:'E品牌',cat:'保健食品',emoji:'💊',color:'var(--pur)',contact:'李小姐',email:'brandE@email.com',phone:'02-5678-9012',note:'品牌重塑，社群從零開始'},
+  ];
+  bs.forEach(function(b){DB.brands.push(b);DB.ids.b=Math.max(DB.ids.b,b.id+1);});
+  var ts=[
+    {id:1,name:'母親節 Landing Page 文案撰寫',brand:'A品牌',type:'文案撰寫',owner:'陳小美',collab:['林大維'],due:'2026-04-12',hours:3,priority:'high',status:'todo',desc:'需要溫馨風格，強調送禮情境，CTA 按鈕改為「立即送上祝福」',tags:['母親節','文案','A品牌'],comments:[]},
+    {id:2,name:'FB 廣告投放 A/B 測試',brand:'A品牌',type:'廣告投放',owner:'林大維',collab:[],due:'2026-04-11',hours:4,priority:'high',status:'doing',desc:'測試兩種受眾，20-35歲女性 vs 35-50歲女性，預算各$5000',tags:['廣告','FB'],comments:[]},
+    {id:3,name:'IG 貼文素材設計（10張）',brand:'A品牌',type:'素材設計',owner:'張文明',collab:['陳小美'],due:'2026-04-14',hours:6,priority:'mid',status:'review',desc:'母親節主題設計，色調偏粉嫩溫馨，尺寸1080x1080',tags:['設計','IG'],comments:[]},
+    {id:4,name:'4月 SEO 關鍵字報告',brand:'A品牌',type:'數據報告',owner:'王小明',collab:[],due:'2026-04-08',hours:2,priority:'low',status:'done',desc:'月度報告，追蹤主要關鍵字',tags:['SEO','報告'],comments:[]},
+    {id:5,name:'LINE 推播內容規劃',brand:'C品牌',type:'LINE推播',owner:'劉曉燕',collab:['陳小美'],due:'2026-04-18',hours:2,priority:'mid',status:'todo',desc:'4月第三週推播，主題為會員感謝週',tags:['LINE','推播'],comments:[]},
+    {id:6,name:'Shopee 商品主圖更換',brand:'B品牌',type:'平台上架',owner:'張文明',collab:[],due:'2026-04-15',hours:3,priority:'mid',status:'doing',desc:'夏季款6個商品主圖，規格1024x1024',tags:['Shopee','設計'],comments:[]},
+    {id:7,name:'KOL 合作合約草案',brand:'A品牌',type:'KOL合作',owner:'劉曉燕',collab:['王小明'],due:'2026-04-13',hours:2,priority:'high',status:'review',desc:'小美生活日記合作合約，分潤8%+固定費5000',tags:['KOL','合約'],comments:[]},
+    {id:8,name:'D品牌新品發布提案',brand:'D品牌',type:'客戶提案',owner:'王小明',collab:['陳小美'],due:'2026-04-20',hours:5,priority:'high',status:'todo',desc:'耳機新品發布策略，含KOL+YouTube廣告規劃',tags:['提案','新品'],comments:[]},
+  ];
+  ts.forEach(function(t){DB.tasks.push(t);DB.ids.t=Math.max(DB.ids.t,t.id+1);});
+  var ks=[
+    {id:1,name:'小美生活日記',handle:'@xiaomei_life',platform:'Instagram',fans:152000,er:5.8,views:0,email:'xiaomei@email.com',line:'xiaomei_kol',brand:'A品牌',mode:'both',fixed:5000,rate:8,status:'active',tags:'生活,美妝',note:'母親節檔期主力KOL'},
+    {id:2,name:'美妝小達人 Lily',handle:'@lily_beauty',platform:'Instagram',fans:86000,er:4.1,views:0,email:'lily@email.com',line:'lily_kol',brand:'A品牌',mode:'commission',fixed:0,rate:10,status:'active',tags:'美妝,開箱',note:''},
+    {id:3,name:'健康生活 Tim',handle:'TimHealthy',platform:'YouTube',fans:458000,er:3.5,views:120000,email:'tim@email.com',line:'tim_health',brand:'C品牌',mode:'fixed',fixed:60000,rate:0,status:'active',tags:'健康,保健',note:'固定費每月1支影片'},
+    {id:4,name:'時尚穿搭 Kiki',handle:'@kiki_fashion',platform:'Instagram',fans:224000,er:6.2,views:0,email:'kiki@email.com',line:'kiki_f',brand:'B品牌',mode:'both',fixed:10000,rate:5,status:'pending',tags:'時尚,穿搭',note:'接洽中預計5月合作'},
+    {id:5,name:'3C開箱王 Max',handle:'MaxTechTW',platform:'YouTube',fans:683000,er:4.8,views:280000,email:'max@email.com',line:'max_tech',brand:'D品牌',mode:'commission',fixed:0,rate:3,status:'active',tags:'3C,開箱',note:'D品牌主力KOL'},
+  ];
+  ks.forEach(function(k){DB.kols.push(k);DB.ids.k=Math.max(DB.ids.k,k.id+1);});
+  var cs=[
+    {id:1,kol:'小美生活日記',brand:'A品牌',activity:'清潔精華組合',sales:820000,br:5,kr:8,kf:5000,due:'2026-04-15',status:'pending',note:''},
+    {id:2,kol:'健康生活 Tim',brand:'C品牌',activity:'益生菌禮盒',sales:680000,br:5,kr:0,kf:60000,due:'2026-04-08',status:'paid',paidDate:'2026-04-08',note:''},
+    {id:3,kol:'美妝小達人 Lily',brand:'A品牌',activity:'保濕面膜禮盒',sales:452000,br:5,kr:10,kf:0,due:'2026-04-15',status:'pending',note:''},
+    {id:4,kol:'3C開箱王 Max',brand:'D品牌',activity:'藍牙耳機開箱',sales:960000,br:5,kr:3,kf:0,due:'2026-04-20',status:'paid',paidDate:'2026-04-10',note:''},
+  ];
+  cs.forEach(function(c){DB.commissions.push(c);DB.ids.c=Math.max(DB.ids.c,c.id+1);});
+  var evs=[
+    {id:1,name:'母親節素材截止',date:'2026-04-12',type:'deadline',brand:'A品牌',owner:'張文明',note:''},
+    {id:2,name:'A品牌客戶會議',date:'2026-04-10',type:'meeting',brand:'A品牌',owner:'王小明',note:'線上10:00am'},
+    {id:3,name:'C品牌EDM發送',date:'2026-04-06',type:'report',brand:'C品牌',owner:'劉曉燕',note:''},
+    {id:4,name:'月報發送',date:'2026-04-15',type:'report',brand:'',owner:'王小明',note:''},
+    {id:5,name:'D品牌新品發布',date:'2026-04-20',type:'launch',brand:'D品牌',owner:'王小明',note:''},
+    {id:6,name:'小美IG直播',date:'2026-04-18',type:'kol',brand:'A品牌',owner:'劉曉燕',note:'晚8點'},
+    {id:7,name:'母親節🌸',date:'2026-04-30',type:'event',brand:'',owner:'',note:''},
+  ];
+  evs.forEach(function(e){DB.calEvents.push(e);DB.ids.e=Math.max(DB.ids.e,e.id+1);});
+  addNotif('🔴 A品牌客戶對母親節文案提出修改意見','warning');
+  addNotif('💰 小美生活日記分潤 $70,600 截止 04/15，待匯款','payment');
+  addNotif('✅ B品牌廣告素材已通過客戶審核，可安排投放','success');
+  addNotif('👤 新成員劉曉燕已加入 KOL媒合 部門','info');
+  saveDB();
+}
+
+/* ── BOOT ── */
+loadDB();
+initSample();
+populateSels();
+updateBadges();
+renderDash();
+renderCal();
+</script>
+</body>
+</html>
