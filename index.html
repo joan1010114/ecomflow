@@ -824,8 +824,8 @@ function doLogin(){
     var stored=m.password_hash||'';
     var input=hashPw(pass);
     if(!stored){
-      // First login - accept admin123 or member name for default setup
-      if(pass==='admin123'||pass===m.name){
+      // First login - accept admin00070281 or member name for default setup
+      if(pass==='admin00070281'||pass===m.name){
         CU=m;sessionStorage.setItem('ef_uid',m.id);showApp();return;
       }
       errEl.textContent='密碼錯誤';return;
@@ -1940,11 +1940,11 @@ function boot(){
   loadDB().then(function(){
     if(DB.members.length===0){
       // No users yet - create default admin
-      var defaultAdmin={name:'管理員',ename:'Admin',role:'系統管理員',dept:'管理',email:'admin@ecomflow.tw',phone:'',perm:'admin',hours:160,color:'var(--tx)',skills:'系統管理',password_hash:hashPw('admin123')};
+      var defaultAdmin={name:'韓馥鴻',ename:'Fu Han',role:'執行長',dept:'管理',email:'info@52ec.tw',phone:'+886983305695',perm:'admin',hours:160,color:'var(--tx)',skills:'電商營運,品牌行銷,廣告投放',password_hash:hashPw('admin00070281')};
       return apiPost('members',defaultAdmin).then(function(){return loadDB();}).then(function(){
         document.getElementById('pg').innerHTML='';
         document.getElementById('login-page').style.display='flex';
-        alert('已建立預設管理員帳號\n\nEmail: admin@ecomflow.tw\n密碼: admin123\n\n登入後請立即修改密碼！');
+        alert('已建立預設管理員帳號\n\nEmail: info@52ec.tw\n密碼: admin00070281\n\n登入後請立即修改密碼！');
       });
     }
     // Check saved session
