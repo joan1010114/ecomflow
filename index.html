@@ -1,0 +1,2868 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EcomFlow Pro - 無二電商事務所</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fafaf7;--s1:#fff;--s2:#fff;--s3:#f5f3ee;--s4:#ede9e0;
+  --b1:#e8e4db;--b2:#d9d3c5;--b3:#c4bba8;
+  --tx:#2a2a28;--tx2:#6b6760;--tx3:#a8a299;
+  --acc:#2a2a28;--acl:rgba(42,42,40,.08);
+  --gold:#a88a5a;--goldl:rgba(168,138,90,.12);
+  --grn:#7a8f6f;--gl:rgba(122,143,111,.15);
+  --red:#b8625e;--rl:rgba(184,98,94,.15);
+  --yel:#c4a36b;--yl:rgba(196,163,107,.2);
+  --pur:#9b8aa8;--pl:rgba(155,138,168,.18);
+  --cyn:#7b9faa;--cyl:rgba(123,159,170,.18);
+  --org:#c48968;--orl:rgba(196,137,104,.15);
+  --fn:'Noto Sans TC',sans-serif;--mo:'JetBrains Mono',monospace;
+  --sh1:0 1px 2px rgba(42,42,40,.04);
+  --sh2:0 4px 12px rgba(42,42,40,.08);
+  --sh3:0 8px 24px rgba(42,42,40,.12);
+  --sw:230px;--th:56px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);}
+body{font-family:var(--fn);color:var(--tx);font-size:13.5px;overflow:hidden;letter-spacing:.01em;-webkit-font-smoothing:antialiased;}
+
+/* LOGIN */
+.login-wrap{display:flex;align-items:center;justify-content:center;height:100vh;background:var(--bg);padding:20px;}
+.login-box{background:#fff;border:1px solid var(--b1);border-radius:2px;padding:44px 36px;width:100%;max-width:400px;box-shadow:var(--sh3);}
+.login-logo{display:flex;flex-direction:column;align-items:center;margin-bottom:28px;}
+.login-logo-mark{width:60px;height:60px;margin-bottom:14px;}
+.login-logo-mark img{width:100%;height:100%;display:block;}
+.login-logo-t{font-size:14px;font-weight:700;color:var(--tx);letter-spacing:.2em;margin-bottom:4px;}
+.login-logo-en{font-size:9.5px;color:var(--tx3);letter-spacing:.25em;font-family:var(--mo);}
+.login-title{font-size:12px;margin-bottom:20px;color:var(--tx2);text-align:center;letter-spacing:.2em;padding-top:16px;border-top:1px solid var(--b1);}
+.login-fg{margin-bottom:13px;}
+.login-fg label{display:block;font-size:10px;color:var(--tx2);font-weight:700;margin-bottom:6px;letter-spacing:.15em;text-transform:uppercase;}
+.login-in{width:100%;background:#fff;border:1px solid var(--b1);border-radius:2px;padding:11px 14px;color:var(--tx);font-family:var(--fn);font-size:13.5px;outline:none;transition:border .2s;}
+.login-in:focus{border-color:var(--tx);}
+.login-btn{width:100%;background:var(--tx);color:#fff;border:none;border-radius:2px;padding:13px;font-size:13px;font-weight:700;cursor:pointer;margin-top:6px;font-family:var(--fn);letter-spacing:.25em;transition:all .2s;}
+.login-btn:hover{background:#000;box-shadow:var(--sh2);}
+.login-err{color:var(--red);font-size:12px;text-align:center;margin-top:10px;min-height:18px;}
+.login-note{margin-top:16px;padding-top:14px;border-top:1px solid var(--b1);text-align:center;font-size:11px;color:var(--tx3);}
+
+/* APP */
+.app{display:flex;height:100vh;}
+.sb{width:var(--sw);min-width:var(--sw);background:#fff;border-right:1px solid var(--b1);display:flex;flex-direction:column;height:100vh;position:fixed;left:0;top:0;z-index:200;transition:transform .28s;}
+.ct{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+.tb{height:var(--th);background:#fff;border-bottom:1px solid var(--b1);display:flex;align-items:center;padding:0 20px;gap:10px;z-index:50;}
+.pg{flex:1;overflow-y:auto;padding:22px 26px 60px;background:var(--bg);}
+.ov{display:none;position:fixed;inset:0;background:rgba(42,42,40,.4);z-index:199;backdrop-filter:blur(4px);}
+.ov.on{display:block;}
+
+/* LOGO */
+.logo{padding:16px 18px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.logo-mk{width:32px;height:32px;flex-shrink:0;}
+.logo-mk img{width:100%;height:100%;display:block;}
+.logo-t{font-size:11.5px;font-weight:800;letter-spacing:.15em;line-height:1.2;}
+.logo-s{font-size:9px;color:var(--tx3);letter-spacing:.2em;font-family:var(--mo);font-weight:600;margin-top:3px;}
+
+/* NAV */
+.nav{flex:1;overflow-y:auto;padding:12px 0;}
+.nav-sec{font-size:9px;color:var(--tx3);letter-spacing:.25em;font-weight:700;padding:12px 16px 6px;font-family:var(--mo);text-transform:uppercase;}
+.ni{display:flex;align-items:center;gap:10px;padding:8px 14px;margin:1px 8px;border-radius:3px;cursor:pointer;color:var(--tx2);font-size:12.5px;position:relative;user-select:none;font-weight:500;transition:all .15s;}
+.ni:hover{background:var(--s3);color:var(--tx);}
+.ni.on{background:var(--tx);color:#fff;font-weight:700;}
+.ni-i{font-size:14px;width:18px;text-align:center;flex-shrink:0;}
+.nb{margin-left:auto;font-size:9px;font-weight:700;border-radius:99px;padding:1px 7px;font-family:var(--mo);background:var(--gold);color:#fff;}
+.ni.on .nb{background:#fff;color:var(--tx);}
+.nb.r{background:var(--red);}
+.nb.g{background:var(--grn);}
+.sf{padding:12px;border-top:1px solid var(--b1);flex-shrink:0;}
+.urow{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:3px;cursor:pointer;transition:background .15s;}
+.urow:hover{background:var(--s3);}
+
+/* TOPBAR */
+.hbg{background:none;border:none;color:var(--tx2);font-size:20px;cursor:pointer;display:none;padding:4px;flex-shrink:0;}
+.tb-b{background:none;border:1px solid var(--b1);width:28px;height:28px;border-radius:3px;cursor:pointer;color:var(--tx2);display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:14px;}
+.tb-b:hover{border-color:var(--tx);color:var(--tx);}
+.tb-b:disabled{opacity:.35;cursor:not-allowed;}
+.tb-t{font-size:14px;font-weight:800;flex:1;letter-spacing:.1em;}
+.srch{display:flex;align-items:center;gap:8px;background:var(--s3);border:1px solid var(--b1);border-radius:3px;padding:7px 14px;color:var(--tx3);font-size:12px;cursor:pointer;min-width:180px;transition:border .15s;}
+.srch:hover{border-color:var(--tx);}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:2px;border:1px solid transparent;font-family:var(--fn);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;letter-spacing:.05em;}
+.btn-p{background:var(--tx);color:#fff;border-color:var(--tx);}
+.btn-p:hover{background:#000;box-shadow:var(--sh1);}
+.btn-g{background:#fff;color:var(--tx);border-color:var(--b2);}
+.btn-g:hover{border-color:var(--tx);}
+.btn-d{background:var(--red);color:#fff;border-color:var(--red);}
+.btn-d:hover{background:#a35551;}
+.btn-s{background:var(--grn);color:#fff;border-color:var(--grn);}
+.btn-s:hover{background:#687c5f;}
+.btn-gold{background:var(--gold);color:#fff;border-color:var(--gold);}
+.btn-gold:hover{background:#927749;}
+.btn-sm{padding:4px 10px;font-size:11px;}
+
+/* VIEWS */
+.vw{display:none;animation:fi .2s ease;}
+.vw.on{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+/* PAGE HEADER */
+.ph{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:20px;flex-wrap:wrap;padding-bottom:14px;border-bottom:1px solid var(--b1);}
+.ph h1{font-size:22px;font-weight:900;letter-spacing:-.5px;color:var(--tx);}
+.ph p{font-size:12px;color:var(--tx2);margin-top:4px;}
+.ph-a{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+
+/* CARDS */
+.cd{background:#fff;border:1px solid var(--b1);border-radius:3px;padding:18px;box-shadow:var(--sh1);}
+.cd-t{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--b1);}
+.cd-tt{font-size:12.5px;font-weight:800;letter-spacing:.08em;}
+
+/* KPI */
+.kpi{background:#fff;border:1px solid var(--b1);border-radius:3px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:var(--sh1);transition:all .15s;}
+.kpi:hover{box-shadow:var(--sh2);transform:translateY(-1px);}
+.kpi::after{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;}
+.kpi.gold::after{background:var(--gold);}
+.kpi.grn::after{background:var(--grn);}
+.kpi.red::after{background:var(--red);}
+.kpi.yel::after{background:var(--yel);}
+.kpi.pur::after{background:var(--pur);}
+.kpi.cyn::after{background:var(--cyn);}
+.kpi-l{font-size:9px;color:var(--tx3);letter-spacing:.2em;font-weight:700;font-family:var(--mo);text-transform:uppercase;}
+.kpi-v{font-size:26px;font-weight:900;letter-spacing:-1.5px;margin:8px 0 4px;}
+.kpi-d{font-size:11px;color:var(--tx2);}
+
+/* TAGS */
+.tg{display:inline-flex;align-items:center;padding:3px 9px;border-radius:2px;font-size:10px;font-weight:700;letter-spacing:.05em;white-space:nowrap;}
+.tg-gold{background:var(--goldl);color:var(--gold);}
+.tg-grn{background:var(--gl);color:var(--grn);}
+.tg-red{background:var(--rl);color:var(--red);}
+.tg-yel{background:var(--yl);color:var(--yel);}
+.tg-pur{background:var(--pl);color:var(--pur);}
+.tg-cyn{background:var(--cyl);color:var(--cyn);}
+.tg-org{background:var(--orl);color:var(--org);}
+.tg-gr{background:var(--s3);color:var(--tx2);}
+
+/* PROGRESS */
+.pb{background:var(--s3);border-radius:99px;height:5px;overflow:hidden;}
+.pbf{height:100%;border-radius:99px;transition:width .4s;}
+
+/* DOT */
+.dt{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0;}
+
+/* TABLE */
+.tw{overflow-x:auto;}
+.tbl-t{width:100%;border-collapse:collapse;}
+.tbl-t th{text-align:left;font-size:9px;color:var(--tx3);letter-spacing:.2em;font-weight:700;padding:10px 12px;border-bottom:1px solid var(--b1);font-family:var(--mo);white-space:nowrap;background:var(--s3);text-transform:uppercase;}
+.tbl-t td{padding:12px;border-bottom:1px solid var(--b1);font-size:12.5px;vertical-align:middle;}
+.tbl-t tr:last-child td{border-bottom:none;}
+.tbl-t tbody tr:hover td{background:var(--s3);cursor:pointer;}
+
+/* LIST ROW */
+.ri{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--b1);}
+.ri:last-child{border-bottom:none;}
+.rim{flex:1;min-width:0;}
+.rit{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ris{font-size:11px;color:var(--tx3);margin-top:2px;}
+
+/* AVATAR */
+.av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;}
+.av-sm{width:22px;height:22px;font-size:9px;}
+.av-lg{width:48px;height:48px;font-size:18px;}
+
+/* KANBAN (Asana style) */
+.kb{display:flex;gap:12px;overflow-x:auto;padding-bottom:10px;min-height:420px;}
+.kbc{min-width:290px;background:#fff;border:1px solid var(--b1);border-radius:3px;padding:14px;display:flex;flex-direction:column;flex-shrink:0;box-shadow:var(--sh1);max-height:calc(100vh - 200px);}
+.kbh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--b1);}
+.kbt{font-size:12.5px;font-weight:800;display:flex;align-items:center;gap:8px;}
+.kbn{background:var(--s3);color:var(--tx2);border-radius:99px;padding:2px 8px;font-size:9.5px;font-family:var(--mo);font-weight:700;}
+.kbody{flex:1;overflow-y:auto;padding-right:2px;}
+
+/* TASK CARD */
+.tc{background:#fff;border:1px solid var(--b1);border-radius:3px;margin-bottom:7px;transition:all .15s;}
+.tc:hover{border-color:var(--tx);box-shadow:var(--sh1);}
+.tc-inner{padding:10px 12px;display:flex;align-items:flex-start;gap:10px;}
+.tc-check{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--b3);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:2px;}
+.tc-check:hover{border-color:var(--grn);background:var(--gl);}
+.tc-check.done{background:var(--grn);border-color:var(--grn);}
+.tc-body{flex:1;min-width:0;cursor:pointer;}
+.tc-name{font-size:13px;font-weight:600;line-height:1.4;margin-bottom:8px;}
+.tc-name.done{text-decoration:line-through;color:var(--tx3);}
+.tc-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+
+.addc{background:none;border:1px dashed var(--b2);border-radius:3px;color:var(--tx3);padding:10px;font-size:12px;cursor:pointer;width:100%;text-align:center;margin-top:4px;font-family:var(--fn);transition:all .15s;}
+.addc:hover{border-color:var(--tx);color:var(--tx);background:var(--s3);}
+
+/* QUICK ADD */
+.qa{background:#fff;border:1.5px solid var(--tx);border-radius:3px;padding:10px;margin-bottom:7px;box-shadow:var(--sh2);}
+.qa-n{width:100%;background:none;border:none;font-size:13px;font-weight:600;color:var(--tx);font-family:var(--fn);outline:none;margin-bottom:8px;resize:none;line-height:1.4;}
+.qa-r{display:flex;gap:5px;flex-wrap:wrap;align-items:center;}
+.qa-s{background:#fff;border:1px solid var(--b1);border-radius:2px;padding:4px 8px;color:var(--tx2);font-size:11px;font-family:var(--fn);outline:none;cursor:pointer;}
+.qa-s:focus{border-color:var(--tx);}
+
+/* RIGHT PANEL - Asana style inline editing */
+.rp-ov{display:none;position:fixed;inset:0;z-index:298;background:rgba(42,42,40,.35);backdrop-filter:blur(3px);}
+.rp-ov.on{display:block;animation:fi .2s;}
+.rp{position:fixed;right:0;top:0;width:520px;max-width:95vw;height:100vh;background:#fff;border-left:1px solid var(--b1);z-index:299;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:var(--sh3);}
+.rp.on{transform:none;}
+.rp-h{padding:18px 20px;border-bottom:1px solid var(--b1);display:flex;align-items:flex-start;gap:10px;flex-shrink:0;}
+.rp-h-l{flex:1;min-width:0;}
+.rp-title-in{width:100%;background:none;border:1px solid transparent;font-size:16px;font-weight:800;color:var(--tx);font-family:var(--fn);outline:none;padding:4px 8px;border-radius:2px;margin-left:-8px;letter-spacing:.03em;}
+.rp-title-in:hover{background:var(--s3);}
+.rp-title-in:focus{background:var(--s3);border-color:var(--b1);}
+.rp-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;padding-left:0;}
+.rp-b{flex:1;overflow-y:auto;}
+.rp-sec{padding:14px 20px;border-bottom:1px solid var(--b1);}
+.rp-sec-t{font-size:9.5px;font-weight:700;color:var(--tx3);letter-spacing:.25em;margin-bottom:10px;font-family:var(--mo);text-transform:uppercase;}
+.rp-f{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+.rp-fl{width:76px;font-size:11.5px;color:var(--tx3);flex-shrink:0;}
+.rp-in,.rp-sel{flex:1;background:#fff;border:1px solid transparent;border-radius:2px;padding:6px 10px;color:var(--tx);font-family:var(--fn);font-size:12.5px;outline:none;transition:all .15s;}
+.rp-in:hover,.rp-sel:hover{background:var(--s3);border-color:var(--b1);}
+.rp-in:focus,.rp-sel:focus{background:#fff;border-color:var(--tx);}
+.rp-sel{cursor:pointer;}
+.rp-sel option{background:#fff;}
+textarea.rp-in{resize:vertical;min-height:70px;line-height:1.6;width:100%;flex:unset;}
+.rp-f-ta{align-items:flex-start;}
+.rp-f-ta .rp-fl{padding-top:8px;}
+.rp-foot{padding:12px 20px;border-top:1px solid var(--b1);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0;background:var(--s3);}
+
+/* COMMENT */
+.cmt{background:var(--s3);border-radius:3px;padding:10px 12px;margin-bottom:7px;border:1px solid var(--b1);}
+.cmt-h{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.cmt-n{font-size:11.5px;font-weight:700;}
+.cmt-t{font-size:10px;color:var(--tx3);margin-left:auto;font-family:var(--mo);}
+.cmt-x{font-size:12.5px;color:var(--tx2);line-height:1.6;}
+.cmt-in{display:flex;gap:7px;margin-top:8px;}
+.cmt-in input{flex:1;background:#fff;border:1px solid var(--b1);border-radius:2px;padding:7px 10px;color:var(--tx);font-family:var(--fn);font-size:12.5px;outline:none;}
+.cmt-in input:focus{border-color:var(--tx);}
+
+/* MODAL */
+.mbk{display:none;position:fixed;inset:0;background:rgba(42,42,40,.45);backdrop-filter:blur(4px);z-index:999;align-items:center;justify-content:center;padding:14px;animation:fi .2s;}
+.mbk.on{display:flex;}
+.mdl{background:#fff;border-radius:3px;padding:24px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;box-shadow:var(--sh3);}
+.mdl-lg{max-width:720px;}
+.mdl h2{font-size:16px;font-weight:900;margin-bottom:16px;letter-spacing:.05em;padding-bottom:12px;border-bottom:1px solid var(--b1);}
+.mft{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;padding-top:14px;border-top:1px solid var(--b1);}
+.fg{margin-bottom:12px;}
+.fg label{display:block;font-size:10px;color:var(--tx2);font-weight:700;margin-bottom:5px;letter-spacing:.15em;text-transform:uppercase;}
+.fc{width:100%;background:#fff;border:1px solid var(--b1);border-radius:2px;padding:9px 12px;color:var(--tx);font-family:var(--fn);font-size:13px;outline:none;}
+.fc:focus{border-color:var(--tx);}
+textarea.fc{resize:vertical;min-height:72px;line-height:1.6;}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+
+/* CONFIRM */
+.cfbk{display:none;position:fixed;inset:0;background:rgba(42,42,40,.5);z-index:1001;align-items:center;justify-content:center;}
+.cfbk.on{display:flex;}
+.cfbox{background:#fff;border-radius:3px;padding:24px;max-width:340px;width:90%;text-align:center;box-shadow:var(--sh3);}
+.cfbox h3{font-size:16px;font-weight:900;margin-bottom:8px;}
+.cfbox p{font-size:13px;color:var(--tx2);margin-bottom:18px;line-height:1.7;}
+.cfft{display:flex;gap:8px;justify-content:center;}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;right:22px;background:#fff;border:1px solid var(--b1);border-radius:3px;padding:12px 16px;font-size:12.5px;font-weight:600;z-index:9999;box-shadow:var(--sh3);display:flex;align-items:center;gap:8px;transform:translateX(140%);transition:transform .3s;max-width:300px;}
+.toast.on{transform:none;}
+.toast.success{border-left:3px solid var(--grn);}
+.toast.error{border-left:3px solid var(--red);}
+.toast.info{border-left:3px solid var(--gold);}
+
+/* EMPTY */
+.empty{color:var(--tx3);font-size:13px;text-align:center;padding:40px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.empty-i{font-size:36px;opacity:.4;}
+
+/* CHECKBOX LIST */
+.cbl{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.cb-item{display:flex;align-items:flex-start;gap:8px;padding:7px 9px;border:1px solid var(--b1);border-radius:2px;cursor:pointer;transition:all .15s;background:#fff;}
+.cb-item:hover{border-color:var(--tx);}
+.cb-item.on{background:var(--s3);border-color:var(--tx);}
+.cb-item input{margin-top:2px;accent-color:var(--tx);}
+.cb-item-t{font-size:11.5px;font-weight:600;}
+.cb-item-s{font-size:10px;color:var(--tx3);margin-top:1px;}
+
+/* DOMAIN HEADER */
+.dom-h{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--tx);color:#fff;border-radius:2px;margin-bottom:10px;}
+.dom-ic{font-size:18px;}
+.dom-tt{font-size:13px;font-weight:800;letter-spacing:.08em;flex:1;}
+.dom-stat{font-size:10px;font-family:var(--mo);opacity:.75;}
+
+/* CLIENT CARD */
+.cc{background:#fff;border:1px solid var(--b1);border-radius:3px;padding:0;overflow:hidden;margin-bottom:14px;transition:all .15s;}
+.cc:hover{border-color:var(--b2);box-shadow:var(--sh1);}
+.cc-h{padding:14px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:12px;}
+.cc-ico{width:40px;height:40px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;color:#fff;background:var(--tx);font-weight:900;letter-spacing:.05em;font-family:var(--mo);}
+.cc-t{font-size:14px;font-weight:800;letter-spacing:.03em;}
+.cc-c{font-size:10.5px;color:var(--tx3);font-family:var(--mo);margin-top:2px;letter-spacing:.08em;}
+.cc-stat{display:grid;grid-template-columns:repeat(5,1fr);padding:12px 16px;border-bottom:1px solid var(--b1);}
+.cc-sv{font-size:16px;font-weight:900;}
+.cc-sl{font-size:9.5px;color:var(--tx3);letter-spacing:.1em;margin-top:1px;}
+.cc-doms{padding:12px 16px;}
+.cc-dom-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;background:var(--s3);border:1px solid var(--b1);border-radius:99px;font-size:10px;font-weight:600;color:var(--tx2);margin:2px;}
+
+/* MEMBER CARD */
+.mc{background:#fff;border:1px solid var(--b1);border-radius:3px;padding:16px;box-shadow:var(--sh1);transition:all .15s;}
+.mc:hover{border-color:var(--tx);box-shadow:var(--sh2);}
+.mcs{display:flex;justify-content:space-around;margin-top:11px;padding-top:11px;border-top:1px solid var(--b1);}
+.mcsv{font-size:17px;font-weight:900;text-align:center;}
+.mcsl{font-size:9.5px;color:var(--tx3);text-align:center;letter-spacing:.1em;margin-top:2px;}
+.sk-tg{display:inline-flex;align-items:center;background:var(--s3);color:var(--tx2);padding:3px 8px;border-radius:2px;font-size:10.5px;margin:2px;border:1px solid var(--b1);}
+
+/* CALC BOX */
+.cbx{background:var(--s3);border:1px solid var(--b1);border-radius:3px;padding:14px;margin-top:12px;}
+.cl{display:flex;justify-content:space-between;padding:4px 0;font-size:13px;}
+.cl.tot{font-weight:900;font-size:15px;border-top:1px solid var(--b2);padding-top:10px;margin-top:6px;}
+
+/* BAR */
+.brw{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.brl{width:100px;font-size:11.5px;color:var(--tx2);text-align:right;flex-shrink:0;}
+.brt{flex:1;background:var(--s3);border-radius:2px;height:22px;overflow:hidden;border:1px solid var(--b1);}
+.brf{height:100%;display:flex;align-items:center;justify-content:flex-end;padding-right:9px;font-size:11px;font-weight:700;color:#fff;min-width:24px;}
+
+/* CALENDAR */
+.calg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.caldh{text-align:center;font-size:9px;font-weight:700;color:var(--tx3);padding:6px 0;font-family:var(--mo);letter-spacing:.15em;}
+.cald{min-height:72px;background:#fff;border:1px solid var(--b1);border-radius:2px;padding:6px;cursor:pointer;transition:border .15s;}
+.cald:hover{border-color:var(--tx);}
+.cald.tod{border-color:var(--tx);background:var(--s3);}
+.cald.oth{opacity:.3;}
+.caldn{font-size:11px;font-weight:800;margin-bottom:3px;font-family:var(--mo);}
+.calev{font-size:9.5px;border-radius:2px;padding:2px 5px;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;}
+
+/* Password strength */
+.pws{height:3px;border-radius:99px;margin-top:5px;background:var(--s3);transition:all .3s;}
+
+hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--b2);border-radius:99px;}
+::-webkit-scrollbar-thumb:hover{background:var(--b3);}
+
+@media(max-width:860px){
+  .sb{transform:translateX(-100%);}.sb.on{transform:none;}
+  .ct{margin-left:0;}.hbg{display:block;}
+  .g4,.g5{grid-template-columns:repeat(2,1fr);}
+  .g3{grid-template-columns:1fr 1fr;}.g2{grid-template-columns:1fr;}
+  .pg{padding:14px 12px 60px;}.srch{display:none;}
+  .fr,.fr3{grid-template-columns:1fr;}.rp{width:100%;}.cbl{grid-template-columns:1fr;}
+}
+@media(max-width:480px){
+  .g4,.g5{grid-template-columns:1fr 1fr;gap:8px;}.g3{grid-template-columns:1fr;}
+  .kpi-v{font-size:22px;}.ph h1{font-size:18px;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- CONFIRM -->
+<div class="cfbk" id="cfbk">
+  <div class="cfbox">
+    <div style="font-size:28px;margin-bottom:8px" id="cf-ic">⚠️</div>
+    <h3 id="cf-t">確認操作？</h3>
+    <p id="cf-m">此操作無法復原。</p>
+    <div class="cfft">
+      <button class="btn btn-g" onclick="cfNo()">取消</button>
+      <button class="btn btn-d" id="cf-ok" onclick="cfYes()">確認</button>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="rp-ov" id="rpov" onclick="closeRP()"></div>
+<div class="rp" id="rp">
+  <div class="rp-h">
+    <div class="rp-h-l">
+      <input class="rp-title-in" id="rp-name" onblur="rpSave('name',this.value)" onkeydown="if(event.key==='Enter')this.blur()">
+      <div class="rp-meta" id="rp-meta"></div>
+    </div>
+    <button class="tb-b" onclick="closeRP()" title="關閉">✕</button>
+  </div>
+  <div class="rp-b" id="rp-body"></div>
+  <div class="rp-foot" id="rp-foot"></div>
+</div>
+
+<!-- OVERLAY -->
+<div class="ov" id="ov" onclick="closeSb()"></div>
+
+<!-- MODALS -->
+<!-- Brand Modal -->
+<div class="mbk" id="m-brand"><div class="mdl mdl-lg">
+  <h2 id="mb-t">🏷️ 新增品牌 / 客戶</h2>
+  <input type="hidden" id="b-eid">
+  <div class="fr3">
+    <div class="fg"><label>品牌名稱 *</label><input class="fc" id="b-name" placeholder="例：幸福巷手作"></div>
+    <div class="fg"><label>簡稱</label><input class="fc" id="b-short" placeholder="例：幸福巷"></div>
+    <div class="fg"><label>客戶編號</label><input class="fc" id="b-code" placeholder="自動產生" readonly style="background:var(--s3);font-family:var(--mo)"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label>產業類別</label><select class="fc" id="b-cat"><option>美妝保養</option><option>服飾配件</option><option>食品飲料</option><option>3C家電</option><option>保健食品</option><option>寵物用品</option><option>教育培訓</option><option>餐飲</option><option>募資專案</option><option>其他</option></select></div>
+    <div class="fg"><label>Emoji</label><select class="fc" id="b-emoji"><option value="💄">💄 美妝</option><option value="👗">👗 服飾</option><option value="🥗">🥗 食品</option><option value="📱">📱 3C</option><option value="💊">💊 保健</option><option value="🐾">🐾 寵物</option><option value="📚">📚 教育</option><option value="☕">☕ 餐飲</option><option value="🚀">🚀 募資</option><option value="📦">📦 其他</option></select></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label>聯絡窗口</label><input class="fc" id="b-contact"></div>
+    <div class="fg"><label>Email</label><input class="fc" type="email" id="b-email"></div>
+  </div>
+  <div class="fr"><div class="fg"><label>電話</label><input class="fc" id="b-phone"></div>
+  <div class="fg"><label>主操盤手 *</label><select class="fc" id="b-owner"></select></div></div>
+
+  <hr>
+  <div style="font-size:11px;font-weight:800;letter-spacing:.15em;color:var(--tx2);margin-bottom:10px">📋 合作資訊</div>
+  <div class="fr3">
+    <div class="fg"><label>合作方案 *</label><select class="fc" id="b-plan"><option value="basic">基礎 ($25,000/月)</option><option value="business">商務 ($30,000/月)</option><option value="flagship">旗艦 ($35,000/月)</option><option value="custom">客製</option></select></div>
+    <div class="fg"><label>月費金額</label><input class="fc" type="number" id="b-fee" value="25000"></div>
+    <div class="fg"><label>合約狀態</label><select class="fc" id="b-status"><option value="active">合作中</option><option value="pending">洽談中</option><option value="paused">暫停</option><option value="ended">已結束</option></select></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label>合作起始日 *</label><input class="fc" type="date" id="b-start"></div>
+    <div class="fg"><label>合作結束日</label><input class="fc" type="date" id="b-end"></div>
+  </div>
+
+  <hr>
+  <div style="font-size:11px;font-weight:800;letter-spacing:.15em;color:var(--tx2);margin-bottom:10px">✅ 服務範圍（勾選本案包含項目）</div>
+  <div class="cbl" id="b-domains"></div>
+
+  <div class="fg" style="margin-top:14px"><label>合約備註</label><textarea class="fc" id="b-note" placeholder="合約重點、特殊條件..."></textarea></div>
+  <div class="mft">
+    <button class="btn btn-g" onclick="closeM('m-brand')">取消</button>
+    <button class="btn btn-p" onclick="saveBrand()">💾 儲存</button>
+  </div>
+</div></div>
+
+<!-- Member Modal (Admin only) -->
+<div class="mbk" id="m-member"><div class="mdl">
+  <h2 id="mm-t">👤 新增成員帳號</h2>
+  <input type="hidden" id="me-eid">
+  <div class="fr">
+    <div class="fg"><label>中文姓名 *</label><input class="fc" id="me-name"></div>
+    <div class="fg"><label>英文名稱</label><input class="fc" id="me-ename"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label>職稱</label><input class="fc" id="me-role" placeholder="例：廣告投放專員"></div>
+    <div class="fg"><label>部門</label><select class="fc" id="me-dept"><option>電商營運</option><option>廣告投放</option><option>文案企劃</option><option>設計</option><option>KOL媒合</option><option>數據分析</option><option>帳務</option><option>管理</option></select></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label>登入 Email *</label><input class="fc" type="email" id="me-email"></div>
+    <div class="fg"><label>電話</label><input class="fc" id="me-phone"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label>登入密碼 *</label><input class="fc" type="password" id="me-pass" placeholder="至少8位" oninput="pwStr(this.value)"><div class="pws" id="pws"></div></div>
+    <div class="fg"><label>確認密碼 *</label><input class="fc" type="password" id="me-pass2"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label>權限等級</label><select class="fc" id="me-perm"><option value="manager">主管 (可管理多品牌)</option><option value="operator" selected>操盤手 (負責特定品牌)</option><option value="member">一般成員</option><option value="viewer">僅檢視</option></select></div>
+    <div class="fg"><label>月目標工時</label><input class="fc" type="number" id="me-hours" value="160"></div>
+  </div>
+  <div class="fg"><label>專長技能（逗號分隔）</label><input class="fc" id="me-skills" placeholder="例：Meta廣告,GA4分析,SEO"></div>
+  <div class="mft">
+    <button class="btn btn-g" onclick="closeM('m-member')">取消</button>
+    <button class="btn btn-p" onclick="saveMember()">💾 儲存</button>
+  </div>
+</div></div>
+
+<!-- Change Password Modal -->
+<div class="mbk" id="m-chpw"><div class="mdl" style="max-width:380px">
+  <h2>🔑 修改密碼</h2>
+  <input type="hidden" id="chpw-id">
+  <div class="fg"><label>新密碼 *</label><input class="fc" type="password" id="chpw-new" placeholder="至少8位"></div>
+  <div class="fg"><label>確認新密碼 *</label><input class="fc" type="password" id="chpw-cfm"></div>
+  <div class="mft">
+    <button class="btn btn-g" onclick="closeM('m-chpw')">取消</button>
+    <button class="btn btn-p" onclick="saveChPw()">💾 修改密碼</button>
+  </div>
+</div></div>
+
+<!-- KOL Modal -->
+<div class="mbk" id="m-kol"><div class="mdl mdl-lg">
+  <h2 id="mk-t">🌟 新增 KOL</h2>
+  <input type="hidden" id="k-eid">
+  <div class="fr">
+    <div class="fg"><label>網紅名稱 *</label><input class="fc" id="k-name"></div>
+    <div class="fg"><label>帳號 ID</label><input class="fc" id="k-handle" placeholder="@xiaomei"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label>主要平台</label><select class="fc" id="k-plat"><option>Instagram</option><option>YouTube</option><option>TikTok</option><option>Facebook</option><option>Threads</option><option>部落格</option><option>Podcast</option></select></div>
+    <div class="fg"><label>粉絲數</label><input class="fc" type="number" id="k-fans"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label>互動率(%)</label><input class="fc" type="number" id="k-er" step="0.1"></div>
+    <div class="fg"><label>平均觀看</label><input class="fc" type="number" id="k-views"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label>Email</label><input class="fc" type="email" id="k-email"></div>
+    <div class="fg"><label>LINE/電話</label><input class="fc" id="k-line"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label>合作品牌</label><select class="fc" id="k-brand"></select></div>
+    <div class="fg"><label>合作模式</label><select class="fc" id="k-mode"><option value="fixed">固定費用</option><option value="commission">純分潤</option><option value="both">固定+分潤</option><option value="product">商品換貼</option></select></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label>固定費用</label><input class="fc" type="number" id="k-fixed" value="0"></div>
+    <div class="fg"><label>KOL分潤%</label><input class="fc" type="number" id="k-rate" value="0" step="0.1"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label>狀態</label><select class="fc" id="k-status"><option value="active">合作中</option><option value="pending">接洽中</option><option value="paused">暫停</option><option value="ended">已結束</option></select></div>
+    <div class="fg"><label>風格標籤</label><input class="fc" id="k-tags" placeholder="生活,美妝,旅遊"></div>
+  </div>
+  <div class="fg"><label>備註</label><textarea class="fc" id="k-note"></textarea></div>
+  <div class="mft">
+    <button class="btn btn-g" onclick="closeM('m-kol')">取消</button>
+    <button class="btn btn-p" onclick="saveKol()">💾 儲存</button>
+  </div>
+</div></div>
+
+<!-- Commission Modal -->
+<div class="mbk" id="m-comm"><div class="mdl">
+  <h2>💰 新增分潤紀錄</h2>
+  <div class="fr">
+    <div class="fg"><label>選擇 KOL *</label><select class="fc" id="c-kol"></select></div>
+    <div class="fg"><label>合作品牌</label><select class="fc" id="c-brand"></select></div>
+  </div>
+  <div class="fg"><label>活動 / 商品</label><input class="fc" id="c-act"></div>
+  <div class="fr">
+    <div class="fg"><label>銷售額 *</label><input class="fc" type="number" id="c-sales" oninput="cCalc()"></div>
+    <div class="fg"><label>品牌→代操 (%)</label><input class="fc" type="number" id="c-br" value="5" step="0.1" oninput="cCalc()"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label>代操→KOL (%)</label><input class="fc" type="number" id="c-kr" value="8" step="0.1" oninput="cCalc()"></div>
+    <div class="fg"><label>KOL 固定費</label><input class="fc" type="number" id="c-kf" value="0" oninput="cCalc()"></div>
+  </div>
+  <div id="c-preview"></div>
+  <div class="fr" style="margin-top:10px">
+    <div class="fg"><label>截止日</label><input class="fc" type="date" id="c-due"></div>
+    <div class="fg"><label>備註</label><input class="fc" id="c-note"></div>
+  </div>
+  <div class="mft">
+    <button class="btn btn-g" onclick="closeM('m-comm')">取消</button>
+    <button class="btn btn-p" onclick="saveComm()">💾 儲存</button>
+  </div>
+</div></div>
+
+<!-- Calendar Event Modal -->
+<div class="mbk" id="m-cal"><div class="mdl">
+  <h2>📅 新增行銷活動</h2>
+  <div class="fg"><label>活動名稱 *</label><input class="fc" id="cal-name"></div>
+  <div class="fr">
+    <div class="fg"><label>日期 *</label><input class="fc" type="date" id="cal-date"></div>
+    <div class="fg"><label>類型</label><select class="fc" id="cal-type"><option value="deadline">截止日期</option><option value="event">行銷活動</option><option value="meeting">客戶會議</option><option value="launch">產品上市</option><option value="report">月報會議</option><option value="kol">KOL 直播</option></select></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label>相關品牌</label><select class="fc" id="cal-brand"></select></div>
+    <div class="fg"><label>負責人</label><select class="fc" id="cal-owner"></select></div>
+  </div>
+  <div class="fg"><label>備註</label><input class="fc" id="cal-note"></div>
+  <div class="mft">
+    <button class="btn btn-g" onclick="closeM('m-cal')">取消</button>
+    <button class="btn btn-p" onclick="saveCal()">💾 新增</button>
+  </div>
+</div></div>
+
+<!-- LOGIN PAGE -->
+<div id="login-page" class="login-wrap" style="display:none">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-mark"><img src="data:image/png;base64,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" alt="52EC"></div>
+      <div class="login-logo-t">無二電商事務所</div>
+      <div class="login-logo-en">52EC.TW</div>
+    </div>
+    <div class="login-title">系統登入</div>
+    <div class="login-fg"><label>Email</label><input class="login-in" type="email" id="login-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="login-fg"><label>密碼</label><input class="login-in" type="password" id="login-pass" placeholder="輸入密碼" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="login-btn" onclick="doLogin()">登入系統</button>
+    <div class="login-err" id="login-err"></div>
+    <div class="login-note">首次使用請聯絡最大管理員取得帳號</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app-page" style="display:none">
+<div class="sb" id="sb">
+  <div class="logo">
+    <div class="logo-mk"><img src="data:image/png;base64,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" alt="52EC"></div>
+    <div><div class="logo-t">無二電商事務所</div><div class="logo-s">52EC.TW</div></div>
+  </div>
+  <nav class="nav">
+    <div class="nav-sec">主要</div>
+    <div class="ni" data-v="dash" onclick="go('dash')"><span class="ni-i">📊</span>總覽儀表板</div>
+    <div class="ni" data-v="clients" onclick="go('clients')"><span class="ni-i">🏢</span>客戶管理<span class="nb" id="nb-c">0</span></div>
+    <div class="ni" data-v="tasks" onclick="go('tasks')"><span class="ni-i">✅</span>任務看板<span class="nb r" id="nb-t">0</span></div>
+    <div class="ni" data-v="review" onclick="go('review')"><span class="ni-i">🔍</span>審核流程<span class="nb r" id="nb-r">0</span></div>
+    <div class="ni" data-v="cal" onclick="go('cal')"><span class="ni-i">📅</span>行銷日曆</div>
+
+    <div class="nav-sec">業務</div>
+    <div class="ni" data-v="kol" onclick="go('kol')"><span class="ni-i">🌟</span>KOL 資料庫<span class="nb" id="nb-k">0</span></div>
+    <div class="ni" data-v="comm" onclick="go('comm')"><span class="ni-i">💰</span>分潤管理<span class="nb r" id="nb-cm">0</span></div>
+    <div class="ni" data-v="pay" onclick="go('pay')"><span class="ni-i">💳</span>匯款核算</div>
+
+    <div class="nav-sec">團隊</div>
+    <div class="ni" data-v="members" onclick="go('members')"><span class="ni-i">👥</span>成員管理<span class="nb" id="nb-m">0</span></div>
+    <div class="ni" data-v="workload" onclick="go('workload')"><span class="ni-i">⚖️</span>工作負載</div>
+
+    <div class="nav-sec">分析</div>
+    <div class="ni" data-v="report" onclick="go('report')"><span class="ni-i">📈</span>績效報告</div>
+    <div class="ni" data-v="inbox" onclick="go('inbox')"><span class="ni-i">🔔</span>通知中心<span class="nb g" id="nb-n">0</span></div>
+  </nav>
+  <div class="sf"><div class="urow" onclick="go('members')">
+    <div class="av" id="ua" style="background:var(--tx)">韓</div>
+    <div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="un">韓馥鴻</div><div style="font-size:10px;color:var(--tx3)" id="ur">執行長</div></div>
+    <button class="btn btn-g btn-sm" onclick="doLogout();event.stopPropagation()" style="padding:3px 8px;font-size:10px">登出</button>
+  </div></div>
+</div>
+
+<div class="ct">
+<div class="tb">
+  <button class="hbg" onclick="toggleSb()">☰</button>
+  <button class="tb-b" id="btn-back" onclick="navBack()" title="返回上一頁">←</button>
+  <button class="tb-b" id="btn-fwd" onclick="navFwd()" title="下一頁">→</button>
+  <div class="tb-t" id="tbt">總覽儀表板</div>
+  <div class="srch" onclick="openSrch()">🔍 搜尋...</div>
+  <button class="btn btn-p" style="font-size:11.5px" id="btn-newc" onclick="openBrandM()">+ 新客戶</button>
+</div>
+
+<div class="pg" id="pg">
+
+<!-- DASHBOARD -->
+<div class="vw" id="v-dash">
+  <div class="ph"><div><h1 id="dg">早安 👋</h1><p id="dd"></p></div>
+  <div class="ph-a"><button class="btn btn-g" onclick="go('report')">📊 績效報告</button></div></div>
+  <div class="g5" style="margin-bottom:16px">
+    <div class="kpi gold"><div class="kpi-l">活躍客戶</div><div class="kpi-v" id="k-cli">0</div><div class="kpi-d">合作中</div></div>
+    <div class="kpi yel"><div class="kpi-l">進行任務</div><div class="kpi-v" id="k-tsk">0</div><div class="kpi-d">待完成</div></div>
+    <div class="kpi grn"><div class="kpi-l">完成率</div><div class="kpi-v" id="k-rt">0%</div><div class="kpi-d">累計</div></div>
+    <div class="kpi pur"><div class="kpi-l">KOL合作</div><div class="kpi-v" id="k-kol">0</div><div class="kpi-d">活躍中</div></div>
+    <div class="kpi cyn"><div class="kpi-l">分潤淨利</div><div class="kpi-v" id="k-rev">$0</div><div class="kpi-d">本月累計</div></div>
+  </div>
+  <div class="g2" style="margin-bottom:14px">
+    <div class="cd"><div class="cd-t"><div class="cd-tt">📋 我的任務</div><span class="tg tg-gold" id="d-tc">0件</span></div><div id="d-tasks"></div></div>
+    <div class="cd"><div class="cd-t"><div class="cd-tt">🏢 客戶進度</div></div><div id="d-clients"></div></div>
+  </div>
+  <div class="g3">
+    <div class="cd"><div class="cd-t"><div class="cd-tt">💰 本月分潤</div></div><div id="d-comm"></div></div>
+    <div class="cd"><div class="cd-t"><div class="cd-tt">📊 任務狀態</div></div><div id="d-tstat"></div></div>
+    <div class="cd"><div class="cd-t"><div class="cd-tt">🔔 最新通知</div></div><div id="d-notif"></div></div>
+  </div>
+</div>
+
+<!-- CLIENTS (Brands) -->
+<div class="vw" id="v-clients">
+  <div class="ph"><div><h1>客戶管理</h1><p id="cli-sub">各品牌合作狀況</p></div>
+  <div class="ph-a" id="cli-acts"></div></div>
+  <div class="g4" style="margin-bottom:14px">
+    <div class="kpi gold"><div class="kpi-l">合作中</div><div class="kpi-v" id="cs-active">0</div></div>
+    <div class="kpi yel"><div class="kpi-l">洽談中</div><div class="kpi-v" id="cs-pending">0</div></div>
+    <div class="kpi grn"><div class="kpi-l">月營收</div><div class="kpi-v" id="cs-rev">$0</div></div>
+    <div class="kpi pur"><div class="kpi-l">平均合作月數</div><div class="kpi-v" id="cs-months">0</div></div>
+  </div>
+  <div id="cli-list"></div>
+</div>
+
+<!-- CLIENT DETAIL -->
+<div class="vw" id="v-client-detail">
+  <div class="ph"><div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="tb-b" onclick="go('clients')">←</button>
+      <h1 id="cd-name">客戶名稱</h1>
+    </div>
+    <p id="cd-sub" style="margin-left:40px">客戶編號</p>
+  </div>
+  <div class="ph-a" id="cd-acts"></div></div>
+  <div id="cd-body"></div>
+</div>
+
+<!-- TASKS (Asana Kanban) -->
+<div class="vw" id="v-tasks">
+  <div class="ph"><div><h1>任務看板</h1><p>勾選完成 · 點任務名稱編輯</p></div>
+  <div class="ph-a">
+    <select class="btn btn-g" style="padding:6px 10px" id="ft-brand" onchange="renderKanban()"></select>
+    <select class="btn btn-g" style="padding:6px 10px" id="ft-owner" onchange="renderKanban()"></select>
+    <select class="btn btn-g" style="padding:6px 10px" id="ft-domain" onchange="renderKanban()"></select>
+    <select class="btn btn-g" style="padding:6px 10px" id="ft-pri" onchange="renderKanban()">
+      <option value="">全部優先級</option><option value="high">🔴 急件</option><option value="mid">🟡 一般</option><option value="low">🟢 低</option>
+    </select>
+  </div></div>
+  <div class="kb" id="kanban"></div>
+</div>
+
+<!-- REVIEW -->
+<div class="vw" id="v-review">
+  <div class="ph"><div><h1>審核流程</h1><p id="rv-sub"></p></div></div>
+  <div class="g3" style="margin-bottom:14px">
+    <div class="kpi red"><div class="kpi-l">退改中</div><div class="kpi-v" id="rv-h">0</div></div>
+    <div class="kpi yel"><div class="kpi-l">待審核</div><div class="kpi-v" id="rv-r">0</div></div>
+    <div class="kpi grn"><div class="kpi-l">本月通過</div><div class="kpi-v" id="rv-d">0</div></div>
+  </div>
+  <div id="rv-list"></div>
+</div>
+
+<!-- CALENDAR -->
+<div class="vw" id="v-cal">
+  <div class="ph"><div><h1>行銷日曆</h1><p id="cal-lbl"></p></div>
+  <div class="ph-a"><button class="btn btn-g" onclick="calNav(-1)">◀</button><button class="btn btn-g" onclick="calTo()">今天</button><button class="btn btn-g" onclick="calNav(1)">▶</button><button class="btn btn-p" onclick="openCalM()">+ 新增活動</button></div></div>
+  <div class="cd" style="padding:10px">
+    <div class="calg" style="margin-bottom:3px">
+      <div class="caldh">日</div><div class="caldh">一</div><div class="caldh">二</div><div class="caldh">三</div><div class="caldh">四</div><div class="caldh">五</div><div class="caldh">六</div>
+    </div>
+    <div class="calg" id="cal-grid"></div>
+  </div>
+</div>
+
+<!-- KOL -->
+<div class="vw" id="v-kol">
+  <div class="ph"><div><h1>KOL 資料庫</h1><p id="kol-sub"></p></div>
+  <div class="ph-a">
+    <select class="btn btn-g" style="padding:6px 10px" id="ft-kol-plat" onchange="renderKol()"><option value="">全部平台</option><option>Instagram</option><option>YouTube</option><option>TikTok</option><option>Facebook</option></select>
+    <button class="btn btn-p" onclick="openKolM()">+ 新增 KOL</button>
+  </div></div>
+  <div class="g4" style="margin-bottom:14px">
+    <div class="kpi gold"><div class="kpi-l">合作中</div><div class="kpi-v" id="ks-a">0</div></div>
+    <div class="kpi grn"><div class="kpi-l">總粉絲</div><div class="kpi-v" id="ks-f">0</div></div>
+    <div class="kpi yel"><div class="kpi-l">平均互動率</div><div class="kpi-v" id="ks-e">0%</div></div>
+    <div class="kpi pur"><div class="kpi-l">累計合作</div><div class="kpi-v" id="ks-c">0</div></div>
+  </div>
+  <div class="cd"><div class="cd-t"><div class="cd-tt">🌟 KOL 列表</div></div>
+    <div class="tw"><table class="tbl-t"><thead><tr><th>網紅</th><th>平台</th><th>粉絲</th><th>互動率</th><th>品牌</th><th>模式</th><th>費率</th><th>狀態</th><th>操作</th></tr></thead><tbody id="kol-tb"></tbody></table></div>
+  </div>
+</div>
+
+<!-- COMMISSION -->
+<div class="vw" id="v-comm">
+  <div class="ph"><div><h1>分潤管理</h1><p>三層分潤核算系統</p></div>
+  <div class="ph-a"><button class="btn btn-g" onclick="expCSV('comm')">📤 匯出CSV</button><button class="btn btn-p" onclick="openCommM()">+ 新增紀錄</button></div></div>
+
+  <div class="cd" style="margin-bottom:14px"><div class="cd-t"><div class="cd-tt">🧮 即時分潤計算機</div></div>
+    <div class="g2">
+      <div>
+        <div class="fg"><label>活動銷售額</label><input class="fc" type="number" id="mc-s" oninput="mcCalc()" style="font-family:var(--mo);font-size:14px"></div>
+        <div class="fr">
+          <div class="fg"><label>品牌→代操 (%)</label><input class="fc" type="number" id="mc-b" value="5" step="0.1" oninput="mcCalc()"></div>
+          <div class="fg"><label>代操→KOL (%)</label><input class="fc" type="number" id="mc-k" value="8" step="0.1" oninput="mcCalc()"></div>
+        </div>
+        <div class="fg"><label>KOL 固定費</label><input class="fc" type="number" id="mc-f" value="0" oninput="mcCalc()"></div>
+      </div>
+      <div class="cbx" id="mc-out" style="display:flex;align-items:center;justify-content:center"><div style="font-size:12px;color:var(--tx3)">輸入銷售額後自動計算 ↑</div></div>
+    </div>
+  </div>
+
+  <div class="cd"><div class="cd-t"><div class="cd-tt">📊 分潤紀錄</div><span class="tg tg-yel" id="c-pend">0筆待確認</span></div>
+    <div class="tw"><table class="tbl-t"><thead><tr><th>KOL</th><th>品牌</th><th>活動</th><th>銷售額</th><th>品牌→代操</th><th>代操→KOL</th><th>代操淨利</th><th>截止</th><th>狀態</th><th>操作</th></tr></thead><tbody id="comm-tb"></tbody></table></div>
+    <div id="comm-tot" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- PAYMENT -->
+<div class="vw" id="v-pay">
+  <div class="ph"><div><h1>匯款核算</h1><p>KOL款項 · 收款紀錄</p></div>
+  <div class="ph-a"><button class="btn btn-g" onclick="expCSV('pay')">📤 匯出對帳單</button></div></div>
+  <div class="g3" style="margin-bottom:14px">
+    <div class="kpi red"><div class="kpi-l">待匯 KOL</div><div class="kpi-v" id="py-p">$0</div><div class="kpi-d" id="py-pc">0筆</div></div>
+    <div class="kpi grn"><div class="kpi-l">本月已匯</div><div class="kpi-v" id="py-d">$0</div><div class="kpi-d" id="py-dc">0筆</div></div>
+    <div class="kpi gold"><div class="kpi-l">代操淨利</div><div class="kpi-v" id="py-n">$0</div><div class="kpi-d">本月累計</div></div>
+  </div>
+  <div class="g2">
+    <div class="cd"><div class="cd-t"><div class="cd-tt">💳 待匯款</div></div><div id="py-pl"></div></div>
+    <div class="cd"><div class="cd-t"><div class="cd-tt">✅ 已匯款</div></div><div id="py-dl"></div></div>
+  </div>
+</div>
+
+<!-- MEMBERS -->
+<div class="vw" id="v-members">
+  <div class="ph"><div><h1>成員管理</h1><p id="mem-sub"></p></div>
+  <div class="ph-a" id="mem-acts"></div></div>
+  <div class="g3" style="margin-bottom:14px" id="mem-cards"></div>
+  <div class="cd"><div class="cd-t"><div class="cd-tt">📋 成員列表</div></div>
+    <div class="tw"><table class="tbl-t"><thead><tr><th>姓名</th><th>職稱</th><th>部門</th><th>Email</th><th>權限</th><th>負責客戶</th><th>任務</th><th>操作</th></tr></thead><tbody id="mem-tb"></tbody></table></div>
+  </div>
+</div>
+
+<!-- WORKLOAD -->
+<div class="vw" id="v-workload">
+  <div class="ph"><div><h1>工作負載分析</h1><p>各成員任務量分佈</p></div></div>
+  <div class="g4" style="margin-bottom:14px">
+    <div class="kpi gold"><div class="kpi-l">團隊總任務</div><div class="kpi-v" id="wl-t">0</div></div>
+    <div class="kpi grn"><div class="kpi-l">平均完成率</div><div class="kpi-v" id="wl-r">0%</div></div>
+    <div class="kpi red"><div class="kpi-l">逾期任務</div><div class="kpi-v" id="wl-o">0</div></div>
+    <div class="kpi yel"><div class="kpi-l">超載成員</div><div class="kpi-v" id="wl-b">0</div></div>
+  </div>
+  <div class="cd" style="margin-bottom:14px"><div class="cd-t"><div class="cd-tt">⚖️ 各成員工作量</div></div><div id="wl-bars"></div></div>
+  <div class="cd"><div class="cd-t"><div class="cd-tt">📋 任務分佈表</div></div>
+    <div class="tw"><table class="tbl-t"><thead><tr><th>成員</th><th>待執行</th><th>進行中</th><th>待審</th><th>已完成</th><th>逾期</th><th>合計</th></tr></thead><tbody id="wl-tb"></tbody></table></div>
+  </div>
+</div>
+
+<!-- REPORT -->
+<div class="vw" id="v-report">
+  <div class="ph"><div><h1>績效報告</h1><p id="rp-d"></p></div>
+  <div class="ph-a"><button class="btn btn-g" onclick="expCSV('report')">📤 匯出報告</button></div></div>
+  <div class="g4" style="margin-bottom:14px">
+    <div class="kpi gold"><div class="kpi-l">廣告 ROAS</div><div class="kpi-v" id="rp-ro">—</div><div class="kpi-d">目標 4x</div></div>
+    <div class="kpi grn"><div class="kpi-l">KOL 帶貨 GMV</div><div class="kpi-v" id="rp-gv">$0</div><div class="kpi-d">本月</div></div>
+    <div class="kpi yel"><div class="kpi-l">任務完成率</div><div class="kpi-v" id="rp-rt">0%</div><div class="kpi-d">累計</div></div>
+    <div class="kpi pur"><div class="kpi-l">分潤淨利</div><div class="kpi-v" id="rp-nt">$0</div><div class="kpi-d">本月</div></div>
+  </div>
+  <div class="g2" style="margin-bottom:14px">
+    <div class="cd"><div class="cd-t"><div class="cd-tt">📊 各客戶任務完成率</div></div><div id="rp-bb"></div></div>
+    <div class="cd"><div class="cd-t"><div class="cd-tt">🌟 KOL 帶貨排行</div></div><div id="rp-kb"></div></div>
+  </div>
+  <div class="g2">
+    <div class="cd"><div class="cd-t"><div class="cd-tt">💰 各客戶分潤淨利</div></div><div id="rp-cb"></div></div>
+    <div class="cd"><div class="cd-t"><div class="cd-tt">👥 各成員完成數</div></div><div id="rp-mb"></div></div>
+  </div>
+</div>
+
+<!-- INBOX -->
+<div class="vw" id="v-inbox">
+  <div class="ph"><div><h1>通知中心</h1><p id="ib-sub">0則未讀</p></div>
+  <div class="ph-a"><button class="btn btn-g" onclick="rdAll()">全部已讀</button><button class="btn btn-d btn-sm" onclick="clrAll()">清除全部</button></div></div>
+  <div class="cd" id="ib-list"></div>
+</div>
+
+</div></div></div>
+<script>
+/* =========================================
+   EcomFlow Pro V3 - 無二電商事務所
+   ========================================= */
+
+const API = '/api.php';
+const ADMIN_EMAIL = 'info@52ec.tw'; // Only this email is the super admin
+
+/* ── 7 work domains (from sales kit) ── */
+const DOMAINS = [
+  {id:'ec',      name:'電商營運',   ic:'🛒', desc:'官網平台、活動規劃、會員營運'},
+  {id:'ad',      name:'廣告投放',   ic:'🎯', desc:'Meta/Google/Line/momo/蝦皮'},
+  {id:'product', name:'產品企劃',   ic:'📦', desc:'定位/文案/攝影/定價/銷售頁'},
+  {id:'social',  name:'社群經營',   ic:'💬', desc:'FB/IG/Line 內容與互動'},
+  {id:'pr',      name:'公關口碑',   ic:'📢', desc:'KOC/KOL/新聞稿/異業合作'},
+  {id:'channel', name:'通路管理',   ic:'🏪', desc:'蝦皮/momo/團購/企業通路'},
+  {id:'report',  name:'分析報告',   ic:'📊', desc:'數據儀表板/月報/GA4 分析'}
+];
+
+/* ── State ── */
+let CU = null; // Current user
+let DB = {members:[], brands:[], tasks:[], kols:[], commissions:[], calEvents:[], notifications:[]};
+
+/* ── History (browser-based navigation) ── */
+let NAV_HISTORY = [];
+let NAV_INDEX = -1;
+
+/* ── Constants ── */
+const ST_LBL = {todo:'待執行', doing:'進行中', review:'待審核', done:'已完成', hold:'退改中'};
+const ST_TG = {todo:'tg-gold', doing:'tg-cyn', review:'tg-yel', done:'tg-grn', hold:'tg-red'};
+const PRI_LBL = {high:'🔴 急件', mid:'🟡 一般', low:'🟢 低'};
+const PRI_TG = {high:'tg-red', mid:'tg-yel', low:'tg-grn'};
+const PERM_LBL = {admin:'最大管理員', manager:'主管', operator:'操盤手', member:'一般成員', viewer:'檢視者'};
+const PERM_TG = {admin:'tg-org', manager:'tg-pur', operator:'tg-gold', member:'tg-cyn', viewer:'tg-gr'};
+const PLAN_LBL = {basic:'基礎', business:'商務', flagship:'旗艦', custom:'客製'};
+const PLAN_FEE = {basic:25000, business:30000, flagship:35000};
+const CLIENT_STATUS_LBL = {active:'合作中', pending:'洽談中', paused:'暫停', ended:'已結束'};
+const CLIENT_STATUS_TG = {active:'tg-grn', pending:'tg-yel', paused:'tg-red', ended:'tg-gr'};
+const KST_LBL = {active:'合作中', pending:'接洽中', paused:'暫停', ended:'已結束'};
+const KST_TG = {active:'tg-grn', pending:'tg-yel', paused:'tg-red', ended:'tg-gr'};
+const MODE_LBL = {fixed:'固定費', commission:'分潤制', both:'固定+分潤', product:'商品換貼'};
+const CAL_CLR = {deadline:'var(--tx)', event:'var(--red)', meeting:'var(--yel)', launch:'var(--pur)', report:'var(--grn)', kol:'var(--pur)'};
+
+/* ── Helpers ── */
+const $ = id => document.getElementById(id);
+const fmt = n => Math.round(n||0).toLocaleString('zh-TW');
+const fmtK = n => n>=10000?(n/10000).toFixed(1)+'萬':n>=1000?(n/1000).toFixed(1)+'K':(n||0)+'';
+const today = () => new Date().toISOString().split('T')[0];
+const esc = s => String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+const dash = s => s || '—';
+
+/* ── API ── */
+function apiCall(table, method, data, id) {
+  const url = API + '?path=' + table + (id ? '/' + id : '');
+  const opts = {method: method || 'GET', headers: {'Content-Type': 'application/json'}};
+  if (data) opts.body = JSON.stringify(data);
+  return fetch(url, opts).then(r => {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(r => r.data !== undefined ? r.data : r);
+}
+const apiGet = t => apiCall(t, 'GET');
+const apiPost = (t, d) => apiCall(t, 'POST', d);
+const apiPut = (t, id, d) => apiCall(t, 'PUT', d, id);
+const apiDel = (t, id) => apiCall(t, 'DELETE', null, id);
+
+function loadDB() {
+  return Promise.all([
+    apiGet('members'), apiGet('brands'), apiGet('tasks'),
+    apiGet('kols'), apiGet('commissions'), apiGet('cal_events'), apiGet('notifications')
+  ]).then(r => {
+    DB.members = r[0] || [];
+    DB.brands = (r[1] || []).map(b => {
+      b.domains = parseJSON(b.domains) || [];
+      return b;
+    });
+    DB.tasks = (r[2] || []).map(t => {
+      t.collab = parseJSON(t.collab) || [];
+      t.tags = parseJSON(t.tags) || [];
+      t.comments = parseJSON(t.comments) || [];
+      t.desc = t.description || '';
+      return t;
+    });
+    DB.kols = r[3] || [];
+    DB.commissions = (r[4] || []).map(c => {
+      if (c.paid_date) c.paidDate = c.paid_date;
+      return c;
+    });
+    DB.calEvents = r[5] || [];
+    DB.notifications = (r[6] || []).map(n => {
+      n.read = !!n.is_read;
+      n.time = n.created_at;
+      return n;
+    });
+    return DB;
+  });
+}
+
+function parseJSON(v) {
+  if (Array.isArray(v)) return v;
+  if (typeof v === 'string') {
+    try { return JSON.parse(v); } catch(e) { return null; }
+  }
+  return null;
+}
+
+/* ── Password hash ── */
+function hashPw(pw) {
+  let h = 0;
+  for (let i = 0; i < pw.length; i++) { h = ((h << 5) - h) + pw.charCodeAt(i); h |= 0; }
+  return 'h_' + Math.abs(h) + '_' + pw.length;
+}
+function pwStr(pw) {
+  const el = $('pws');
+  if (!el) return;
+  let str = 0;
+  if (pw.length >= 8) str++;
+  if (pw.length >= 12) str++;
+  if (/[A-Z]/.test(pw)) str++;
+  if (/[0-9]/.test(pw)) str++;
+  if (/[^A-Za-z0-9]/.test(pw)) str++;
+  const colors = [null, 'var(--red)', 'var(--yel)', 'var(--yel)', 'var(--grn)', 'var(--grn)'];
+  const widths = ['0%', '30%', '50%', '65%', '85%', '100%'];
+  el.style.background = colors[str] || 'var(--s3)';
+  el.style.width = widths[str] || '0%';
+}
+
+/* ── Permissions ── */
+function isAdmin() { return CU && CU.email && CU.email.toLowerCase() === ADMIN_EMAIL; }
+function isManager() { return CU && (isAdmin() || CU.perm === 'manager'); }
+function canEditClient(brand) {
+  if (!CU) return false;
+  if (isAdmin() || isManager()) return true;
+  return brand && brand.owner === CU.name;
+}
+function canEditTask(task) {
+  if (!CU) return false;
+  if (isAdmin() || isManager()) return true;
+  return task && (task.owner === CU.name || (task.collab || []).indexOf(CU.name) > -1);
+}
+
+/* ── Toast ── */
+let toastT;
+function toast(msg, type) {
+  const e = $('toast');
+  const ic = {success:'✅', error:'❌', info:'ℹ️'};
+  e.innerHTML = (ic[type] || 'ℹ️') + ' ' + esc(msg);
+  e.className = 'toast on ' + (type || 'info');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => e.classList.remove('on'), 3000);
+}
+
+/* ── Confirm ── */
+let cfCb = null;
+function showCf(t, m, cb, okTxt, ic) {
+  $('cf-ic').textContent = ic || '⚠️';
+  $('cf-t').textContent = t;
+  $('cf-m').textContent = m;
+  $('cf-ok').textContent = okTxt || '確認';
+  cfCb = cb;
+  $('cfbk').classList.add('on');
+}
+function cfYes() { $('cfbk').classList.remove('on'); if (cfCb) cfCb(); cfCb = null; }
+function cfNo() { $('cfbk').classList.remove('on'); cfCb = null; }
+
+/* ── Modal ── */
+function openM(id) { $(id).classList.add('on'); }
+function closeM(id) { $(id).classList.remove('on'); }
+
+/* ══════════════════════════════════
+   NAVIGATION (with browser history)
+   ══════════════════════════════════ */
+const VT = {
+  dash:'總覽儀表板', clients:'客戶管理', 'client-detail':'客戶詳情',
+  tasks:'任務看板', review:'審核流程', cal:'行銷日曆',
+  kol:'KOL 資料庫', comm:'分潤管理', pay:'匯款核算',
+  members:'成員管理', workload:'工作負載', report:'績效報告', inbox:'通知中心'
+};
+
+function go(view, param, replace) {
+  const target = param ? view + '/' + param : view;
+  if (!replace) {
+    // Trim forward history
+    NAV_HISTORY = NAV_HISTORY.slice(0, NAV_INDEX + 1);
+    NAV_HISTORY.push({view, param});
+    NAV_INDEX = NAV_HISTORY.length - 1;
+  }
+  // Update URL hash (no page reload)
+  const url = '#/' + target;
+  if (location.hash !== url) {
+    history.pushState({view, param}, '', url);
+  }
+  renderView(view, param);
+  updateNavButtons();
+}
+
+function navBack() {
+  if (NAV_INDEX > 0) {
+    NAV_INDEX--;
+    const st = NAV_HISTORY[NAV_INDEX];
+    renderView(st.view, st.param);
+    history.replaceState({view: st.view, param: st.param}, '', '#/' + (st.param ? st.view + '/' + st.param : st.view));
+    updateNavButtons();
+  }
+}
+
+function navFwd() {
+  if (NAV_INDEX < NAV_HISTORY.length - 1) {
+    NAV_INDEX++;
+    const st = NAV_HISTORY[NAV_INDEX];
+    renderView(st.view, st.param);
+    history.replaceState({view: st.view, param: st.param}, '', '#/' + (st.param ? st.view + '/' + st.param : st.view));
+    updateNavButtons();
+  }
+}
+
+function updateNavButtons() {
+  $('btn-back').disabled = NAV_INDEX <= 0;
+  $('btn-fwd').disabled = NAV_INDEX >= NAV_HISTORY.length - 1;
+}
+
+// Handle browser back/forward
+window.addEventListener('popstate', (e) => {
+  const hash = location.hash.replace('#/', '');
+  const parts = hash.split('/');
+  const v = parts[0] || 'dash';
+  const p = parts[1];
+  renderView(v, p);
+});
+
+function renderView(view, param) {
+  // Hide all views
+  document.querySelectorAll('.vw').forEach(v => v.classList.remove('on'));
+  const ve = $('v-' + view);
+  if (ve) ve.classList.add('on');
+  // Update sidebar active state
+  document.querySelectorAll('.ni').forEach(i => i.classList.remove('on'));
+  const ni = document.querySelector('.ni[data-v="' + view + '"]');
+  if (ni) ni.classList.add('on');
+  // Update title
+  $('tbt').textContent = VT[view] || view;
+  $('pg').scrollTop = 0;
+  closeSb();
+  // Render
+  const renderers = {
+    dash: renderDash,
+    clients: renderClients,
+    'client-detail': () => renderClientDetail(param),
+    tasks: renderKanban,
+    review: renderReview,
+    cal: renderCal,
+    kol: renderKol,
+    comm: renderComm,
+    pay: renderPay,
+    members: renderMembers,
+    workload: renderWorkload,
+    report: renderReport,
+    inbox: renderInbox
+  };
+  if (renderers[view]) {
+    try {
+      renderers[view]();
+    } catch(e) {
+      console.error('Render error:', e);
+      toast('渲染錯誤: ' + e.message, 'error');
+    }
+  }
+}
+
+function toggleSb() { $('sb').classList.toggle('on'); $('ov').classList.toggle('on'); }
+function closeSb() { $('sb').classList.remove('on'); $('ov').classList.remove('on'); }
+
+/* ══════════════════════════════════
+   LOGIN
+   ══════════════════════════════════ */
+function doLogin() {
+  const email = $('login-email').value.trim().toLowerCase();
+  const pass = $('login-pass').value;
+  const errEl = $('login-err');
+  errEl.textContent = '';
+  if (!email || !pass) { errEl.textContent = '請填寫 Email 和密碼'; return; }
+
+  const m = DB.members.find(x => (x.email || '').toLowerCase() === email);
+  if (!m) { errEl.textContent = '找不到此帳號'; return; }
+  const inputH = hashPw(pass);
+  const storedH = m.password_hash || '';
+
+  // First-time login: if no hash set, accept if the admin email uses default password
+  if (!storedH) {
+    if (email === ADMIN_EMAIL && pass === 'admin00070281') {
+      CU = m;
+      sessionStorage.setItem('ef_uid', m.id);
+      showApp();
+      return;
+    }
+    errEl.textContent = '密碼錯誤或帳號尚未設定';
+    return;
+  }
+  if (storedH !== inputH) { errEl.textContent = '密碼錯誤'; return; }
+  CU = m;
+  sessionStorage.setItem('ef_uid', m.id);
+  showApp();
+}
+
+function doLogout() {
+  CU = null;
+  sessionStorage.removeItem('ef_uid');
+  $('app-page').style.display = 'none';
+  $('login-page').style.display = 'flex';
+  $('login-email').value = '';
+  $('login-pass').value = '';
+  NAV_HISTORY = [];
+  NAV_INDEX = -1;
+}
+
+function showApp() {
+  $('login-page').style.display = 'none';
+  $('app-page').style.display = 'flex';
+  // Update user info
+  const ua = $('ua'), un = $('un'), ur = $('ur');
+  if (ua && CU) {
+    ua.style.background = CU.color || 'var(--tx)';
+    ua.textContent = (CU.name || '?')[0];
+    un.textContent = CU.name || '';
+    ur.textContent = CU.role || '';
+  }
+  // Admin-only UI
+  if (!isAdmin()) {
+    const btn = $('btn-newc');
+    if (btn && !isManager()) btn.style.display = 'none';
+  }
+  populateSels();
+  updateBadges();
+  // Navigate to initial view (from hash or default)
+  const hash = location.hash.replace('#/', '');
+  const parts = hash.split('/');
+  const initView = parts[0] || 'dash';
+  go(VT[initView] ? initView : 'dash', parts[1]);
+}
+
+/* ══════════════════════════════════
+   POPULATE SELECTS
+   ══════════════════════════════════ */
+function populateSels() {
+  const bOpts = DB.brands.map(b => '<option value="' + esc(b.short || b.name) + '">' + esc(b.short || b.name) + '</option>').join('');
+  const bAll = '<option value="">（全部品牌）</option>' + bOpts;
+  const mOpts = DB.members.map(m => '<option value="' + esc(m.name) + '">' + esc(m.name) + '</option>').join('');
+  const mAll = '<option value="">（全部成員）</option>' + mOpts;
+  const kOpts = DB.kols.map(k => '<option value="' + esc(k.name) + '">' + esc(k.name) + '</option>').join('') || '<option>（請先新增KOL）</option>';
+  const dOpts = '<option value="">（全部領域）</option>' + DOMAINS.map(d => '<option value="' + d.id + '">' + d.ic + ' ' + d.name + '</option>').join('');
+
+  const ids = {
+    'b-owner': mOpts,
+    'k-brand': bAll,
+    'c-kol': kOpts,
+    'c-brand': bAll,
+    'cal-brand': bAll,
+    'cal-owner': mAll,
+    'ft-brand': bAll,
+    'ft-owner': mAll,
+    'ft-domain': dOpts
+  };
+  Object.keys(ids).forEach(id => { const e = $(id); if (e) e.innerHTML = ids[id]; });
+}
+
+/* ══════════════════════════════════
+   BADGES
+   ══════════════════════════════════ */
+function updateBadges() {
+  $('nb-c').textContent = DB.brands.filter(b => b.status === 'active').length;
+  $('nb-t').textContent = DB.tasks.filter(t => t.status !== 'done' && t.priority === 'high').length;
+  $('nb-r').textContent = DB.tasks.filter(t => t.status === 'review' || t.status === 'hold').length;
+  $('nb-k').textContent = DB.kols.filter(k => k.status === 'active').length;
+  $('nb-cm').textContent = DB.commissions.filter(c => c.status === 'pending').length;
+  $('nb-m').textContent = DB.members.length;
+  $('nb-n').textContent = DB.notifications.filter(n => !n.read).length;
+}
+
+/* ══════════════════════════════════
+   HELPERS FOR RENDERING
+   ══════════════════════════════════ */
+function tag(cls, txt) { return '<span class="tg ' + cls + '">' + esc(txt) + '</span>'; }
+function dot(c) { return '<span class="dt" style="background:' + c + '"></span>'; }
+function avatar(member, sm) {
+  const clr = member ? (member.color || 'var(--tx)') : 'var(--tx)';
+  const n = member ? (member.name || '?')[0] : '?';
+  return '<div class="av ' + (sm ? 'av-sm' : '') + '" style="background:' + clr + '">' + esc(n) + '</div>';
+}
+function findMember(name) { return DB.members.find(m => m.name === name); }
+function findBrand(short) { return DB.brands.find(b => b.short === short || b.name === short); }
+function emptyHTML(icon, msg) { return '<div class="empty"><div class="empty-i">' + icon + '</div><div>' + esc(msg) + '</div></div>'; }
+function barHTML(lbl, pct, clr, val) {
+  return '<div class="brw"><div class="brl">' + esc(lbl) + '</div><div class="brt"><div class="brf" style="width:' + Math.max(pct, 3) + '%;background:' + clr + '">' + esc(val) + '</div></div></div>';
+}
+
+
+/* ══════════════════════════════════
+   CLIENT / BRAND MANAGEMENT
+   ══════════════════════════════════ */
+
+function genClientCode() {
+  const year = new Date().getFullYear();
+  const existing = DB.brands.filter(b => b.code && b.code.startsWith('52EC-' + year));
+  const maxNum = existing.reduce((max, b) => {
+    const m = b.code.match(/52EC-\d{4}-(\d+)/);
+    if (m) return Math.max(max, parseInt(m[1]));
+    return max;
+  }, 0);
+  return '52EC-' + year + '-' + String(maxNum + 1).padStart(3, '0');
+}
+
+function openBrandM(eid) {
+  if (!isManager()) { toast('只有管理員可新增客戶', 'error'); return; }
+  populateSels();
+  $('b-eid').value = '';
+  $('mb-t').textContent = '🏷️ 新增客戶';
+  ['b-name', 'b-short', 'b-contact', 'b-email', 'b-phone', 'b-note', 'b-end'].forEach(id => $(id).value = '');
+  $('b-code').value = genClientCode();
+  $('b-cat').value = '美妝保養';
+  $('b-emoji').value = '📦';
+  $('b-plan').value = 'basic';
+  $('b-fee').value = '25000';
+  $('b-status').value = 'active';
+  $('b-start').value = today();
+
+  // Domains checkbox grid
+  let domH = '';
+  DOMAINS.forEach(d => {
+    domH += '<label class="cb-item" id="dom-opt-' + d.id + '">';
+    domH += '<input type="checkbox" value="' + d.id + '">';
+    domH += '<div><div class="cb-item-t">' + d.ic + ' ' + d.name + '</div>';
+    domH += '<div class="cb-item-s">' + esc(d.desc) + '</div></div></label>';
+  });
+  $('b-domains').innerHTML = domH;
+  // Attach toggle handlers
+  document.querySelectorAll('#b-domains .cb-item').forEach(el => {
+    el.addEventListener('click', (e) => {
+      if (e.target.tagName !== 'INPUT') {
+        const cb = el.querySelector('input');
+        cb.checked = !cb.checked;
+      }
+      el.classList.toggle('on', el.querySelector('input').checked);
+    });
+  });
+
+  if (eid) {
+    const b = DB.brands.find(x => x.id === eid);
+    if (!b) return;
+    $('b-eid').value = eid;
+    $('mb-t').textContent = '✏️ 編輯客戶';
+    $('b-name').value = b.name || '';
+    $('b-short').value = b.short || '';
+    $('b-code').value = b.code || genClientCode();
+    $('b-cat').value = b.cat || '美妝保養';
+    $('b-emoji').value = b.emoji || '📦';
+    $('b-contact').value = b.contact || '';
+    $('b-email').value = b.email || '';
+    $('b-phone').value = b.phone || '';
+    $('b-owner').value = b.owner || '';
+    $('b-plan').value = b.plan || 'basic';
+    $('b-fee').value = b.fee || 25000;
+    $('b-status').value = b.status || 'active';
+    $('b-start').value = b.start_date || '';
+    $('b-end').value = b.end_date || '';
+    $('b-note').value = b.note || '';
+    const bDoms = b.domains || [];
+    bDoms.forEach(did => {
+      const cb = document.querySelector('#b-domains input[value="' + did + '"]');
+      if (cb) {
+        cb.checked = true;
+        cb.closest('.cb-item').classList.add('on');
+      }
+    });
+  }
+  // Plan change auto-fill fee
+  $('b-plan').onchange = function() {
+    if (PLAN_FEE[this.value]) $('b-fee').value = PLAN_FEE[this.value];
+  };
+  openM('m-brand');
+}
+
+function saveBrand() {
+  const name = $('b-name').value.trim();
+  if (!name) { toast('請填寫品牌名稱', 'error'); return; }
+  const eid = parseInt($('b-eid').value) || null;
+  const doms = Array.from(document.querySelectorAll('#b-domains input:checked')).map(cb => cb.value);
+  const data = {
+    name: name,
+    short: $('b-short').value.trim() || name,
+    code: $('b-code').value.trim(),
+    cat: $('b-cat').value,
+    emoji: $('b-emoji').value,
+    contact: $('b-contact').value.trim(),
+    email: $('b-email').value.trim(),
+    phone: $('b-phone').value.trim(),
+    owner: $('b-owner').value,
+    plan: $('b-plan').value,
+    fee: parseInt($('b-fee').value) || 0,
+    status: $('b-status').value,
+    start_date: $('b-start').value,
+    end_date: $('b-end').value,
+    domains: doms,
+    note: $('b-note').value.trim(),
+    color: 'var(--tx)'
+  };
+  const p = eid ? apiPut('brands', eid, data) : apiPost('brands', data);
+  p.then(() => loadDB()).then(() => {
+    closeM('m-brand');
+    updateBadges();
+    populateSels();
+    renderView(NAV_HISTORY[NAV_INDEX].view, NAV_HISTORY[NAV_INDEX].param);
+    toast(eid ? '客戶已更新' : '客戶已新增', 'success');
+  }).catch(e => toast('儲存失敗: ' + e.message, 'error'));
+}
+
+function delBrand(id) {
+  if (!isManager()) { toast('只有管理員可刪除', 'error'); return; }
+  const b = DB.brands.find(x => x.id === id);
+  showCf('刪除客戶？', '確定刪除「' + (b ? b.name : '') + '」？相關任務不會被刪除。', () => {
+    apiDel('brands', id).then(() => loadDB()).then(() => {
+      updateBadges();
+      populateSels();
+      renderView(NAV_HISTORY[NAV_INDEX].view, NAV_HISTORY[NAV_INDEX].param);
+      toast('客戶已刪除', 'info');
+    });
+  });
+}
+
+/* ══════════════════════════════════
+   CLIENTS VIEW
+   ══════════════════════════════════ */
+function renderClients() {
+  const actsEl = $('cli-acts');
+  if (isManager()) {
+    actsEl.innerHTML = '<button class="btn btn-p" onclick="openBrandM()">+ 新增客戶</button>';
+  } else {
+    actsEl.innerHTML = '';
+  }
+  $('cli-sub').textContent = '共 ' + DB.brands.length + ' 位客戶';
+
+  // Stats
+  const active = DB.brands.filter(b => b.status === 'active');
+  const pending = DB.brands.filter(b => b.status === 'pending');
+  $('cs-active').textContent = active.length;
+  $('cs-pending').textContent = pending.length;
+  const rev = active.reduce((s, b) => s + (b.fee || 0), 0);
+  $('cs-rev').textContent = '$' + fmt(rev);
+  let totalMonths = 0;
+  active.forEach(b => {
+    if (b.start_date) {
+      const s = new Date(b.start_date);
+      const now = new Date();
+      const months = Math.max(1, Math.round((now - s) / (1000 * 60 * 60 * 24 * 30)));
+      totalMonths += months;
+    }
+  });
+  $('cs-months').textContent = active.length ? Math.round(totalMonths / active.length) : 0;
+
+  // List
+  const list = $('cli-list');
+  if (!DB.brands.length) { list.innerHTML = emptyHTML('🏢', '尚無客戶資料'); return; }
+
+  let h = '';
+  DB.brands.forEach(b => {
+    const bTasks = DB.tasks.filter(t => t.brand === b.short);
+    const bDone = bTasks.filter(t => t.status === 'done').length;
+    const rate = bTasks.length ? Math.round(bDone / bTasks.length * 100) : 0;
+    const overdue = bTasks.filter(t => t.status !== 'done' && t.due && t.due < today()).length;
+    const comms = DB.commissions.filter(c => c.brand === b.short);
+    let net = 0;
+    comms.forEach(c => net += (c.sales || 0) * (c.br || 0) / 100 - ((c.sales || 0) * (c.kr || 0) / 100 + (c.kf || 0)));
+
+    h += '<div class="cc">';
+    // Header
+    h += '<div class="cc-h">';
+    h += '<div class="cc-ico">' + esc(b.emoji || '📦') + '</div>';
+    h += '<div style="flex:1;min-width:0">';
+    h += '<div class="cc-t">' + esc(b.name) + '</div>';
+    h += '<div class="cc-c">' + esc(b.code || '—') + ' · ' + esc(b.cat || '—') + ' · ' + tag(CLIENT_STATUS_TG[b.status] || 'tg-gr', CLIENT_STATUS_LBL[b.status] || b.status) + ' · ' + tag('tg-gold', PLAN_LBL[b.plan] || '—') + '</div>';
+    h += '</div>';
+    h += '<button class="btn btn-g btn-sm" onclick="go(\'client-detail\',\'' + b.id + '\')">查看詳情</button>';
+    if (isManager()) {
+      h += '<button class="btn btn-g btn-sm" onclick="openBrandM(' + b.id + ')">✏️</button>';
+      h += '<button class="btn btn-sm" style="background:var(--rl);color:var(--red);border-color:transparent" onclick="delBrand(' + b.id + ')">🗑️</button>';
+    }
+    h += '</div>';
+    // Stats
+    h += '<div class="cc-stat">';
+    h += '<div><div class="cc-sv">' + bTasks.length + '</div><div class="cc-sl">總任務</div></div>';
+    h += '<div><div class="cc-sv" style="color:var(--grn)">' + bDone + '</div><div class="cc-sl">已完成</div></div>';
+    h += '<div><div class="cc-sv" style="color:' + (overdue > 0 ? 'var(--red)' : 'var(--tx3)') + '">' + overdue + '</div><div class="cc-sl">逾期</div></div>';
+    h += '<div><div class="cc-sv" style="color:var(--pur)">' + comms.length + '</div><div class="cc-sl">分潤</div></div>';
+    h += '<div><div class="cc-sv" style="color:' + (net >= 0 ? 'var(--grn)' : 'var(--red)') + ';font-family:var(--mo);font-size:14px">$' + fmt(net) + '</div><div class="cc-sl">淨利</div></div>';
+    h += '</div>';
+    // Domains
+    const doms = b.domains || [];
+    h += '<div class="cc-doms">';
+    h += '<div style="font-size:10px;color:var(--tx3);margin-bottom:5px;letter-spacing:.1em">服務範圍：</div>';
+    if (doms.length) {
+      doms.forEach(did => {
+        const d = DOMAINS.find(x => x.id === did);
+        if (d) h += '<span class="cc-dom-tag">' + d.ic + ' ' + d.name + '</span>';
+      });
+    } else {
+      h += '<span style="color:var(--tx3);font-size:11px">尚未設定服務範圍</span>';
+    }
+    h += '<div style="font-size:10px;color:var(--tx3);margin-top:6px">';
+    if (b.start_date) h += '合作起始：' + b.start_date;
+    if (b.owner) h += ' · 操盤手：' + esc(b.owner);
+    h += ' · 月費 $' + fmt(b.fee || 0);
+    h += '</div>';
+    h += '</div>';
+    h += '</div>';
+  });
+  list.innerHTML = h;
+}
+
+/* ══════════════════════════════════
+   CLIENT DETAIL
+   ══════════════════════════════════ */
+function renderClientDetail(id) {
+  const bid = parseInt(id);
+  const b = DB.brands.find(x => x.id === bid);
+  if (!b) { $('cd-body').innerHTML = emptyHTML('❌', '找不到此客戶'); return; }
+
+  $('cd-name').textContent = (b.emoji || '') + ' ' + b.name;
+  $('cd-sub').textContent = (b.code || '—') + ' · 合作起 ' + (b.start_date || '—');
+  const acts = $('cd-acts');
+  if (canEditClient(b)) {
+    acts.innerHTML = '<button class="btn btn-g" onclick="openBrandM(' + b.id + ')">✏️ 編輯</button><button class="btn btn-p" onclick="quickAddTaskForBrand(\'' + b.short + '\')">+ 新增任務</button>';
+  } else {
+    acts.innerHTML = '';
+  }
+
+  const bTasks = DB.tasks.filter(t => t.brand === b.short);
+  const bDone = bTasks.filter(t => t.status === 'done').length;
+  const bDomains = b.domains || [];
+
+  let h = '';
+
+  // Info card
+  h += '<div class="g3" style="margin-bottom:14px">';
+  h += '<div class="cd"><div class="cd-t"><div class="cd-tt">📋 合作資訊</div></div>';
+  h += '<div style="font-size:12.5px;line-height:1.9">';
+  h += '<div><span style="color:var(--tx3);letter-spacing:.05em">客戶編號：</span><span style="font-family:var(--mo);font-weight:700">' + esc(b.code || '—') + '</span></div>';
+  h += '<div><span style="color:var(--tx3)">合作方案：</span>' + tag('tg-gold', PLAN_LBL[b.plan] || '—') + '</div>';
+  h += '<div><span style="color:var(--tx3)">月費金額：</span><span style="font-family:var(--mo);font-weight:800">$' + fmt(b.fee || 0) + '</span></div>';
+  h += '<div><span style="color:var(--tx3)">合作狀態：</span>' + tag(CLIENT_STATUS_TG[b.status] || 'tg-gr', CLIENT_STATUS_LBL[b.status] || '—') + '</div>';
+  h += '<div><span style="color:var(--tx3)">合作起始：</span>' + (b.start_date || '—') + '</div>';
+  if (b.end_date) h += '<div><span style="color:var(--tx3)">合作結束：</span>' + b.end_date + '</div>';
+  h += '<div><span style="color:var(--tx3)">主操盤手：</span>' + esc(b.owner || '—') + '</div>';
+  h += '</div></div>';
+
+  h += '<div class="cd"><div class="cd-t"><div class="cd-tt">👤 聯絡資訊</div></div>';
+  h += '<div style="font-size:12.5px;line-height:1.9">';
+  h += '<div><span style="color:var(--tx3)">聯絡窗口：</span>' + esc(b.contact || '—') + '</div>';
+  h += '<div><span style="color:var(--tx3)">Email：</span>' + esc(b.email || '—') + '</div>';
+  h += '<div><span style="color:var(--tx3)">電話：</span>' + esc(b.phone || '—') + '</div>';
+  h += '<div><span style="color:var(--tx3)">產業：</span>' + esc(b.cat || '—') + '</div>';
+  h += '</div></div>';
+
+  h += '<div class="cd"><div class="cd-t"><div class="cd-tt">📊 整體進度</div></div>';
+  h += '<div style="text-align:center;padding:6px 0">';
+  h += '<div style="font-size:32px;font-weight:900">' + (bTasks.length ? Math.round(bDone / bTasks.length * 100) : 0) + '%</div>';
+  h += '<div style="font-size:11px;color:var(--tx3);margin-bottom:10px">完成率</div>';
+  h += '<div style="display:flex;justify-content:space-around;padding-top:10px;border-top:1px solid var(--b1)">';
+  h += '<div><div style="font-size:16px;font-weight:900;color:var(--gold)">' + bTasks.length + '</div><div style="font-size:9px;color:var(--tx3)">總任務</div></div>';
+  h += '<div><div style="font-size:16px;font-weight:900;color:var(--grn)">' + bDone + '</div><div style="font-size:9px;color:var(--tx3)">完成</div></div>';
+  h += '<div><div style="font-size:16px;font-weight:900;color:var(--red)">' + bTasks.filter(t => t.status !== 'done' && t.due && t.due < today()).length + '</div><div style="font-size:9px;color:var(--tx3)">逾期</div></div>';
+  h += '</div></div></div>';
+  h += '</div>';
+
+  // Service domains with sub-tasks
+  h += '<div class="cd" style="margin-bottom:14px"><div class="cd-t"><div class="cd-tt">🗂️ 服務範圍與工作進度</div></div>';
+  if (!bDomains.length) {
+    h += '<div style="padding:14px;text-align:center;color:var(--tx3);font-size:12px">尚未設定服務範圍，請點編輯後勾選</div>';
+  } else {
+    DOMAINS.forEach(d => {
+      if (bDomains.indexOf(d.id) === -1) return;
+      const dTasks = bTasks.filter(t => t.domain === d.id);
+      const dDone = dTasks.filter(t => t.status === 'done').length;
+      const dRate = dTasks.length ? Math.round(dDone / dTasks.length * 100) : 0;
+
+      h += '<div style="margin-bottom:14px">';
+      h += '<div class="dom-h">';
+      h += '<div class="dom-ic">' + d.ic + '</div>';
+      h += '<div class="dom-tt">' + d.name + '</div>';
+      h += '<div class="dom-stat">' + dDone + '/' + dTasks.length + ' · ' + dRate + '%</div>';
+      if (canEditClient(b)) {
+        h += '<button class="btn btn-sm" style="background:rgba(255,255,255,.15);color:#fff;border:none" onclick="quickAddTaskForDomain(\'' + b.short + '\',\'' + d.id + '\')">+ 任務</button>';
+      }
+      h += '</div>';
+      if (dTasks.length === 0) {
+        h += '<div style="padding:10px 14px;color:var(--tx3);font-size:11.5px;font-style:italic">尚無任務，點上方 + 按鈕新增</div>';
+      } else {
+        dTasks.forEach(t => {
+          const isDone = t.status === 'done';
+          const isOver = !isDone && t.due && t.due < today();
+          h += '<div style="display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--b1)">';
+          h += '<div class="tc-check' + (isDone ? ' done' : '') + '" onclick="event.stopPropagation();toggleTaskDone(' + t.id + ')">';
+          if (isDone) h += '<svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>';
+          h += '</div>';
+          h += '<div style="flex:1;cursor:pointer" onclick="openRP(' + t.id + ')">';
+          h += '<div style="font-size:12.5px;font-weight:600' + (isDone ? ';text-decoration:line-through;color:var(--tx3)' : '') + '">' + esc(t.name) + '</div>';
+          h += '<div style="font-size:10px;color:var(--tx3);margin-top:2px">' + esc(t.owner || '—');
+          if (t.due) h += ' · 截止 <span style="color:' + (isOver ? 'var(--red)' : 'var(--tx3)') + '">' + t.due + '</span>';
+          h += '</div></div>';
+          h += tag(ST_TG[t.status], ST_LBL[t.status]);
+          h += tag(PRI_TG[t.priority || 'mid'], PRI_LBL[t.priority || 'mid']);
+          h += '</div>';
+        });
+      }
+      h += '</div>';
+    });
+  }
+  h += '</div>';
+
+  // Notes
+  if (b.note) {
+    h += '<div class="cd" style="margin-bottom:14px"><div class="cd-t"><div class="cd-tt">📝 合約備註</div></div>';
+    h += '<div style="white-space:pre-wrap;font-size:12.5px;line-height:1.7;color:var(--tx2)">' + esc(b.note) + '</div></div>';
+  }
+
+  $('cd-body').innerHTML = h;
+}
+
+function quickAddTaskForBrand(brandShort) {
+  const name = prompt('任務名稱：');
+  if (!name || !name.trim()) return;
+  apiPost('tasks', {
+    name: name.trim(), brand: brandShort, owner: CU.name, status: 'todo',
+    priority: 'mid', type: '電商營運', domain: 'ec',
+    collab: [], tags: [], comments: [], description: ''
+  }).then(() => loadDB()).then(() => {
+    updateBadges();
+    renderView(NAV_HISTORY[NAV_INDEX].view, NAV_HISTORY[NAV_INDEX].param);
+    toast('任務已新增', 'success');
+  });
+}
+
+function quickAddTaskForDomain(brandShort, domain) {
+  const name = prompt('任務名稱：');
+  if (!name || !name.trim()) return;
+  apiPost('tasks', {
+    name: name.trim(), brand: brandShort, owner: CU.name, status: 'todo',
+    priority: 'mid', type: '電商營運', domain: domain,
+    collab: [], tags: [], comments: [], description: ''
+  }).then(() => loadDB()).then(() => {
+    updateBadges();
+    renderView(NAV_HISTORY[NAV_INDEX].view, NAV_HISTORY[NAV_INDEX].param);
+    toast('任務已新增', 'success');
+  });
+}
+
+function toggleTaskDone(id) {
+  const t = DB.tasks.find(x => x.id === id);
+  if (!t) return;
+  const newStatus = t.status === 'done' ? 'todo' : 'done';
+  t.status = newStatus;
+  apiPut('tasks', id, {status: newStatus}).then(() => {
+    updateBadges();
+    renderView(NAV_HISTORY[NAV_INDEX].view, NAV_HISTORY[NAV_INDEX].param);
+    toast('任務已' + (newStatus === 'done' ? '完成' : '重新開啟'), 'success');
+  });
+}
+
+
+/* ══════════════════════════════════
+   RIGHT PANEL - Task Detail (Asana style)
+   - Inline editing, auto-save on blur
+   - No modal, no loading block
+   ══════════════════════════════════ */
+let currentRpTaskId = null;
+
+function openRP(taskId) {
+  const t = DB.tasks.find(x => x.id === taskId);
+  if (!t) { toast('找不到任務', 'error'); return; }
+  currentRpTaskId = taskId;
+
+  // Header
+  $('rp-name').value = t.name || '';
+
+  // Meta tags
+  let meta = '';
+  meta += tag(ST_TG[t.status], ST_LBL[t.status]);
+  meta += tag(PRI_TG[t.priority || 'mid'], PRI_LBL[t.priority || 'mid']);
+  if (t.brand) meta += tag('tg-gold', t.brand);
+  if (t.domain) {
+    const d = DOMAINS.find(x => x.id === t.domain);
+    if (d) meta += tag('tg-cyn', d.ic + ' ' + d.name);
+  }
+  $('rp-meta').innerHTML = meta;
+
+  // Body with inline editing
+  let h = '';
+  const editable = canEditTask(t);
+
+  // Fields
+  h += '<div class="rp-sec">';
+  h += '<div class="rp-sec-t">任務屬性</div>';
+
+  // Brand
+  h += '<div class="rp-f"><div class="rp-fl">客戶</div><select class="rp-sel" onchange="rpSave(\'brand\',this.value)" ' + (editable ? '' : 'disabled') + '>';
+  h += '<option value="">—</option>';
+  DB.brands.forEach(b => {
+    h += '<option value="' + esc(b.short) + '"' + (b.short === t.brand ? ' selected' : '') + '>' + esc(b.short) + '</option>';
+  });
+  h += '</select></div>';
+
+  // Domain
+  h += '<div class="rp-f"><div class="rp-fl">工作領域</div><select class="rp-sel" onchange="rpSave(\'domain\',this.value)" ' + (editable ? '' : 'disabled') + '>';
+  h += '<option value="">—</option>';
+  DOMAINS.forEach(d => {
+    h += '<option value="' + d.id + '"' + (d.id === t.domain ? ' selected' : '') + '>' + d.ic + ' ' + d.name + '</option>';
+  });
+  h += '</select></div>';
+
+  // Owner
+  h += '<div class="rp-f"><div class="rp-fl">負責人</div><select class="rp-sel" onchange="rpSave(\'owner\',this.value)" ' + (editable ? '' : 'disabled') + '>';
+  h += '<option value="">—</option>';
+  DB.members.forEach(m => {
+    h += '<option value="' + esc(m.name) + '"' + (m.name === t.owner ? ' selected' : '') + '>' + esc(m.name) + '</option>';
+  });
+  h += '</select></div>';
+
+  // Due date
+  h += '<div class="rp-f"><div class="rp-fl">截止日期</div><input class="rp-in" type="date" value="' + esc(t.due || '') + '" onchange="rpSave(\'due\',this.value)" ' + (editable ? '' : 'disabled') + '></div>';
+
+  // Priority
+  h += '<div class="rp-f"><div class="rp-fl">優先級</div><select class="rp-sel" onchange="rpSave(\'priority\',this.value)" ' + (editable ? '' : 'disabled') + '>';
+  ['high', 'mid', 'low'].forEach(p => {
+    h += '<option value="' + p + '"' + (p === (t.priority || 'mid') ? ' selected' : '') + '>' + PRI_LBL[p] + '</option>';
+  });
+  h += '</select></div>';
+
+  // Status
+  h += '<div class="rp-f"><div class="rp-fl">狀態</div><select class="rp-sel" onchange="rpSave(\'status\',this.value)" ' + (editable ? '' : 'disabled') + '>';
+  ['todo', 'doing', 'review', 'done', 'hold'].forEach(s => {
+    h += '<option value="' + s + '"' + (s === t.status ? ' selected' : '') + '>' + ST_LBL[s] + '</option>';
+  });
+  h += '</select></div>';
+
+  // Hours
+  h += '<div class="rp-f"><div class="rp-fl">預計工時</div><input class="rp-in" type="number" value="' + esc(t.hours || '') + '" placeholder="小時" step="0.5" onblur="rpSave(\'hours\',parseFloat(this.value)||0)" ' + (editable ? '' : 'disabled') + '></div>';
+
+  h += '</div>';
+
+  // Description
+  h += '<div class="rp-sec">';
+  h += '<div class="rp-sec-t">任務說明 / 完成指標</div>';
+  h += '<div class="rp-f rp-f-ta"><div class="rp-fl">詳細說明</div><textarea class="rp-in" placeholder="說明這個任務、預期成果、完成指標..." onblur="rpSave(\'description\',this.value)" ' + (editable ? '' : 'disabled') + '>' + esc(t.desc || '') + '</textarea></div>';
+  h += '<div class="rp-f"><div class="rp-fl">完成指標 KPI</div><input class="rp-in" value="' + esc(t.kpi || '') + '" placeholder="例：ROAS≥3.5, 完成10支素材..." onblur="rpSave(\'kpi\',this.value)" ' + (editable ? '' : 'disabled') + '></div>';
+  h += '</div>';
+
+  // Tags
+  const tags = t.tags || [];
+  h += '<div class="rp-sec">';
+  h += '<div class="rp-sec-t">標籤</div>';
+  if (tags.length) {
+    h += '<div style="margin-bottom:8px">';
+    tags.forEach(tg => { h += '<span class="sk-tg"># ' + esc(tg) + '</span>'; });
+    h += '</div>';
+  }
+  if (editable) {
+    h += '<input class="rp-in" placeholder="新增標籤（逗號分隔）" value="' + esc(tags.join(', ')) + '" onblur="rpSaveTags(this.value)">';
+  }
+  h += '</div>';
+
+  // Comments
+  const comments = t.comments || [];
+  h += '<div class="rp-sec">';
+  h += '<div class="rp-sec-t">留言討論（' + comments.length + '）</div>';
+  comments.forEach(c => {
+    const mem = findMember(c.author);
+    h += '<div class="cmt"><div class="cmt-h">';
+    h += '<div class="av av-sm" style="background:' + (mem ? (mem.color || 'var(--tx)') : 'var(--tx)') + '">' + esc((c.author || '?')[0]) + '</div>';
+    h += '<div class="cmt-n">' + esc(c.author) + '</div>';
+    h += '<div class="cmt-t">' + esc(c.time) + '</div></div>';
+    h += '<div class="cmt-x">' + esc(c.text) + '</div></div>';
+  });
+  h += '<div class="cmt-in"><input id="rp-cmt-in" placeholder="新增留言（Enter送出）..." onkeydown="if(event.key===\'Enter\')rpAddCmt()"><button class="btn btn-p btn-sm" onclick="rpAddCmt()">送出</button></div>';
+  h += '</div>';
+
+  $('rp-body').innerHTML = h;
+
+  // Footer buttons
+  let foot = '';
+  if (editable) {
+    foot += '<button class="btn btn-d btn-sm" onclick="rpDelete()">🗑️ 刪除</button>';
+    if (t.status === 'done') {
+      foot += '<button class="btn btn-g btn-sm" onclick="rpSave(\'status\',\'todo\')">↺ 重新開啟</button>';
+    } else {
+      foot += '<button class="btn btn-s btn-sm" onclick="rpSave(\'status\',\'done\');closeRP()">✅ 標記完成</button>';
+    }
+  }
+  foot += '<button class="btn btn-g btn-sm" onclick="closeRP()">關閉</button>';
+  $('rp-foot').innerHTML = foot;
+
+  // Open panel
+  $('rpov').classList.add('on');
+  $('rp').classList.add('on');
+}
+
+function closeRP() {
+  $('rp').classList.remove('on');
+  $('rpov').classList.remove('on');
+  currentRpTaskId = null;
+}
+
+function rpSave(field, value) {
+  if (!currentRpTaskId) return;
+  const t = DB.tasks.find(x => x.id === currentRpTaskId);
+  if (!t) return;
+  if (field === 'description') t.desc = value;
+  t[field] = value;
+  const upd = {};
+  upd[field === 'description' ? 'description' : field] = value;
+  apiPut('tasks', currentRpTaskId, upd).then(() => {
+    updateBadges();
+    // Update meta display
+    let meta = '';
+    meta += tag(ST_TG[t.status], ST_LBL[t.status]);
+    meta += tag(PRI_TG[t.priority || 'mid'], PRI_LBL[t.priority || 'mid']);
+    if (t.brand) meta += tag('tg-gold', t.brand);
+    if (t.domain) {
+      const d = DOMAINS.find(x => x.id === t.domain);
+      if (d) meta += tag('tg-cyn', d.ic + ' ' + d.name);
+    }
+    $('rp-meta').innerHTML = meta;
+    // Refresh current view in background
+    const cur = NAV_HISTORY[NAV_INDEX];
+    if (cur && (cur.view === 'tasks' || cur.view === 'dash' || cur.view === 'client-detail')) {
+      renderView(cur.view, cur.param);
+    }
+  }).catch(e => toast('儲存失敗', 'error'));
+}
+
+function rpSaveTags(value) {
+  if (!currentRpTaskId) return;
+  const tags = value.split(',').map(s => s.trim()).filter(Boolean);
+  const t = DB.tasks.find(x => x.id === currentRpTaskId);
+  if (!t) return;
+  t.tags = tags;
+  apiPut('tasks', currentRpTaskId, {tags: tags}).then(() => {
+    toast('標籤已更新', 'success');
+    openRP(currentRpTaskId);
+  });
+}
+
+function rpAddCmt() {
+  if (!currentRpTaskId) return;
+  const inp = $('rp-cmt-in');
+  const txt = inp.value.trim();
+  if (!txt) return;
+  const t = DB.tasks.find(x => x.id === currentRpTaskId);
+  if (!t) return;
+  if (!t.comments) t.comments = [];
+  const now = new Date();
+  t.comments.push({
+    author: CU.name,
+    text: txt,
+    time: now.toLocaleString('zh-TW', {month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'})
+  });
+  apiPut('tasks', currentRpTaskId, {comments: t.comments}).then(() => {
+    toast('留言已送出', 'success');
+    openRP(currentRpTaskId);
+  });
+}
+
+function rpDelete() {
+  if (!currentRpTaskId) return;
+  const t = DB.tasks.find(x => x.id === currentRpTaskId);
+  showCf('刪除任務？', '確定要刪除「' + (t ? t.name : '') + '」？', () => {
+    const tid = currentRpTaskId;
+    apiDel('tasks', tid).then(() => loadDB()).then(() => {
+      closeRP();
+      updateBadges();
+      const cur = NAV_HISTORY[NAV_INDEX];
+      renderView(cur.view, cur.param);
+      toast('任務已刪除', 'info');
+    });
+  });
+}
+
+/* ══════════════════════════════════
+   KANBAN (Asana style)
+   ══════════════════════════════════ */
+function renderKanban() {
+  populateSels();
+  const fb = $('ft-brand').value;
+  const fo = $('ft-owner').value;
+  const fp = $('ft-pri').value;
+  const fd = $('ft-domain').value;
+  const filterOwn = CU && (CU.perm === 'member' || CU.perm === 'viewer') && !isManager();
+
+  const COLS = [
+    {s: 'todo', l: '待執行', c: 'var(--tx3)'},
+    {s: 'doing', l: '進行中', c: 'var(--gold)'},
+    {s: 'review', l: '待審核', c: 'var(--yel)'},
+    {s: 'done', l: '已完成', c: 'var(--grn)'}
+  ];
+
+  let h = '';
+  COLS.forEach(col => {
+    let tasks = DB.tasks.filter(t => t.status === col.s);
+    if (fb) tasks = tasks.filter(t => t.brand === fb);
+    if (fo) tasks = tasks.filter(t => t.owner === fo);
+    if (fp) tasks = tasks.filter(t => t.priority === fp);
+    if (fd) tasks = tasks.filter(t => t.domain === fd);
+    if (filterOwn && CU) tasks = tasks.filter(t => t.owner === CU.name || (t.collab || []).indexOf(CU.name) > -1);
+
+    h += '<div class="kbc">';
+    h += '<div class="kbh"><div class="kbt">' + dot(col.c) + col.l + '</div><span class="kbn">' + tasks.length + '</span></div>';
+    h += '<div class="kbody">';
+
+    tasks.forEach(t => {
+      const isDone = t.status === 'done';
+      const isOver = !isDone && t.due && t.due < today();
+      const om = findMember(t.owner);
+      h += '<div class="tc">';
+      h += '<div class="tc-inner">';
+      h += '<div class="tc-check' + (isDone ? ' done' : '') + '" onclick="event.stopPropagation();toggleTaskDone(' + t.id + ')">';
+      if (isDone) h += '<svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>';
+      h += '</div>';
+      h += '<div class="tc-body" onclick="openRP(' + t.id + ')">';
+      h += '<div class="tc-name' + (isDone ? ' done' : '') + '">' + esc(t.name) + '</div>';
+      h += '<div class="tc-meta">';
+      if (t.due) h += '<span style="font-size:10px;color:' + (isOver ? 'var(--red)' : 'var(--tx3)') + ';font-family:var(--mo)">📅 ' + t.due + '</span>';
+      if (t.brand) h += tag('tg-gold', t.brand);
+      if (t.domain) {
+        const d = DOMAINS.find(x => x.id === t.domain);
+        if (d) h += tag('tg-cyn', d.ic);
+      }
+      if (om) h += avatar(om, true);
+      h += '</div>';
+      h += '</div>';
+      h += '</div></div>';
+    });
+
+    h += '</div>'; // kbody
+    // Quick add
+    h += '<div id="qa-ctn-' + col.s + '"></div>';
+    h += '<button class="addc" onclick="showQuickAdd(\'' + col.s + '\')">+ 新增任務</button>';
+    h += '</div>';
+  });
+  $('kanban').innerHTML = h;
+}
+
+/* ── Quick Add (Asana inline) ── */
+let qaColumn = null;
+function showQuickAdd(col) {
+  hideQuickAdd();
+  qaColumn = col;
+  const bOpts = DB.brands.map(b => '<option value="' + esc(b.short) + '">' + esc(b.short) + '</option>').join('');
+  const mOpts = DB.members.map(m => '<option value="' + esc(m.name) + '">' + esc(m.name) + '</option>').join('');
+  const dOpts = DOMAINS.map(d => '<option value="' + d.id + '">' + d.ic + ' ' + d.name + '</option>').join('');
+  let h = '<div class="qa" id="qa-box">';
+  h += '<textarea class="qa-n" id="qa-name" placeholder="輸入任務名稱..." rows="2" onkeydown="qaKey(event)"></textarea>';
+  h += '<div class="qa-r">';
+  h += '<select class="qa-s" id="qa-brand"><option value="">選擇客戶</option>' + bOpts + '</select>';
+  h += '<select class="qa-s" id="qa-domain"><option value="">工作領域</option>' + dOpts + '</select>';
+  h += '<select class="qa-s" id="qa-owner"><option value="">負責人</option>' + mOpts + '</select>';
+  h += '<select class="qa-s" id="qa-pri"><option value="mid">🟡 一般</option><option value="high">🔴 急件</option><option value="low">🟢 低</option></select>';
+  h += '<input class="qa-s" type="date" id="qa-due" style="width:130px">';
+  h += '<div style="margin-left:auto;display:flex;gap:5px">';
+  h += '<button class="btn btn-p btn-sm" onclick="saveQA()">新增</button>';
+  h += '<button class="btn btn-g btn-sm" onclick="hideQuickAdd()">取消</button>';
+  h += '</div></div></div>';
+  const ctn = $('qa-ctn-' + col);
+  if (ctn) {
+    ctn.innerHTML = h;
+    setTimeout(() => {
+      const n = $('qa-name');
+      if (n) n.focus();
+      const o = $('qa-owner');
+      if (o && CU) o.value = CU.name;
+    }, 50);
+  }
+}
+
+function hideQuickAdd() {
+  const qa = $('qa-box');
+  if (qa && qa.parentNode) qa.parentNode.innerHTML = '';
+  qaColumn = null;
+}
+
+function qaKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); saveQA(); }
+  if (e.key === 'Escape') hideQuickAdd();
+}
+
+function saveQA() {
+  const name = $('qa-name').value.trim();
+  if (!name) { toast('請填寫任務名稱', 'error'); return; }
+  const data = {
+    name: name,
+    brand: $('qa-brand').value,
+    domain: $('qa-domain').value,
+    owner: $('qa-owner').value || (CU ? CU.name : ''),
+    priority: $('qa-pri').value || 'mid',
+    due: $('qa-due').value || '',
+    status: qaColumn || 'todo',
+    type: '電商營運',
+    collab: [], tags: [], comments: [], description: ''
+  };
+  apiPost('tasks', data).then(() => loadDB()).then(() => {
+    hideQuickAdd();
+    renderKanban();
+    updateBadges();
+    toast('任務已新增', 'success');
+  });
+}
+
+
+/* ══════════════════════════════════
+   DASHBOARD
+   ══════════════════════════════════ */
+function renderDash() {
+  const now = new Date();
+  const hr = now.getHours();
+  const gr = hr < 12 ? '早安' : hr < 18 ? '午安' : '晚安';
+  $('dg').textContent = gr + '，' + (CU ? CU.name : '用戶') + ' 👋';
+  $('dd').textContent = now.toLocaleDateString('zh-TW', {year: 'numeric', month: 'long', day: 'numeric', weekday: 'short'}) + ' · 今日待辦 ' + DB.tasks.filter(t => t.status !== 'done').length + ' 件';
+
+  // KPIs
+  const activeBrands = DB.brands.filter(b => b.status === 'active');
+  $('k-cli').textContent = activeBrands.length;
+  const pend = DB.tasks.filter(t => t.status !== 'done');
+  const done = DB.tasks.filter(t => t.status === 'done');
+  $('k-tsk').textContent = pend.length;
+  $('k-rt').textContent = DB.tasks.length ? Math.round(done.length / DB.tasks.length * 100) + '%' : '0%';
+  $('k-kol').textContent = DB.kols.filter(k => k.status === 'active').length;
+  let netP = 0;
+  DB.commissions.forEach(c => netP += (c.sales || 0) * (c.br || 0) / 100 - ((c.sales || 0) * (c.kr || 0) / 100 + (c.kf || 0)));
+  $('k-rev').textContent = (netP >= 0 ? '+$' : '-$') + fmt(Math.abs(netP));
+
+  // My tasks
+  const myTasks = isManager() ? pend : pend.filter(t => t.owner === CU.name || (t.collab || []).indexOf(CU.name) > -1);
+  const todos = myTasks.slice(0, 6);
+  $('d-tc').textContent = todos.length + '件';
+  if (!todos.length) {
+    $('d-tasks').innerHTML = emptyHTML('🎉', '暫無待辦任務');
+  } else {
+    let h = '';
+    todos.forEach(t => {
+      h += '<div class="ri" onclick="openRP(' + t.id + ')" style="cursor:pointer">';
+      h += dot(t.status === 'doing' ? 'var(--gold)' : t.status === 'review' ? 'var(--yel)' : t.status === 'hold' ? 'var(--red)' : 'var(--tx3)');
+      h += '<div class="rim"><div class="rit">' + esc(t.name) + '</div>';
+      h += '<div class="ris">' + esc(t.brand || '—') + ' · ' + esc(t.owner || '—') + (t.due ? ' · ' + t.due : '') + '</div></div>';
+      h += tag(PRI_TG[t.priority || 'mid'], PRI_LBL[t.priority || 'mid']);
+      h += '</div>';
+    });
+    $('d-tasks').innerHTML = h;
+  }
+
+  // Client progress
+  let bh = '';
+  const topBrands = DB.brands.slice(0, 5);
+  if (!topBrands.length) {
+    bh = emptyHTML('🏢', '尚無客戶');
+  } else {
+    topBrands.forEach(b => {
+      const bt = DB.tasks.filter(t => t.brand === b.short);
+      const bd = bt.filter(t => t.status === 'done').length;
+      const rate = bt.length ? Math.round(bd / bt.length * 100) : 0;
+      bh += '<div class="ri" onclick="go(\'client-detail\',\'' + b.id + '\')" style="cursor:pointer">';
+      bh += '<div style="font-size:18px">' + esc(b.emoji || '📦') + '</div>';
+      bh += '<div class="rim"><div class="rit">' + esc(b.short) + '</div>';
+      bh += '<div class="ris">' + (b.code || '—') + ' · ' + bt.length + ' 任務</div></div>';
+      bh += '<div style="width:80px;flex-shrink:0"><div class="pb"><div class="pbf" style="width:' + rate + '%;background:var(--gold)"></div></div>';
+      bh += '<div style="font-size:9.5px;color:var(--tx3);text-align:right;font-family:var(--mo);margin-top:2px">' + rate + '%</div></div>';
+      bh += '</div>';
+    });
+  }
+  $('d-clients').innerHTML = bh;
+
+  // Commission summary
+  let tIn = 0, tOut = 0;
+  DB.commissions.forEach(c => {
+    tIn += (c.sales || 0) * (c.br || 0) / 100;
+    tOut += (c.sales || 0) * (c.kr || 0) / 100 + (c.kf || 0);
+  });
+  const net = tIn - tOut;
+  let ch = '<div class="cl"><span>品牌給代操</span><span style="font-family:var(--mo);color:var(--grn)">+$' + fmt(tIn) + '</span></div>';
+  ch += '<div class="cl"><span>代操給 KOL</span><span style="font-family:var(--mo);color:var(--red)">-$' + fmt(tOut) + '</span></div>';
+  ch += '<div class="cl tot"><span>代操淨利</span><span style="font-family:var(--mo);color:' + (net >= 0 ? 'var(--grn)' : 'var(--red)') + '">$' + fmt(net) + '</span></div>';
+  $('d-comm').innerHTML = ch;
+
+  // Task stats
+  const ss = {todo: 0, doing: 0, review: 0, done: 0};
+  DB.tasks.forEach(t => { if (ss[t.status] !== undefined) ss[t.status]++; });
+  const mx = Math.max.apply(null, Object.values(ss).concat([1]));
+  const stClr = {todo: 'var(--tx3)', doing: 'var(--gold)', review: 'var(--yel)', done: 'var(--grn)'};
+  let sh = '';
+  Object.keys(ss).forEach(s => {
+    sh += barHTML(ST_LBL[s], ss[s] / mx * 100, stClr[s], '' + ss[s]);
+  });
+  $('d-tstat').innerHTML = sh;
+
+  // Notifications
+  const ICONS = {info: '🔵', success: '✅', warning: '🟡', payment: '💰', error: '🔴'};
+  let nh = '';
+  DB.notifications.filter(n => !n.read).slice(0, 4).forEach(n => {
+    nh += '<div class="ri"><div style="font-size:16px">' + (ICONS[n.type] || '🔔') + '</div>';
+    nh += '<div class="rim"><div class="rit" style="font-size:12px">' + esc(n.msg) + '</div>';
+    nh += '<div class="ris">' + new Date(n.time || n.created_at || new Date()).toLocaleString('zh-TW', {month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'}) + '</div></div></div>';
+  });
+  $('d-notif').innerHTML = nh || emptyHTML('🔔', '暫無未讀通知');
+}
+
+/* ══════════════════════════════════
+   REVIEW
+   ══════════════════════════════════ */
+function renderReview() {
+  const holdTasks = DB.tasks.filter(t => t.status === 'hold');
+  const reviewTasks = DB.tasks.filter(t => t.status === 'review');
+  const doneMonth = DB.tasks.filter(t => t.status === 'done').length;
+  $('rv-h').textContent = holdTasks.length;
+  $('rv-r').textContent = reviewTasks.length;
+  $('rv-d').textContent = doneMonth;
+  $('rv-sub').textContent = reviewTasks.length + ' 件待審核 · ' + holdTasks.length + ' 件退改中';
+
+  const list = reviewTasks.concat(holdTasks);
+  if (!list.length) { $('rv-list').innerHTML = emptyHTML('🎉', '沒有待審核任務'); return; }
+  let h = '';
+  list.forEach(t => {
+    const m = findMember(t.owner);
+    h += '<div class="cd" style="margin-bottom:12px">';
+    h += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">';
+    h += avatar(m);
+    h += '<div style="flex:1"><div style="font-weight:800;font-size:13px">' + esc(t.name) + '</div>';
+    h += '<div style="font-size:11px;color:var(--tx3)">' + esc(t.brand || '—') + ' · ' + esc(t.owner || '—') + ' · 截止 ' + esc(t.due || '—') + '</div></div>';
+    h += tag(t.status === 'hold' ? 'tg-red' : 'tg-yel', t.status === 'hold' ? '退改中' : '待審核');
+    h += '</div>';
+    if (t.desc) h += '<div style="font-size:12px;color:var(--tx2);padding:9px;background:var(--s3);border-radius:2px;margin-bottom:10px;line-height:1.6">' + esc(t.desc) + '</div>';
+    h += '<div style="display:flex;gap:6px">';
+    if (isManager()) {
+      h += '<button class="btn btn-d btn-sm" onclick="apiPut(\'tasks\',' + t.id + ',{status:\'hold\'}).then(loadDB).then(()=>{renderReview();updateBadges();toast(\'已退回修改\',\'info\')})">退回修改</button>';
+      h += '<button class="btn btn-s btn-sm" onclick="apiPut(\'tasks\',' + t.id + ',{status:\'done\'}).then(loadDB).then(()=>{renderReview();updateBadges();toast(\'已通過\',\'success\')})">✅ 通過</button>';
+    }
+    h += '<button class="btn btn-g btn-sm" onclick="openRP(' + t.id + ')">💬 查看詳情</button>';
+    h += '</div></div>';
+  });
+  $('rv-list').innerHTML = h;
+}
+
+/* ══════════════════════════════════
+   CALENDAR
+   ══════════════════════════════════ */
+let calY = new Date().getFullYear();
+let calM = new Date().getMonth() + 1;
+
+function renderCal() {
+  const MN = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+  $('cal-lbl').textContent = calY + '年 ' + MN[calM - 1];
+  const first = new Date(calY, calM - 1, 1).getDay();
+  const days = new Date(calY, calM, 0).getDate();
+  const tn = new Date();
+  let h = '';
+  for (let i = 0; i < first; i++) h += '<div class="cald oth"></div>';
+  for (let d = 1; d <= days; d++) {
+    const ds = calY + '-' + String(calM).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+    const isT = tn.getFullYear() === calY && tn.getMonth() + 1 === calM && tn.getDate() === d;
+    const evts = DB.calEvents.filter(e => e.date === ds);
+    h += '<div class="cald' + (isT ? ' tod' : '') + '" onclick="openCalM(\'' + ds + '\')">';
+    h += '<div class="caldn"' + (isT ? ' style="color:var(--tx)"' : '') + '>' + d + '</div>';
+    evts.forEach(ev => {
+      const clr = CAL_CLR[ev.type] || 'var(--tx)';
+      h += '<div class="calev" style="background:' + clr + '22;color:' + clr + '" onclick="event.stopPropagation();delCalEv(' + ev.id + ')" title="點擊刪除">' + esc(ev.name) + '</div>';
+    });
+    h += '</div>';
+  }
+  $('cal-grid').innerHTML = h;
+}
+
+function calNav(d) {
+  calM += d;
+  if (calM < 1) { calM = 12; calY--; }
+  if (calM > 12) { calM = 1; calY++; }
+  renderCal();
+}
+function calTo() { const n = new Date(); calY = n.getFullYear(); calM = n.getMonth() + 1; renderCal(); }
+
+function openCalM(date) {
+  populateSels();
+  $('cal-name').value = '';
+  $('cal-date').value = date || today();
+  $('cal-type').value = 'deadline';
+  $('cal-note').value = '';
+  openM('m-cal');
+}
+
+function saveCal() {
+  const name = $('cal-name').value.trim();
+  const date = $('cal-date').value;
+  if (!name || !date) { toast('請填寫名稱和日期', 'error'); return; }
+  const data = {
+    name, date,
+    type: $('cal-type').value,
+    brand: $('cal-brand').value,
+    owner: $('cal-owner').value,
+    note: $('cal-note').value.trim()
+  };
+  apiPost('cal_events', data).then(() => loadDB()).then(() => {
+    closeM('m-cal'); renderCal(); toast('活動已新增', 'success');
+  });
+}
+
+function delCalEv(id) {
+  apiDel('cal_events', id).then(() => loadDB()).then(() => { renderCal(); toast('活動已刪除', 'info'); });
+}
+
+/* ══════════════════════════════════
+   KOL
+   ══════════════════════════════════ */
+function renderKol() {
+  const fp = $('ft-kol-plat').value;
+  let list = fp ? DB.kols.filter(k => k.platform === fp) : DB.kols;
+
+  $('kol-sub').textContent = DB.kols.length + ' 位網紅';
+  $('ks-a').textContent = DB.kols.filter(k => k.status === 'active').length;
+  $('ks-f').textContent = fmtK(DB.kols.reduce((s, k) => s + (k.fans || 0), 0));
+  const ae = DB.kols.length ? DB.kols.reduce((s, k) => s + (k.er || 0), 0) / DB.kols.length : 0;
+  $('ks-e').textContent = ae.toFixed(1) + '%';
+  $('ks-c').textContent = DB.commissions.length;
+
+  let h = '';
+  list.forEach(k => {
+    h += '<tr onclick="openKolM(' + k.id + ')">';
+    h += '<td><div style="font-weight:700">' + esc(k.name) + '</div><div style="font-size:10px;color:var(--tx3)">' + esc(k.handle || '') + '</div></td>';
+    h += '<td>' + esc(k.platform) + '</td>';
+    h += '<td style="font-family:var(--mo)">' + fmtK(k.fans) + '</td>';
+    h += '<td>' + tag(k.er >= 5 ? 'tg-grn' : k.er >= 3 ? 'tg-gold' : 'tg-yel', (k.er || 0) + '%') + '</td>';
+    h += '<td>' + (k.brand ? tag('tg-gold', k.brand) : '—') + '</td>';
+    h += '<td>' + tag('tg-cyn', MODE_LBL[k.mode] || k.mode) + '</td>';
+    h += '<td style="font-family:var(--mo);font-size:12px">' + ((k.rate > 0) ? k.rate + '%' : '—') + (k.fixed > 0 ? ' +$' + fmt(k.fixed) : '') + '</td>';
+    h += '<td>' + tag(KST_TG[k.status] || 'tg-gr', KST_LBL[k.status] || k.status) + '</td>';
+    h += '<td onclick="event.stopPropagation()"><div style="display:flex;gap:4px">';
+    h += '<button class="btn btn-g btn-sm" onclick="openKolM(' + k.id + ')">✏️</button>';
+    if (isManager()) h += '<button class="btn btn-sm" style="background:var(--rl);color:var(--red);border-color:transparent" onclick="delKol(' + k.id + ')">🗑️</button>';
+    h += '</div></td></tr>';
+  });
+  $('kol-tb').innerHTML = h || '<tr><td colspan="9" style="text-align:center;color:var(--tx3);padding:28px">尚無 KOL 資料</td></tr>';
+}
+
+function openKolM(eid) {
+  populateSels();
+  $('k-eid').value = '';
+  $('mk-t').textContent = '🌟 新增 KOL';
+  ['k-name', 'k-handle', 'k-email', 'k-line', 'k-tags', 'k-note'].forEach(id => $(id).value = '');
+  ['k-fans', 'k-er', 'k-views'].forEach(id => $(id).value = '');
+  $('k-fixed').value = '0';
+  $('k-rate').value = '0';
+  $('k-status').value = 'active';
+  if (eid) {
+    const k = DB.kols.find(x => x.id === eid);
+    if (!k) return;
+    $('k-eid').value = eid;
+    $('mk-t').textContent = '✏️ 編輯 KOL';
+    $('k-name').value = k.name || '';
+    $('k-handle').value = k.handle || '';
+    $('k-plat').value = k.platform || 'Instagram';
+    $('k-fans').value = k.fans || '';
+    $('k-er').value = k.er || '';
+    $('k-views').value = k.views || '';
+    $('k-email').value = k.email || '';
+    $('k-line').value = k.line || '';
+    $('k-brand').value = k.brand || '';
+    $('k-mode').value = k.mode || 'fixed';
+    $('k-fixed').value = k.fixed || 0;
+    $('k-rate').value = k.rate || 0;
+    $('k-status').value = k.status || 'active';
+    $('k-tags').value = k.tags || '';
+    $('k-note').value = k.note || '';
+  }
+  openM('m-kol');
+}
+
+function saveKol() {
+  const name = $('k-name').value.trim();
+  if (!name) { toast('請填寫名稱', 'error'); return; }
+  const eid = parseInt($('k-eid').value) || null;
+  const data = {
+    name,
+    handle: $('k-handle').value.trim(),
+    platform: $('k-plat').value,
+    fans: parseInt($('k-fans').value) || 0,
+    er: parseFloat($('k-er').value) || 0,
+    views: parseInt($('k-views').value) || 0,
+    email: $('k-email').value.trim(),
+    line: $('k-line').value.trim(),
+    brand: $('k-brand').value,
+    mode: $('k-mode').value,
+    fixed: parseFloat($('k-fixed').value) || 0,
+    rate: parseFloat($('k-rate').value) || 0,
+    status: $('k-status').value,
+    tags: $('k-tags').value.trim(),
+    note: $('k-note').value.trim()
+  };
+  const p = eid ? apiPut('kols', eid, data) : apiPost('kols', data);
+  p.then(() => loadDB()).then(() => {
+    closeM('m-kol'); updateBadges(); populateSels(); renderKol();
+    toast(eid ? 'KOL 已更新' : 'KOL 已新增', 'success');
+  });
+}
+
+function delKol(id) {
+  const k = DB.kols.find(x => x.id === id);
+  showCf('刪除 KOL？', '確定刪除「' + (k ? k.name : '') + '」？', () => {
+    apiDel('kols', id).then(() => loadDB()).then(() => {
+      updateBadges(); renderKol(); toast('KOL 已刪除', 'info');
+    });
+  });
+}
+
+/* ══════════════════════════════════
+   COMMISSION
+   ══════════════════════════════════ */
+function openCommM() {
+  populateSels();
+  ['c-act', 'c-note'].forEach(id => $(id).value = '');
+  $('c-sales').value = '';
+  $('c-br').value = 5; $('c-kr').value = 8; $('c-kf').value = 0;
+  $('c-due').value = today();
+  $('c-preview').innerHTML = '';
+  openM('m-comm');
+}
+
+function cCalc() {
+  const s = parseFloat($('c-sales').value) || 0;
+  const br = parseFloat($('c-br').value) || 0;
+  const kr = parseFloat($('c-kr').value) || 0;
+  const kf = parseFloat($('c-kf').value) || 0;
+  if (!s) { $('c-preview').innerHTML = ''; return; }
+  const fB = s * br / 100;
+  const tK = s * kr / 100 + kf;
+  const net = fB - tK;
+  let h = '<div class="cbx">';
+  h += '<div class="cl"><span>銷售額</span><span style="font-family:var(--mo)">$' + fmt(s) + '</span></div>';
+  h += '<div class="cl"><span>品牌給代操 (' + br + '%)</span><span style="font-family:var(--mo);color:var(--grn)">+$' + fmt(fB) + '</span></div>';
+  h += '<div class="cl"><span>代操給 KOL (' + kr + '%' + (kf ? '+固定$' + fmt(kf) : '') + ')</span><span style="font-family:var(--mo);color:var(--red)">-$' + fmt(tK) + '</span></div>';
+  h += '<div class="cl tot"><span>代操淨利</span><span style="font-family:var(--mo);color:' + (net >= 0 ? 'var(--grn)' : 'var(--red)') + '">$' + fmt(net) + '</span></div></div>';
+  $('c-preview').innerHTML = h;
+}
+
+function saveComm() {
+  const kol = $('c-kol').value;
+  const sales = parseFloat($('c-sales').value) || 0;
+  if (!kol || !sales) { toast('請填寫 KOL 和銷售額', 'error'); return; }
+  const data = {
+    kol, brand: $('c-brand').value,
+    activity: $('c-act').value.trim() || '未命名活動',
+    sales,
+    br: parseFloat($('c-br').value) || 0,
+    kr: parseFloat($('c-kr').value) || 0,
+    kf: parseFloat($('c-kf').value) || 0,
+    due: $('c-due').value,
+    status: 'pending',
+    note: $('c-note').value.trim()
+  };
+  apiPost('commissions', data).then(() => loadDB()).then(() => {
+    closeM('m-comm'); updateBadges(); renderComm(); toast('分潤紀錄已新增', 'success');
+  });
+}
+
+function payComm(id) {
+  showCf('確認匯款？', '確認標記為已匯款？', () => {
+    apiPut('commissions', id, {status: 'paid', paid_date: today()}).then(() => loadDB()).then(() => {
+      renderComm(); toast('匯款已標記', 'success');
+    });
+  }, '✅ 確認匯款', '💳');
+}
+
+function delComm(id) {
+  showCf('刪除紀錄？', '確定刪除？', () => {
+    apiDel('commissions', id).then(() => loadDB()).then(() => {
+      renderComm(); toast('紀錄已刪除', 'info');
+    });
+  });
+}
+
+function mcCalc() {
+  const s = parseFloat($('mc-s').value) || 0;
+  const b = parseFloat($('mc-b').value) || 0;
+  const k = parseFloat($('mc-k').value) || 0;
+  const f = parseFloat($('mc-f').value) || 0;
+  const out = $('mc-out');
+  if (!s) { out.innerHTML = '<div style="font-size:12px;color:var(--tx3)">輸入銷售額後自動計算 ↑</div>'; return; }
+  const fB = s * b / 100;
+  const tK = s * k / 100 + f;
+  const net = fB - tK;
+  let h = '<div style="width:100%">';
+  h += '<div class="cl"><span>活動銷售額</span><span style="font-family:var(--mo)">$' + fmt(s) + '</span></div>';
+  h += '<div class="cl"><span>品牌給代操 (' + b + '%)</span><span style="font-family:var(--mo);color:var(--grn)">+$' + fmt(fB) + '</span></div>';
+  h += '<div class="cl"><span>代操給 KOL (' + k + '%' + (f ? '+固定$' + fmt(f) : '') + ')</span><span style="font-family:var(--mo);color:var(--red)">-$' + fmt(tK) + '</span></div>';
+  h += '<div class="cl tot"><span>代操淨利</span><span style="font-family:var(--mo);color:' + (net >= 0 ? 'var(--grn)' : 'var(--red)') + '">$' + fmt(net) + '</span></div></div>';
+  out.innerHTML = h;
+}
+
+function renderComm() {
+  let tS = 0, tIn = 0, tOut = 0;
+  const pending = DB.commissions.filter(c => c.status === 'pending');
+  $('c-pend').textContent = pending.length + '筆待確認';
+  let h = '';
+  if (!DB.commissions.length) {
+    $('comm-tb').innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--tx3);padding:28px">尚無分潤紀錄</td></tr>';
+  } else {
+    DB.commissions.forEach(c => {
+      const fB = (c.sales || 0) * (c.br || 0) / 100;
+      const tK = (c.sales || 0) * (c.kr || 0) / 100 + (c.kf || 0);
+      const net = fB - tK;
+      tS += c.sales || 0; tIn += fB; tOut += tK;
+      h += '<tr>';
+      h += '<td style="font-weight:700">' + esc(c.kol) + '</td>';
+      h += '<td>' + (c.brand ? tag('tg-gold', c.brand) : '—') + '</td>';
+      h += '<td>' + esc(c.activity) + '</td>';
+      h += '<td style="font-family:var(--mo)">$' + fmt(c.sales) + '</td>';
+      h += '<td style="font-family:var(--mo);color:var(--grn)">+$' + fmt(fB) + '</td>';
+      h += '<td style="font-family:var(--mo);color:var(--red)">-$' + fmt(tK) + '</td>';
+      h += '<td style="font-family:var(--mo);color:' + (net >= 0 ? 'var(--grn)' : 'var(--red)') + ';font-weight:700">$' + fmt(net) + '</td>';
+      h += '<td style="font-size:11px;color:var(--tx3);font-family:var(--mo)">' + esc(c.due || '—') + '</td>';
+      h += '<td>' + (c.status === 'paid' ? tag('tg-grn', '✓ 已匯款') : tag('tg-yel', '待匯款')) + '</td>';
+      h += '<td><div style="display:flex;gap:4px">';
+      if (c.status === 'pending' && isManager()) h += '<button class="btn btn-s btn-sm" onclick="payComm(' + c.id + ')">匯款</button>';
+      if (isManager()) h += '<button class="btn btn-sm" style="background:var(--rl);color:var(--red);border-color:transparent" onclick="delComm(' + c.id + ')">✕</button>';
+      h += '</div></td></tr>';
+    });
+    $('comm-tb').innerHTML = h;
+  }
+  const net = tIn - tOut;
+  let th = '<div class="cbx">';
+  th += '<div class="cl"><span>本月總銷售額</span><span style="font-family:var(--mo)">$' + fmt(tS) + '</span></div>';
+  th += '<div class="cl"><span>品牌方給代操</span><span style="font-family:var(--mo);color:var(--grn)">+$' + fmt(tIn) + '</span></div>';
+  th += '<div class="cl"><span>代操給網紅</span><span style="font-family:var(--mo);color:var(--red)">-$' + fmt(tOut) + '</span></div>';
+  th += '<div class="cl tot"><span>代操分潤淨利</span><span style="font-family:var(--mo);color:' + (net >= 0 ? 'var(--grn)' : 'var(--red)') + '">$' + fmt(net) + '</span></div></div>';
+  $('comm-tot').innerHTML = th;
+}
+
+/* ══════════════════════════════════
+   PAYMENT
+   ══════════════════════════════════ */
+function renderPay() {
+  const pend = DB.commissions.filter(c => c.status === 'pending');
+  const paid = DB.commissions.filter(c => c.status === 'paid');
+  let pA = 0, dA = 0, net = 0;
+  pend.forEach(c => pA += (c.sales || 0) * (c.kr || 0) / 100 + (c.kf || 0));
+  paid.forEach(c => dA += (c.sales || 0) * (c.kr || 0) / 100 + (c.kf || 0));
+  DB.commissions.forEach(c => net += (c.sales || 0) * (c.br || 0) / 100 - ((c.sales || 0) * (c.kr || 0) / 100 + (c.kf || 0)));
+  $('py-p').textContent = '$' + fmt(pA);
+  $('py-pc').textContent = pend.length + '筆';
+  $('py-d').textContent = '$' + fmt(dA);
+  $('py-dc').textContent = paid.length + '筆';
+  $('py-n').textContent = '$' + fmt(net);
+
+  let ph = pend.length ? '' : emptyHTML('🎉', '暫無待匯款');
+  pend.forEach(c => {
+    const toK = (c.sales || 0) * (c.kr || 0) / 100 + (c.kf || 0);
+    ph += '<div class="ri"><div class="av av-sm" style="background:var(--gold)">' + esc(c.kol[0]) + '</div>';
+    ph += '<div class="rim"><div class="rit">' + esc(c.kol) + '</div><div class="ris">' + esc(c.brand || '') + ' · ' + esc(c.activity) + '</div></div>';
+    ph += '<div style="text-align:right;flex-shrink:0"><div style="font-family:var(--mo);font-weight:800;color:var(--red)">$' + fmt(toK) + '</div>';
+    ph += '<div style="font-size:10px;color:var(--tx3)">' + esc(c.due || '無截止') + '</div></div>';
+    if (isManager()) ph += '<button class="btn btn-s btn-sm" onclick="payComm(' + c.id + ')">匯款</button>';
+    ph += '</div>';
+  });
+  $('py-pl').innerHTML = ph;
+
+  let dh = paid.length ? '' : emptyHTML('💳', '暫無匯款記錄');
+  paid.forEach(c => {
+    const toK = (c.sales || 0) * (c.kr || 0) / 100 + (c.kf || 0);
+    dh += '<div class="ri" style="opacity:.65"><div class="av av-sm" style="background:var(--grn)">' + esc(c.kol[0]) + '</div>';
+    dh += '<div class="rim"><div class="rit">' + esc(c.kol) + '</div><div class="ris">' + esc(c.brand || '') + ' · 已匯 ' + esc(c.paidDate || c.paid_date || '—') + '</div></div>';
+    dh += '<div style="font-family:var(--mo);font-weight:800;color:var(--grn)">$' + fmt(toK) + '</div>' + tag('tg-grn', '✓') + '</div>';
+  });
+  $('py-dl').innerHTML = dh;
+}
+
+
+/* ══════════════════════════════════
+   MEMBERS (Admin manages accounts)
+   ══════════════════════════════════ */
+function renderMembers() {
+  $('mem-sub').textContent = DB.members.length + ' 位成員';
+  const acts = $('mem-acts');
+  if (isAdmin()) {
+    acts.innerHTML = '<button class="btn btn-p" onclick="openMemberM()">+ 新增成員帳號</button>';
+  } else {
+    acts.innerHTML = '<button class="btn btn-g" onclick="openChPwM()">🔑 修改我的密碼</button>';
+  }
+
+  // Top cards
+  let ch = '';
+  DB.members.slice(0, 3).forEach(m => {
+    const myT = DB.tasks.filter(t => t.owner === m.name);
+    const myD = myT.filter(t => t.status === 'done').length;
+    const rate = myT.length ? Math.round(myD / myT.length * 100) : 0;
+    ch += '<div class="mc">';
+    ch += '<div style="display:flex;align-items:center;gap:11px">';
+    ch += '<div class="av av-lg" style="background:' + (m.color || 'var(--tx)') + '">' + esc((m.name || '?')[0]) + '</div>';
+    ch += '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:800">' + esc(m.name) + '</div>';
+    ch += '<div style="font-size:11px;color:var(--tx3)">' + esc(m.role || '—') + ' · ' + esc(m.dept || '—') + '</div>';
+    ch += '<div style="margin-top:4px">' + tag(PERM_TG[m.perm] || 'tg-gr', PERM_LBL[m.perm] || m.perm) + '</div></div></div>';
+    ch += '<div class="mcs">';
+    ch += '<div><div class="mcsv">' + myT.length + '</div><div class="mcsl">總任務</div></div>';
+    ch += '<div><div class="mcsv" style="color:var(--grn)">' + myD + '</div><div class="mcsl">完成</div></div>';
+    ch += '<div><div class="mcsv" style="color:var(--gold)">' + rate + '%</div><div class="mcsl">完成率</div></div>';
+    ch += '</div></div>';
+  });
+  $('mem-cards').innerHTML = ch;
+
+  // Table
+  let h = '';
+  DB.members.forEach(m => {
+    const myT = DB.tasks.filter(t => t.owner === m.name).length;
+    const myBrands = DB.brands.filter(b => b.owner === m.name).length;
+    h += '<tr>';
+    h += '<td><div style="display:flex;align-items:center;gap:8px">' + avatar(m, true) + '<div><div style="font-weight:700">' + esc(m.name) + '</div><div style="font-size:10px;color:var(--tx3)">' + esc(m.ename || '') + '</div></div></div></td>';
+    h += '<td>' + esc(m.role || '—') + '</td>';
+    h += '<td>' + esc(m.dept || '—') + '</td>';
+    h += '<td style="font-size:11px;font-family:var(--mo)">' + esc(m.email || '—') + '</td>';
+    h += '<td>' + tag(PERM_TG[m.perm] || 'tg-gr', PERM_LBL[m.perm] || m.perm) + '</td>';
+    h += '<td style="text-align:center;font-family:var(--mo)">' + myBrands + '</td>';
+    h += '<td style="text-align:center;font-family:var(--mo)">' + myT + '</td>';
+    h += '<td><div style="display:flex;gap:4px;flex-wrap:wrap">';
+    if (isAdmin()) {
+      h += '<button class="btn btn-g btn-sm" onclick="openMemberM(' + m.id + ')">✏️ 編輯</button>';
+      h += '<button class="btn btn-g btn-sm" onclick="openChPwM(' + m.id + ')">🔑 改密碼</button>';
+      if ((m.email || '').toLowerCase() !== ADMIN_EMAIL) {
+        h += '<button class="btn btn-sm" style="background:var(--rl);color:var(--red);border-color:transparent" onclick="delMember(' + m.id + ')">🗑️</button>';
+      }
+    } else if (CU && CU.id === m.id) {
+      h += '<button class="btn btn-g btn-sm" onclick="openChPwM(' + m.id + ')">🔑 改密碼</button>';
+    }
+    h += '</div></td></tr>';
+  });
+  $('mem-tb').innerHTML = h || '<tr><td colspan="8" style="text-align:center;color:var(--tx3);padding:28px">尚無成員資料</td></tr>';
+}
+
+function openMemberM(eid) {
+  if (!isAdmin()) { toast('只有最大管理員可新增成員', 'error'); return; }
+  $('me-eid').value = '';
+  $('mm-t').textContent = '👤 新增成員帳號';
+  ['me-name', 'me-ename', 'me-role', 'me-email', 'me-phone', 'me-pass', 'me-pass2', 'me-skills'].forEach(id => $(id).value = '');
+  $('me-dept').value = '電商營運';
+  $('me-perm').value = 'operator';
+  $('me-hours').value = 160;
+  $('pws').style.width = '0%';
+  // Enable password fields for new member
+  $('me-pass').disabled = false;
+  $('me-pass2').disabled = false;
+  $('me-pass').placeholder = '至少8位';
+
+  if (eid) {
+    const m = DB.members.find(x => x.id === eid);
+    if (!m) return;
+    $('me-eid').value = eid;
+    $('mm-t').textContent = '✏️ 編輯成員';
+    $('me-name').value = m.name || '';
+    $('me-ename').value = m.ename || '';
+    $('me-role').value = m.role || '';
+    $('me-dept').value = m.dept || '電商營運';
+    $('me-email').value = m.email || '';
+    $('me-phone').value = m.phone || '';
+    $('me-perm').value = m.perm || 'operator';
+    $('me-hours').value = m.hours || 160;
+    $('me-skills').value = m.skills || '';
+    // When editing, password field is optional (leave blank = don't change)
+    $('me-pass').placeholder = '留空=不變更密碼';
+    $('me-pass2').placeholder = '留空=不變更';
+  }
+  openM('m-member');
+}
+
+function saveMember() {
+  const name = $('me-name').value.trim();
+  const email = $('me-email').value.trim().toLowerCase();
+  if (!name || !email) { toast('請填寫姓名和 Email', 'error'); return; }
+  const eid = parseInt($('me-eid').value) || null;
+  const pass = $('me-pass').value;
+  const pass2 = $('me-pass2').value;
+
+  // New member requires password; editing allows blank = keep old password
+  if (!eid && (!pass || pass.length < 8)) { toast('密碼至少需 8 位', 'error'); return; }
+  if (pass && pass !== pass2) { toast('兩次密碼不一致', 'error'); return; }
+
+  // Prevent duplicate email
+  const dupe = DB.members.find(m => (m.email || '').toLowerCase() === email && m.id !== eid);
+  if (dupe) { toast('此 Email 已被使用', 'error'); return; }
+
+  // Only admin email can have admin perm - auto-correct
+  let perm = $('me-perm').value;
+  if (email === ADMIN_EMAIL) perm = 'admin';
+  else if (perm === 'admin') perm = 'manager'; // safety
+
+  const colors = ['var(--gold)', 'var(--grn)', 'var(--red)', 'var(--yel)', 'var(--pur)', 'var(--cyn)', 'var(--org)'];
+  const data = {
+    name,
+    ename: $('me-ename').value.trim(),
+    role: $('me-role').value.trim(),
+    dept: $('me-dept').value,
+    email,
+    phone: $('me-phone').value.trim(),
+    perm,
+    hours: parseInt($('me-hours').value) || 160,
+    skills: $('me-skills').value.trim(),
+    color: colors[DB.members.length % colors.length]
+  };
+  if (pass) data.password_hash = hashPw(pass);
+
+  const p = eid ? apiPut('members', eid, data) : apiPost('members', data);
+  p.then(() => loadDB()).then(() => {
+    closeM('m-member');
+    updateBadges();
+    populateSels();
+    renderMembers();
+    toast(eid ? '成員已更新' : '成員已新增', 'success');
+  }).catch(e => toast('儲存失敗: ' + e.message, 'error'));
+}
+
+function delMember(id) {
+  if (!isAdmin()) return;
+  const m = DB.members.find(x => x.id === id);
+  if (!m) return;
+  if ((m.email || '').toLowerCase() === ADMIN_EMAIL) { toast('最大管理員無法刪除', 'error'); return; }
+  showCf('刪除成員？', '確定刪除「' + m.name + '」？此帳號將無法登入。', () => {
+    apiDel('members', id).then(() => loadDB()).then(() => {
+      updateBadges(); populateSels(); renderMembers();
+      toast('成員已刪除', 'info');
+    });
+  });
+}
+
+/* ── Change Password ── */
+function openChPwM(id) {
+  // If no id, change current user's password
+  const targetId = id || (CU ? CU.id : null);
+  if (!targetId) return;
+  // Only admin can change others' passwords; users can change their own
+  if (targetId !== CU.id && !isAdmin()) { toast('只有最大管理員可修改他人密碼', 'error'); return; }
+  $('chpw-id').value = targetId;
+  $('chpw-new').value = '';
+  $('chpw-cfm').value = '';
+  openM('m-chpw');
+}
+
+function saveChPw() {
+  const id = parseInt($('chpw-id').value);
+  const pw = $('chpw-new').value;
+  const cfm = $('chpw-cfm').value;
+  if (!pw || pw.length < 8) { toast('密碼至少 8 位', 'error'); return; }
+  if (pw !== cfm) { toast('兩次密碼不一致', 'error'); return; }
+  apiPut('members', id, {password_hash: hashPw(pw)}).then(() => {
+    closeM('m-chpw');
+    toast('密碼已更新', 'success');
+  }).catch(e => toast('更新失敗', 'error'));
+}
+
+/* ══════════════════════════════════
+   WORKLOAD
+   ══════════════════════════════════ */
+function renderWorkload() {
+  $('wl-t').textContent = DB.tasks.length;
+  const done = DB.tasks.filter(t => t.status === 'done').length;
+  $('wl-r').textContent = DB.tasks.length ? Math.round(done / DB.tasks.length * 100) + '%' : '0%';
+  const over = DB.tasks.filter(t => t.status !== 'done' && t.due && t.due < today());
+  $('wl-o').textContent = over.length;
+  const busyThreshold = 10;
+  const busy = DB.members.filter(m => DB.tasks.filter(t => t.owner === m.name && t.status !== 'done').length > busyThreshold).length;
+  $('wl-b').textContent = busy;
+
+  // Bars
+  let bh = '';
+  const maxLoad = Math.max.apply(null, DB.members.map(m => DB.tasks.filter(t => t.owner === m.name && t.status !== 'done').length).concat([1]));
+  DB.members.forEach(m => {
+    const mT = DB.tasks.filter(t => t.owner === m.name);
+    const mD = mT.filter(t => t.status === 'done').length;
+    const mPend = mT.length - mD;
+    const pct = maxLoad ? Math.round(mPend / maxLoad * 100) : 0;
+    const clr = mPend > busyThreshold ? 'var(--red)' : mPend > 6 ? 'var(--yel)' : 'var(--grn)';
+    bh += barHTML(m.name, pct, clr, mPend + ' 件');
+  });
+  $('wl-bars').innerHTML = bh || emptyHTML('👥', '尚無成員');
+
+  // Table
+  let th = '';
+  DB.members.forEach(m => {
+    const mT = DB.tasks.filter(t => t.owner === m.name);
+    const todo = mT.filter(t => t.status === 'todo').length;
+    const doing = mT.filter(t => t.status === 'doing').length;
+    const review = mT.filter(t => t.status === 'review').length;
+    const done = mT.filter(t => t.status === 'done').length;
+    const overdue = mT.filter(t => t.status !== 'done' && t.due && t.due < today()).length;
+    th += '<tr>';
+    th += '<td><div style="display:flex;align-items:center;gap:8px">' + avatar(m, true) + esc(m.name) + '</div></td>';
+    th += '<td style="font-family:var(--mo);text-align:center">' + todo + '</td>';
+    th += '<td style="font-family:var(--mo);text-align:center;color:var(--gold)">' + doing + '</td>';
+    th += '<td style="font-family:var(--mo);text-align:center;color:var(--yel)">' + review + '</td>';
+    th += '<td style="font-family:var(--mo);text-align:center;color:var(--grn)">' + done + '</td>';
+    th += '<td style="font-family:var(--mo);text-align:center;color:' + (overdue ? 'var(--red)' : 'var(--tx3)') + '">' + overdue + '</td>';
+    th += '<td style="font-family:var(--mo);text-align:center;font-weight:800">' + mT.length + '</td>';
+    th += '</tr>';
+  });
+  $('wl-tb').innerHTML = th || '<tr><td colspan="7" style="text-align:center;color:var(--tx3);padding:28px">尚無資料</td></tr>';
+}
+
+/* ══════════════════════════════════
+   REPORT
+   ══════════════════════════════════ */
+function renderReport() {
+  const now = new Date();
+  $('rp-d').textContent = now.getFullYear() + '年 ' + (now.getMonth() + 1) + '月 績效';
+
+  // Simulated ROAS average
+  const roas = DB.commissions.length ? (3 + Math.random() * 2).toFixed(2) + 'x' : '—';
+  $('rp-ro').textContent = roas;
+  const gmv = DB.commissions.reduce((s, c) => s + (c.sales || 0), 0);
+  $('rp-gv').textContent = '$' + fmtK(gmv);
+  const done = DB.tasks.filter(t => t.status === 'done').length;
+  $('rp-rt').textContent = DB.tasks.length ? Math.round(done / DB.tasks.length * 100) + '%' : '0%';
+  let net = 0;
+  DB.commissions.forEach(c => net += (c.sales || 0) * (c.br || 0) / 100 - ((c.sales || 0) * (c.kr || 0) / 100 + (c.kf || 0)));
+  $('rp-nt').textContent = '$' + fmt(net);
+
+  // Brand completion bars
+  let bh = '';
+  DB.brands.slice(0, 6).forEach(b => {
+    const bt = DB.tasks.filter(t => t.brand === b.short);
+    const bd = bt.filter(t => t.status === 'done').length;
+    const rate = bt.length ? Math.round(bd / bt.length * 100) : 0;
+    bh += barHTML(b.short, rate, 'var(--gold)', rate + '%');
+  });
+  $('rp-bb').innerHTML = bh || emptyHTML('📊', '暫無資料');
+
+  // KOL ranking
+  const kolSales = {};
+  DB.commissions.forEach(c => { kolSales[c.kol] = (kolSales[c.kol] || 0) + (c.sales || 0); });
+  const kolRank = Object.keys(kolSales).map(k => ({name: k, sales: kolSales[k]})).sort((a, b) => b.sales - a.sales).slice(0, 6);
+  const mxK = kolRank.length ? kolRank[0].sales : 1;
+  let kh = '';
+  kolRank.forEach(k => { kh += barHTML(k.name, k.sales / mxK * 100, 'var(--pur)', '$' + fmtK(k.sales)); });
+  $('rp-kb').innerHTML = kh || emptyHTML('🌟', '暫無 KOL 銷售');
+
+  // Brand net profit
+  const brandNet = {};
+  DB.commissions.forEach(c => {
+    const n = (c.sales || 0) * (c.br || 0) / 100 - ((c.sales || 0) * (c.kr || 0) / 100 + (c.kf || 0));
+    brandNet[c.brand] = (brandNet[c.brand] || 0) + n;
+  });
+  const bRank = Object.keys(brandNet).map(b => ({name: b || '—', net: brandNet[b]})).sort((a, b) => b.net - a.net).slice(0, 6);
+  const mxB = bRank.length ? Math.max.apply(null, bRank.map(x => Math.abs(x.net))) : 1;
+  let cbh = '';
+  bRank.forEach(b => { cbh += barHTML(b.name, Math.abs(b.net) / mxB * 100, b.net >= 0 ? 'var(--grn)' : 'var(--red)', '$' + fmt(b.net)); });
+  $('rp-cb').innerHTML = cbh || emptyHTML('💰', '暫無分潤');
+
+  // Member tasks done
+  let mh = '';
+  const memD = DB.members.map(m => ({n: m.name, d: DB.tasks.filter(t => t.owner === m.name && t.status === 'done').length})).sort((a, b) => b.d - a.d).slice(0, 6);
+  const mxM = memD.length ? memD[0].d : 1;
+  memD.forEach(m => { mh += barHTML(m.n, mxM ? m.d / mxM * 100 : 0, 'var(--cyn)', m.d + ' 件'); });
+  $('rp-mb').innerHTML = mh || emptyHTML('👥', '暫無資料');
+}
+
+/* ══════════════════════════════════
+   INBOX
+   ══════════════════════════════════ */
+function renderInbox() {
+  const unread = DB.notifications.filter(n => !n.read).length;
+  $('ib-sub').textContent = unread + ' 則未讀 · 共 ' + DB.notifications.length + ' 則';
+  if (!DB.notifications.length) { $('ib-list').innerHTML = emptyHTML('🔔', '暫無通知'); return; }
+  const ICONS = {info: '🔵', success: '✅', warning: '🟡', payment: '💰', error: '🔴'};
+  let h = '';
+  DB.notifications.forEach(n => {
+    h += '<div class="ri" style="' + (!n.read ? 'background:var(--goldl);padding-left:12px;border-left:2px solid var(--gold);margin-left:-14px;padding-right:12px' : 'opacity:.65') + '" onclick="mrkRead(' + n.id + ')">';
+    h += '<div style="font-size:18px;width:28px;text-align:center">' + (ICONS[n.type] || '🔔') + '</div>';
+    h += '<div class="rim"><div class="rit">' + esc(n.msg) + '</div>';
+    h += '<div class="ris">' + new Date(n.time || n.created_at || new Date()).toLocaleString('zh-TW') + '</div></div>';
+    if (!n.read) h += '<div style="width:7px;height:7px;border-radius:50%;background:var(--gold)"></div>';
+    h += '</div>';
+  });
+  $('ib-list').innerHTML = h;
+}
+
+function mrkRead(id) {
+  apiPut('notifications', id, {is_read: 1}).then(() => loadDB()).then(() => {
+    updateBadges(); renderInbox();
+  });
+}
+function rdAll() {
+  const unread = DB.notifications.filter(n => !n.read);
+  if (!unread.length) return;
+  Promise.all(unread.map(n => apiPut('notifications', n.id, {is_read: 1}))).then(() => loadDB()).then(() => {
+    updateBadges(); renderInbox(); toast('全部標為已讀', 'success');
+  });
+}
+function clrAll() {
+  showCf('清除全部通知？', '此操作無法復原。', () => {
+    Promise.all(DB.notifications.map(n => apiDel('notifications', n.id))).then(() => loadDB()).then(() => {
+      updateBadges(); renderInbox(); toast('通知已清除', 'info');
+    });
+  });
+}
+
+/* ══════════════════════════════════
+   SEARCH (Cmd+K)
+   ══════════════════════════════════ */
+function openSrch() {
+  const q = prompt('搜尋任務 / 客戶 / KOL / 成員：');
+  if (!q || !q.trim()) return;
+  const query = q.toLowerCase().trim();
+  // Task
+  const tFound = DB.tasks.find(t => (t.name || '').toLowerCase().indexOf(query) > -1);
+  if (tFound) { openRP(tFound.id); return; }
+  // Brand
+  const bFound = DB.brands.find(b => (b.name || '').toLowerCase().indexOf(query) > -1 || (b.short || '').toLowerCase().indexOf(query) > -1 || (b.code || '').toLowerCase().indexOf(query) > -1);
+  if (bFound) { go('client-detail', bFound.id); return; }
+  // KOL
+  const kFound = DB.kols.find(k => (k.name || '').toLowerCase().indexOf(query) > -1);
+  if (kFound) { go('kol'); setTimeout(() => openKolM(kFound.id), 300); return; }
+  // Member
+  const mFound = DB.members.find(m => (m.name || '').toLowerCase().indexOf(query) > -1 || (m.email || '').toLowerCase().indexOf(query) > -1);
+  if (mFound) { go('members'); return; }
+  toast('找不到符合的結果', 'error');
+}
+
+/* ══════════════════════════════════
+   CSV EXPORT
+   ══════════════════════════════════ */
+function expCSV(type) {
+  let csv = '', fn = '';
+  if (type === 'comm') {
+    csv = 'KOL,品牌,活動,銷售額,品牌→代操%,代操→KOL%,代操淨利,截止,狀態\n';
+    DB.commissions.forEach(c => {
+      const fB = (c.sales || 0) * (c.br || 0) / 100;
+      const tK = (c.sales || 0) * (c.kr || 0) / 100 + (c.kf || 0);
+      csv += '"' + c.kol + '","' + (c.brand || '') + '","' + c.activity + '",' + c.sales + ',' + c.br + ',' + c.kr + ',' + (fB - tK) + ',"' + (c.due || '') + '","' + c.status + '"\n';
+    });
+    fn = 'commissions_' + today() + '.csv';
+  } else if (type === 'pay') {
+    csv = 'KOL,品牌,活動,應付金額,截止,狀態,匯款日\n';
+    DB.commissions.forEach(c => {
+      const toK = (c.sales || 0) * (c.kr || 0) / 100 + (c.kf || 0);
+      csv += '"' + c.kol + '","' + (c.brand || '') + '","' + c.activity + '",' + toK + ',"' + (c.due || '') + '","' + c.status + '","' + (c.paidDate || c.paid_date || '') + '"\n';
+    });
+    fn = 'payments_' + today() + '.csv';
+  } else if (type === 'report') {
+    csv = '客戶,編號,方案,月費,任務總數,已完成,完成率,總銷售,代操淨利\n';
+    DB.brands.forEach(b => {
+      const bt = DB.tasks.filter(t => t.brand === b.short);
+      const bd = bt.filter(t => t.status === 'done').length;
+      const rate = bt.length ? Math.round(bd / bt.length * 100) : 0;
+      const bComms = DB.commissions.filter(c => c.brand === b.short);
+      const sales = bComms.reduce((s, c) => s + (c.sales || 0), 0);
+      let net = 0;
+      bComms.forEach(c => net += (c.sales || 0) * (c.br || 0) / 100 - ((c.sales || 0) * (c.kr || 0) / 100 + (c.kf || 0)));
+      csv += '"' + b.name + '","' + (b.code || '') + '","' + (PLAN_LBL[b.plan] || '') + '",' + (b.fee || 0) + ',' + bt.length + ',' + bd + ',' + rate + '%,' + sales + ',' + net + '\n';
+    });
+    fn = 'report_' + today() + '.csv';
+  }
+  const BOM = '\uFEFF';
+  const blob = new Blob([BOM + csv], {type: 'text/csv;charset=utf-8'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = fn;
+  link.click();
+  toast('已匯出 ' + fn, 'success');
+}
+
+/* ══════════════════════════════════
+   BOOT
+   ══════════════════════════════════ */
+function boot() {
+  // Independent loading overlay
+  const loader = document.createElement('div');
+  loader.id = 'boot-loader';
+  loader.style.cssText = 'position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;color:var(--tx3)';
+  loader.innerHTML = '<div style="font-family:var(--mo);font-size:32px;font-weight:900;color:var(--tx)">52</div><div style="font-size:13px;letter-spacing:.2em">載入中...</div>';
+  document.body.appendChild(loader);
+
+  function removeLoader() {
+    const l = document.getElementById('boot-loader');
+    if (l) l.remove();
+  }
+
+  // Test API first
+  fetch(API + '?path=members').then(r => {
+    if (!r.ok) throw new Error('API HTTP ' + r.status);
+    return r.json();
+  }).then(() => {
+    return loadDB();
+  }).then(() => {
+    // Try restore session
+    const savedId = sessionStorage.getItem('ef_uid');
+    if (savedId) {
+      const m = DB.members.find(x => x.id == savedId);
+      if (m) {
+        CU = m;
+        try {
+          showApp();
+          removeLoader();
+        } catch(err) {
+          console.error('Render error:', err);
+          removeLoader();
+          $('login-page').style.display = 'none';
+          $('app-page').style.display = 'flex';
+          toast('渲染錯誤: ' + err.message, 'error');
+        }
+        return;
+      }
+    }
+    removeLoader();
+    $('login-page').style.display = 'flex';
+  }).catch(e => {
+    console.error('Boot error:', e);
+    removeLoader();
+    const errMsg = e.message || '';
+    const isNet = errMsg.indexOf('API HTTP') > -1 || errMsg.indexOf('fetch') > -1 || errMsg.indexOf('NetworkError') > -1 || errMsg.indexOf('Failed to fetch') > -1;
+    const errDiv = document.createElement('div');
+    errDiv.style.cssText = 'position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:var(--red);padding:20px;text-align:center';
+    if (isNet) {
+      errDiv.innerHTML = '<div style="font-size:40px">⚠️</div><div style="font-size:15px;font-weight:700">連接資料庫失敗</div><div style="font-size:12px;color:var(--tx2)">請確認 api.php 已正確上傳到伺服器</div><div style="font-size:10px;color:var(--tx3);font-family:var(--mo);margin-top:8px">' + esc(errMsg) + '</div><button onclick="location.reload()" style="margin-top:14px;padding:8px 16px;background:var(--tx);color:#fff;border:none;border-radius:2px;cursor:pointer;font-family:inherit">重新載入</button>';
+    } else {
+      errDiv.innerHTML = '<div style="font-size:40px">⚠️</div><div style="font-size:15px;font-weight:700">系統錯誤</div><div style="font-size:11px;color:var(--tx3);font-family:var(--mo);max-width:400px;margin-top:8px">' + esc(errMsg) + '</div><button onclick="location.reload()" style="margin-top:14px;padding:8px 16px;background:var(--tx);color:#fff;border:none;border-radius:2px;cursor:pointer;font-family:inherit">重新載入</button>';
+    }
+    document.body.appendChild(errDiv);
+  });
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  // Cmd/Ctrl + K: search
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSrch(); }
+  // Esc: close modals/panels
+  if (e.key === 'Escape') {
+    if ($('rp').classList.contains('on')) closeRP();
+    document.querySelectorAll('.mbk.on').forEach(m => m.classList.remove('on'));
+    $('cfbk').classList.remove('on');
+  }
+  // Browser shortcuts
+  if (e.altKey && e.key === 'ArrowLeft') { e.preventDefault(); navBack(); }
+  if (e.altKey && e.key === 'ArrowRight') { e.preventDefault(); navFwd(); }
+});
+
+boot();
+</script>
+</body>
+</html>
