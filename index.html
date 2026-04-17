@@ -60,8 +60,9 @@ body{font-family:var(--fn);color:var(--tx);font-size:13.5px;overflow:hidden;lett
 .login-wrap{display:flex;align-items:center;justify-content:center;height:100vh;background:var(--bg);padding:20px;}
 .login-box{background:#fff;border:1px solid var(--b1);border-radius:2px;padding:44px 36px;width:100%;max-width:400px;box-shadow:var(--sh3);}
 .login-logo{display:flex;flex-direction:column;align-items:center;margin-bottom:32px;}
-.login-logo-mark{font-size:44px;font-weight:900;letter-spacing:-2px;color:var(--tx);margin-bottom:4px;font-family:var(--mo);line-height:1;}
-.login-logo-t{font-size:15px;font-weight:700;color:var(--tx);letter-spacing:.3em;margin-bottom:4px;}
+.login-logo-mark{width:60px;height:60px;margin-bottom:14px;display:block;color:var(--tx);}
+.login-logo-mark svg{width:100%;height:100%;display:block;}
+.login-logo-t{font-size:14px;font-weight:700;color:var(--tx);letter-spacing:.2em;margin-bottom:4px;}
 .login-logo-en{font-size:9.5px;color:var(--tx3);letter-spacing:.25em;font-weight:500;font-family:var(--mo);}
 .login-title{font-size:12px;font-weight:500;margin-bottom:24px;color:var(--tx2);text-align:center;letter-spacing:.15em;padding-top:18px;border-top:1px solid var(--b1);}
 .login-fg{margin-bottom:14px;}
@@ -83,10 +84,11 @@ body{font-family:var(--fn);color:var(--tx);font-size:13.5px;overflow:hidden;lett
 .overlay.show{display:block;}
 
 /* ══ LOGO (無二 style) ══ */
-.logo{padding:18px 18px 16px;border-bottom:1px solid var(--b1);display:flex;flex-direction:column;gap:3px;flex-shrink:0;}
-.logo-mark{font-family:var(--mo);font-size:24px;font-weight:900;letter-spacing:-1px;color:var(--tx);line-height:1;}
-.logo-text{font-size:12.5px;font-weight:700;letter-spacing:.3em;color:var(--tx);margin-top:4px;}
-.logo-sub{font-size:8.5px;color:var(--tx3);letter-spacing:.2em;font-family:var(--mo);font-weight:500;margin-top:2px;}
+.logo{padding:16px 18px;border-bottom:1px solid var(--b1);flex-shrink:0;}
+.logo-mark{width:32px;height:32px;display:block;color:var(--tx);}
+.logo-mark svg{width:100%;height:100%;display:block;}
+.logo-text{font-size:11.5px;font-weight:800;letter-spacing:.15em;color:var(--tx);line-height:1.2;}
+.logo-sub{font-size:9px;color:var(--tx3);letter-spacing:.2em;font-family:var(--mo);font-weight:600;margin-top:3px;}
 .nav{flex:1;overflow-y:auto;padding:12px 0;}
 .nav-sec{font-size:9px;color:var(--tx3);letter-spacing:.25em;text-transform:uppercase;font-weight:700;padding:12px 16px 6px;font-family:var(--mo);}
 .ni{display:flex;align-items:center;gap:10px;padding:8px 14px;margin:1px 8px;border-radius:3px;cursor:pointer;color:var(--tx2);font-size:12.5px;transition:all .15s;position:relative;user-select:none;font-weight:500;}
@@ -360,6 +362,19 @@ select.fc option{background:#fff;}
 .pw-str{height:3px;border-radius:99px;margin-top:5px;transition:all .3s;background:var(--s3);}
 
 hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
+
+/* ══ ASANA INLINE EDIT ══ */
+.rp-title-in{width:100%;background:none;border:1px solid transparent;color:var(--tx);font-family:var(--fn);font-size:16px;font-weight:800;padding:4px 8px;outline:none;border-radius:3px;letter-spacing:.05em;}
+.rp-title-in:hover{background:var(--s3);}
+.rp-title-in:focus{border-color:var(--tx);background:#fff;}
+.dp-f{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.dp-fl{width:80px;font-size:11.5px;color:var(--tx3);flex-shrink:0;letter-spacing:.05em;}
+.dp-in{flex:1;background:#fff;border:1px solid transparent;border-radius:2px;padding:6px 10px;color:var(--tx);font-family:var(--fn);font-size:12.5px;outline:none;transition:all .15s;cursor:text;}
+.dp-in:hover{background:var(--s3);border-color:var(--b1);}
+.dp-in:focus{background:#fff;border-color:var(--tx);}
+select.dp-in{cursor:pointer;}
+select.dp-in option{background:#fff;}
+textarea.dp-in{resize:vertical;min-height:80px;line-height:1.6;}
 ::-webkit-scrollbar{width:6px;height:6px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--b2);border-radius:99px;}
@@ -505,9 +520,9 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
 <div id="login-page" class="login-wrap">
   <div class="login-box">
     <div class="login-logo">
-      <div class="login-logo-mark">52</div>
-      <div class="login-logo-t">無二電商</div>
-      <div class="login-logo-en">ECOMMERCE MANAGEMENT</div>
+      <div class="login-logo-mark"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAABnElEQVR42u3TAQ0AAAjDsIN/z2AABaSVsGSVZAKcWgIwCBgEDAIGAYOAQcAgYBAwCGAQMAgYBAwCBgGDgEHAIGAQMAhgEDAIGAQMAgYBg4BBwCBgEMAgYBAwCBgEDAIGAYOAQcAgYBDAIGAQMAgYBAwCBgGDgEHAIIBBwCBgEDAIGAQMAgYBg4BBwCCAQcAgYBAwCBgEDAIGAYOAQQCDgEHAIGAQMAgYBAwCBgGDgEEAg4BBwCBgEDAIGAQMAgYBg4BBJACDgEHAIGAQMAgYBAwCBgGDAAYBg4BBwCBgEDAIGAQMAgYBgwAGAYOAQcAgYBAwCBgEDAIGAQwCBgGDgEHAIGAQMAgYBAwCBgEMAgYBg4BBwCBgEDAIGAQMAhgEDAIGAYOAQcAgYBAwCBgEDAIYBAwCBgGDgEHAIGAQMAgYBDAIGAQMAgYBg4BBwCBgEDAIGAQwCBgEDAIGAYOAQcAgYBAwCBhEAjAIGAQMAgYBg4BBwCBgEDAIYBAwCBgEDAIGAYOAQcAgYBAwCGAQMAgYBAwCBgGDgEHgowXpigKPZfEIHwAAAABJRU5ErkJggg==" alt="52EC" style="width:100%;height:100%;display:block"></div>
+      <div class="login-logo-t">無二電商事務所</div>
+      <div class="login-logo-en">52EC.TW</div>
     </div>
     <div class="login-title">系統登入</div>
     <div class="login-fg"><label>Email</label><input class="login-in" type="email" id="login-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLogin()"></div>
@@ -521,9 +536,10 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
 <div class="app" id="app-page" style="display:none">
 <div class="sidebar" id="sb">
   <div class="logo">
-  <div class="logo-mark">52</div>
-  <div class="logo-text">無二電商</div>
-  <div class="logo-sub">ECOMMERCE MANAGEMENT</div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="logo-mark"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAABnElEQVR42u3TAQ0AAAjDsIN/z2AABaSVsGSVZAKcWgIwCBgEDAIGAYOAQcAgYBAwCGAQMAgYBAwCBgGDgEHAIGAQMAhgEDAIGAQMAgYBg4BBwCBgEMAgYBAwCBgEDAIGAYOAQcAgYBDAIGAQMAgYBAwCBgGDgEHAIIBBwCBgEDAIGAQMAgYBg4BBwCCAQcAgYBAwCBgEDAIGAYOAQQCDgEHAIGAQMAgYBAwCBgGDgEEAg4BBwCBgEDAIGAQMAgYBg4BBJACDgEHAIGAQMAgYBAwCBgGDAAYBg4BBwCBgEDAIGAQMAgYBgwAGAYOAQcAgYBAwCBgEDAIGAQwCBgGDgEHAIGAQMAgYBAwCBgEMAgYBg4BBwCBgEDAIGAQMAhgEDAIGAYOAQcAgYBAwCBgEDAIYBAwCBgGDgEHAIGAQMAgYBDAIGAQMAgYBg4BBwCBgEDAIGAQwCBgEDAIGAYOAQcAgYBAwCBhEAjAIGAQMAgYBg4BBwCBgEDAIYBAwCBgEDAIGAYOAQcAgYBAwCGAQMAgYBAwCBgGDgEHgowXpigKPZfEIHwAAAABJRU5ErkJggg==" alt="52EC" style="width:100%;height:100%;display:block"></div>
+    <div><div class="logo-text">無二電商事務所</div><div class="logo-sub">52EC.TW</div></div>
+  </div>
 </div>
   <nav class="nav">
     <div class="nav-sec">主要</div>
@@ -987,51 +1003,95 @@ function doSrch(q){
 }
 
 /* ── Detail Panel ── */
+var _dpTid=null;
 function openDp(taskId){
   var t=DB.tasks.find(function(x){return x.id===taskId;});
   if(!t)return;
-  el('dp-t').textContent=t.name;
-  el('dp-s').textContent=(t.brand||'—')+' · '+ST_LBL[t.status]+' · '+(t.due||'無截止');
+  _dpTid=taskId;
+  // Title - now editable
+  el('dp-t').innerHTML='<input id="dp-name-in" class="rp-title-in" value="'+esc(t.name)+'" onblur="dpSaveField(\'name\',this.value)" onkeydown="if(event.key===\'Enter\')this.blur()">';
+  el('dp-s').innerHTML='<span class="tag '+ST_TAG[t.status]+'">'+ST_LBL[t.status]+'</span> <span class="tag '+PRI_TAG[t.priority||'mid']+'">'+PRI_LBL[t.priority||'mid']+'</span>'+(t.brand?' <span class="tag tbl">'+esc(t.brand)+'</span>':'');
   el('dpov').classList.add('on');el('dpp').classList.add('on');
-  var m=DB.members.find(function(x){return x.name===t.owner;});
-  var comments=t.comments||[];var tags=t.tags||[];var collab=t.collab||[];
+  var comments=t.comments||[];var tags=t.tags||[];
   var h='';
-  // Info section
-  h+='<div class="dps"><div class="dpst">基本資訊</div>';
-  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12.5px">';
-  h+='<div><span style="color:var(--tx3)">負責人：</span>'+esc(t.owner||'—')+'</div>';
-  h+='<div><span style="color:var(--tx3)">截止：</span>'+esc(t.due||'未設定')+'</div>';
-  h+='<div><span style="color:var(--tx3)">優先：</span>'+tag(PRI_TAG[t.priority],PRI_LBL[t.priority])+'</div>';
-  h+='<div><span style="color:var(--tx3)">狀態：</span>'+tag(ST_TAG[t.status],ST_LBL[t.status])+'</div>';
-  h+='<div><span style="color:var(--tx3)">類型：</span>'+esc(t.type||'—')+'</div>';
-  h+='<div><span style="color:var(--tx3)">工時：</span>'+esc(t.hours||0)+'h</div>';
-  h+='</div></div>';
-  if(collab.length){h+='<div class="dps"><div class="dpst">協作者</div>';collab.forEach(function(c){h+='<span class="sk">👤 '+esc(c)+'</span>';});h+='</div>';}
-  if(tags.length){h+='<div class="dps"><div class="dpst">標籤</div>';tags.forEach(function(tg){h+='<span class="sk"># '+esc(tg)+'</span>';});h+='</div>';}
-  if(t.desc){h+='<div class="dps"><div class="dpst">任務說明</div><div style="font-size:12.5px;color:var(--tx2);line-height:1.7;background:var(--s3);padding:10px;border-radius:7px">'+esc(t.desc)+'</div></div>';}
-  // Actions
+  // Inline editable fields
+  h+='<div class="dps"><div class="dpst">任務屬性</div>';
+  h+='<div class="dp-f"><div class="dp-fl">負責人</div><select class="dp-in" onchange="dpSaveField(\'owner\',this.value)">';
+  h+='<option value="">—</option>';
+  DB.members.forEach(function(m){h+='<option value="'+esc(m.name)+'"'+(m.name===t.owner?' selected':'')+'>'+esc(m.name)+'</option>';});
+  h+='</select></div>';
+  h+='<div class="dp-f"><div class="dp-fl">截止日期</div><input class="dp-in" type="date" value="'+esc(t.due||'')+'" onchange="dpSaveField(\'due\',this.value)"></div>';
+  h+='<div class="dp-f"><div class="dp-fl">優先級</div><select class="dp-in" onchange="dpSaveField(\'priority\',this.value)">';
+  ['high','mid','low'].forEach(function(p){h+='<option value="'+p+'"'+(p===(t.priority||'mid')?' selected':'')+'>'+PRI_LBL[p]+'</option>';});
+  h+='</select></div>';
+  h+='<div class="dp-f"><div class="dp-fl">狀態</div><select class="dp-in" onchange="dpSaveField(\'status\',this.value)">';
+  ['todo','doing','review','done','hold'].forEach(function(s){h+='<option value="'+s+'"'+(s===t.status?' selected':'')+'>'+ST_LBL[s]+'</option>';});
+  h+='</select></div>';
+  h+='<div class="dp-f"><div class="dp-fl">品牌</div><select class="dp-in" onchange="dpSaveField(\'brand\',this.value)">';
+  h+='<option value="">—</option>';
+  DB.brands.forEach(function(b){h+='<option value="'+esc(b.short)+'"'+(b.short===t.brand?' selected':'')+'>'+esc(b.short)+'</option>';});
+  h+='</select></div>';
+  h+='<div class="dp-f"><div class="dp-fl">類型</div><select class="dp-in" onchange="dpSaveField(\'type\',this.value)">';
+  ['廣告投放','文案撰寫','素材設計','SEO優化','KOL合作','數據報告','平台上架','LINE推播','EDM行銷','競品分析','客戶提案','會議準備'].forEach(function(tp){h+='<option'+(tp===t.type?' selected':'')+'>'+tp+'</option>';});
+  h+='</select></div>';
+  h+='<div class="dp-f"><div class="dp-fl">預計工時</div><input class="dp-in" type="number" value="'+esc(t.hours||'')+'" placeholder="小時" step="0.5" onblur="dpSaveField(\'hours\',parseFloat(this.value)||0)"></div>';
+  h+='</div>';
+  // Description (inline edit)
+  h+='<div class="dps"><div class="dpst">任務說明</div>';
+  h+='<textarea class="dp-in" rows="4" placeholder="加入說明..." onblur="dpSaveField(\'description\',this.value)" style="width:100%">'+esc(t.desc||'')+'</textarea>';
+  h+='</div>';
+  // Tags
+  h+='<div class="dps"><div class="dpst">標籤</div>';
+  h+='<div style="margin-bottom:6px">'+tags.map(function(tg){return '<span class="sk"># '+esc(tg)+'</span>';}).join('')+'</div>';
+  h+='<input class="dp-in" placeholder="新增標籤（逗號分隔）" value="'+esc(tags.join(','))+'" onblur="dpSaveTags(this.value)">';
+  h+='</div>';
+  // Actions - simple buttons for quick state change
   h+='<div class="dps"><div class="dpst">快速操作</div><div style="display:flex;gap:6px;flex-wrap:wrap">';
-  if(t.status!=='todo')h+='<button class="btn btn-g btn-sm" onclick="mvTask('+t.id+',\''+prevSt(t.status)+'\');openDp('+t.id+')">◀ '+ST_LBL[prevSt(t.status)]+'</button>';
-  if(t.status!=='done')h+='<button class="btn btn-p btn-sm" onclick="mvTask('+t.id+',\''+nextSt(t.status)+'\');openDp('+t.id+')">▶ '+ST_LBL[nextSt(t.status)]+'</button>';
-  h+='<button class="btn btn-g btn-sm" onclick="openTaskM('+t.id+');closeDp()">✏️ 編輯</button>';
-  h+='<button class="btn btn-d btn-sm" onclick="delTask('+t.id+');closeDp()">🗑️ 刪除</button>';
+  if(t.status!=='done')h+='<button class="btn btn-p btn-sm" onclick="mvTask('+t.id+',\'done\');closeDp()">✅ 標記完成</button>';
+  else h+='<button class="btn btn-g btn-sm" onclick="mvTask('+t.id+',\'todo\');closeDp()">↺ 重新開啟</button>';
+  h+='<button class="btn btn-d btn-sm" onclick="delTask('+t.id+');closeDp()">🗑️ 刪除任務</button>';
   h+='</div></div>';
   // Comments
   h+='<div class="dps"><div class="dpst">留言討論（'+comments.length+'）</div>';
   comments.forEach(function(c){
     var mData=DB.members.find(function(mx){return mx.name===c.author;});
-    var clr=mData?mData.color:'var(--acc)';
+    var clr=mData?mData.color:'var(--tx)';
     h+='<div class="cmt"><div class="cmt-h">';
-    h+='<div class="av" style="background:'+clr+';width:20px;height:20px;font-size:9px">'+esc(c.author[0])+'</div>';
+    h+='<div class="av" style="background:'+clr+';width:20px;height:20px;font-size:9px">'+esc((c.author||'?')[0])+'</div>';
     h+='<div class="cmt-n">'+esc(c.author)+'</div>';
     h+='<div class="cmt-t">'+esc(c.time)+'</div></div>';
     h+='<div class="cmt-x">'+esc(c.text)+'</div></div>';
   });
-  h+='<div class="cmt-in"><input id="ci-'+t.id+'" placeholder="新增留言..." onkeydown="if(event.key===\'Enter\')addCmt('+t.id+')"><button class="btn btn-p btn-sm" onclick="addCmt('+t.id+')">送出</button></div>';
+  h+='<div class="cmt-in"><input id="ci-'+t.id+'" placeholder="新增留言（Enter送出）..." onkeydown="if(event.key===\'Enter\')addCmt('+t.id+')"><button class="btn btn-p btn-sm" onclick="addCmt('+t.id+')">送出</button></div>';
   h+='</div>';
   el('dp-b').innerHTML=h;
 }
-function closeDp(){el('dpp').classList.remove('on');el('dpov').classList.remove('on');}
+
+/* ── Inline save fields ── */
+function dpSaveField(field,value){
+  if(!_dpTid)return;
+  var t=DB.tasks.find(function(x){return x.id===_dpTid;});if(!t)return;
+  if(field==='description')t.desc=value;
+  t[field]=value;
+  var upd={};upd[field]=value;
+  apiPut('tasks',_dpTid,upd).then(function(){
+    updateBadges();
+    if(curV==='tasks')renderKanban();
+    if(curV==='dash')renderDash();
+    // Update status row quickly
+    el('dp-s').innerHTML='<span class="tag '+ST_TAG[t.status]+'">'+ST_LBL[t.status]+'</span> <span class="tag '+PRI_TAG[t.priority||'mid']+'">'+PRI_LBL[t.priority||'mid']+'</span>'+(t.brand?' <span class="tag tbl">'+esc(t.brand)+'</span>':'');
+    toast('已儲存','success');
+  });
+}
+function dpSaveTags(value){
+  if(!_dpTid)return;
+  var tags=value.split(',').map(function(s){return s.trim();}).filter(Boolean);
+  var t=DB.tasks.find(function(x){return x.id===_dpTid;});if(!t)return;
+  t.tags=tags;
+  apiPut('tasks',_dpTid,{tags:tags}).then(function(){toast('標籤已更新','success');openDp(_dpTid);});
+}
+
+function closeDp(){el('dpp').classList.remove('on');el('dpov').classList.remove('on');_dpTid=null;}
 function addCmt(tid){
   var inp=el('ci-'+tid);var txt=inp&&inp.value&&inp.value.trim();if(!txt)return;
   var t=DB.tasks.find(function(x){return x.id===tid;});if(!t)return;
@@ -1375,17 +1435,20 @@ function renderDash(){
   // Todos
   var todos=pend.slice(0,6);
   el('d-tc').textContent=todos.length+'件';
-  if(!todos.length){el('d-td').innerHTML=emptyHtml('🎉','所有任務已完成！');return;}
-  var h='';
-  todos.forEach(function(t){
-    h+='<div class="ri" onclick="openDp('+t.id+')" style="cursor:pointer">';
-    h+=dot(t.status);
-    h+='<div class="rim"><div class="rit">'+esc(t.name)+'</div>';
-    h+='<div class="ris">'+esc(t.brand||'—')+' · '+esc(t.owner)+(t.due?' · '+t.due:'')+'</div></div>';
-    h+=tag(PRI_TAG[t.priority],PRI_LBL[t.priority]);
-    h+='</div>';
-  });
-  el('d-td').innerHTML=h;
+  if(!todos.length){
+    el('d-td').innerHTML=emptyHtml('🎉','所有任務已完成！');
+  } else {
+    var h='';
+    todos.forEach(function(t){
+      h+='<div class="ri" onclick="openDp('+t.id+')" style="cursor:pointer">';
+      h+=dot(t.status);
+      h+='<div class="rim"><div class="rit">'+esc(t.name)+'</div>';
+      h+='<div class="ris">'+esc(t.brand||'—')+' · '+esc(t.owner)+(t.due?' · '+t.due:'')+'</div></div>';
+      h+=tag(PRI_TAG[t.priority],PRI_LBL[t.priority]);
+      h+='</div>';
+    });
+    el('d-td').innerHTML=h;
+  }
   // Brand progress
   var bh='';
   DB.brands.slice(0,5).forEach(function(b){
@@ -1482,24 +1545,81 @@ function renderKanban(){
     if(fo)tasks=tasks.filter(function(t){return t.owner===fo;});
     h+='<div class="kbc">';
     h+='<div class="kbh"><div class="kbt"><span class="dot '+col.dot+'"></span>'+col.l+'</div><span class="kbn">'+tasks.length+'</span></div>';
-    if(!tasks.length)h+='<div style="color:var(--tx3);font-size:11px;text-align:center;padding:16px">暫無任務</div>';
     tasks.forEach(function(t){
-      h+='<div class="kc" onclick="openDp('+t.id+')">';
-      h+='<div class="kct">'+esc(t.name)+'</div>';
-      h+='<div class="kcf">'+tag(PRI_TAG[t.priority],PRI_LBL[t.priority])+tag('tbl',t.brand||'—')+'</div>';
-      h+='<div style="font-size:10px;color:var(--tx3);margin-top:7px;display:flex;justify-content:space-between;align-items:center">';
-      h+='<span>'+esc(t.owner)+(t.due?' · '+t.due:'')+'</span>';
-      h+='<div style="display:flex;gap:3px" onclick="event.stopPropagation()">';
-      if(col.s!=='todo')h+='<button onclick="mvTask('+t.id+',\''+prevSt(col.s)+'\')" style="background:var(--s3);border:none;border-radius:3px;padding:2px 5px;font-size:10px;cursor:pointer;color:var(--tx2)">◀</button>';
-      if(col.s!=='done')h+='<button onclick="mvTask('+t.id+',\''+nextSt(col.s)+'\')" style="background:var(--acg);border:none;border-radius:3px;padding:2px 5px;font-size:10px;cursor:pointer;color:var(--acc)">▶</button>';
-      h+='<button onclick="openTaskM('+t.id+')" style="background:var(--s3);border:none;border-radius:3px;padding:2px 5px;font-size:10px;cursor:pointer;color:var(--tx2)">✏️</button>';
-      h+='<button onclick="delTask('+t.id+')" style="background:var(--rl);border:none;border-radius:3px;padding:2px 5px;font-size:10px;cursor:pointer;color:var(--red)">✕</button>';
-      h+='</div></div></div>';
+      var isDone=t.status==='done';
+      var isOver=!isDone&&t.due&&t.due<today();
+      h+='<div class="tc">';
+      h+='<div class="tc-main" style="display:flex;align-items:flex-start;gap:10px">';
+      // Asana-style checkbox
+      h+='<div class="tc-check'+(isDone?' done':'')+'" onclick="event.stopPropagation();mvTask('+t.id+',\''+(isDone?'todo':'done')+'\')" title="'+(isDone?'標記為待辦':'標記完成')+'">';
+      if(isDone)h+='<svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>';
+      h+='</div>';
+      h+='<div style="flex:1;min-width:0;cursor:pointer" onclick="openDp('+t.id+')">';
+      h+='<div class="tc-name" style="'+(isDone?'text-decoration:line-through;color:var(--tx3)':'')+'">'+esc(t.name)+'</div>';
+      h+='<div class="tc-meta">';
+      if(t.due)h+='<span style="font-size:10px;color:'+(isOver?'var(--red)':'var(--tx3)')+';font-family:var(--mo)">📅 '+t.due+'</span>';
+      h+=tag(PRI_TAG[t.priority||'mid'],PRI_LBL[t.priority||'mid']);
+      if(t.brand)h+=tag('tbl',t.brand);
+      if(t.owner){var om=DB.members.find(function(x){return x.name===t.owner;});h+='<div class="av" style="background:'+(om?om.color:'var(--tx)')+';width:20px;height:20px;font-size:9px">'+esc((t.owner||'?')[0])+'</div>';}
+      h+='</div></div>';
+      h+='</div></div>';
     });
-    h+='<button class="addc" onclick="openTaskM()">+ 新增任務</button>';
+    h+='<div id="qa-container-'+col.s+'"></div>';
+    h+='<button class="addc" onclick="showQuickAdd(\''+col.s+'\')">+ 新增任務</button>';
     h+='</div>';
   });
   el('kanban').innerHTML=h;
+}
+
+/* ── QUICK ADD (Asana style inline) ── */
+var _qaCol=null;
+function showQuickAdd(col){
+  hideQuickAdd();
+  _qaCol=col;
+  var brandOpts=DB.brands.map(function(b){return '<option value="'+esc(b.short)+'">'+esc(b.short)+'</option>';}).join('');
+  var memberOpts=DB.members.map(function(m){return '<option value="'+esc(m.name)+'">'+esc(m.name)+'</option>';}).join('');
+  var selectedOwner=CU?CU.name:'';
+  var html='<div class="quick-add" id="qa-box">';
+  html+='<div style="display:flex;align-items:flex-start;gap:8px">';
+  html+='<div style="width:18px;height:18px;border-radius:50%;border:1.5px solid var(--b3);flex-shrink:0;margin-top:3px"></div>';
+  html+='<textarea class="qa-name" id="qa-name" placeholder="輸入任務名稱..." rows="2" onkeydown="qaKeydown(event)"></textarea>';
+  html+='</div>';
+  html+='<div class="qa-row">';
+  html+='<select class="qa-sel" id="qa-brand"><option value="">選擇品牌</option>'+brandOpts+'</select>';
+  html+='<select class="qa-sel" id="qa-owner"><option value="">負責人</option>'+memberOpts+'</select>';
+  html+='<select class="qa-sel" id="qa-pri"><option value="mid">🟡 一般</option><option value="high">🔴 急件</option><option value="low">🟢 低</option></select>';
+  html+='<input class="qa-sel" type="date" id="qa-due" style="width:120px">';
+  html+='<div class="qa-acts"><button class="btn btn-p btn-sm" onclick="saveQuickAdd()">新增</button>';
+  html+='<button class="btn btn-g btn-sm" onclick="hideQuickAdd()">取消</button></div>';
+  html+='</div></div>';
+  var container=el('qa-container-'+col);
+  if(container){
+    container.innerHTML=html;
+    setTimeout(function(){
+      var n=el('qa-name');if(n)n.focus();
+      var o=el('qa-owner');if(o&&selectedOwner)o.value=selectedOwner;
+    },50);
+  }
+}
+function hideQuickAdd(){
+  var qa=el('qa-box');if(qa&&qa.parentNode)qa.parentNode.innerHTML='';_qaCol=null;
+}
+function qaKeydown(e){
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();saveQuickAdd();}
+  if(e.key==='Escape')hideQuickAdd();
+}
+function saveQuickAdd(){
+  var nameEl=el('qa-name');var name=nameEl&&nameEl.value.trim();
+  if(!name){toast('請填寫任務名稱','error');return;}
+  var data={name:name,brand:el('qa-brand').value,
+    owner:el('qa-owner').value||(CU?CU.name:''),
+    priority:el('qa-pri').value||'mid',
+    due:el('qa-due').value||'',
+    status:_qaCol||'todo',type:'廣告投放',
+    collab:[],tags:[],comments:[],description:''};
+  apiPost('tasks',data).then(function(){return loadDB();}).then(function(){
+    hideQuickAdd();renderKanban();updateBadges();toast('任務已新增','success');
+  });
 }
 
 /* ── REVIEW ── */
