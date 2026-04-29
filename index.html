@@ -2896,7 +2896,16 @@ function updateBadges() {
   if ($('nb-mw') && CU) $('nb-mw').textContent = DB.tasks.filter(t=>t.status!=='done' && (t.owner===CU.name || (t.collab||[]).indexOf(CU.name)>-1)).length;
   $('nb-k').textContent = DB.kols.length;
   $('nb-g').textContent = DB.groupBuyers.length;
-  $('nb-cm').textContent = DB.campaigns.length;
+  // V4.8: 「開團活動」側邊角標改用 campaigns_v2（COMM_STATE.camps）
+  if ($('nb-c2')) {
+    let c2Count = 0;
+    if (typeof COMM_STATE !== 'undefined' && COMM_STATE.camps) {
+      c2Count = COMM_STATE.camps.filter(c => ['running','wrapped','invoicing','confirmed','confirming_kols','proposal'].indexOf(c.brand_status) > -1).length;
+    } else if (typeof C2_STATE !== 'undefined' && C2_STATE.data) {
+      c2Count = C2_STATE.data.filter(c => ['running','wrapped','invoicing','confirmed','confirming_kols','proposal'].indexOf(c.brand_status) > -1).length;
+    }
+    $('nb-c2').textContent = c2Count;
+  }
   if ($('nb-bc') && typeof BC_STATE !== 'undefined' && BC_STATE.data) {
     $('nb-bc').textContent = BC_STATE.data.filter(r => r.status === 'running' || r.status === 'planning').length;
   }
