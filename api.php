@@ -356,6 +356,7 @@ function initTables($pdo) {
     ensureColumn($pdo, 'tasks', 'order_index', 'INT DEFAULT 0');
     ensureColumn($pdo, 'tasks', 'parent_id', 'INT NULL');
     ensureColumn($pdo, 'tasks', 'template_id', 'INT NULL');
+    ensureColumn($pdo, 'tasks', 'start_date', 'DATE NULL'); // V4.6 甘特圖用
 
     ensureColumn($pdo, 'kols', 'ig_id', 'VARCHAR(100) NULL');
     ensureColumn($pdo, 'kols', 'ig_url', 'VARCHAR(500) NULL');

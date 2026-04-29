@@ -873,8 +873,9 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
     <div class="fg"><label>客戶</label><select class="fc" id="mt-brand"></select></div>
     <div class="fg"><label>工作領域</label><select class="fc" id="mt-domain"></select></div>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px">
     <div class="fg"><label>負責人</label><select class="fc" id="mt-owner"></select></div>
+    <div class="fg"><label>開始日期</label><input class="fc" type="date" id="mt-start"></div>
     <div class="fg"><label>截止日期</label><input class="fc" type="date" id="mt-due"></div>
     <div class="fg"><label>預計工時 (h)</label><input class="fc" type="number" step="0.5" id="mt-hours" placeholder="0"></div>
   </div>
@@ -1060,6 +1061,19 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
   </div>
 </div></div>
 
+<!-- DASH CUSTOMIZE MODAL -->
+<div class="mbk" id="m-dash-customize"><div class="mdl">
+  <h2>⚙ 自訂總覽版面</h2>
+  <p style="font-size:11px;color:var(--tx3);letter-spacing:1px;margin-bottom:14px">勾選要顯示的區塊，並用 ↑ ↓ 調整順序</p>
+  <div id="dash-cust-list"></div>
+  <div class="mft">
+    <button class="btn btn-g" onclick="resetDashLayout()">↺ 還原預設</button>
+    <div style="flex:1"></div>
+    <button class="btn btn-g" onclick="closeM('m-dash-customize')">取消</button>
+    <button class="btn btn-p" onclick="saveDashLayout()">💾 套用</button>
+  </div>
+</div></div>
+
 <!-- LOGIN PAGE -->
 <div id="login-page" class="login-wrap" style="display:none">
   <div class="login-box">
@@ -1148,49 +1162,66 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
 
 <!-- DASHBOARD -->
 <div class="vw" id="v-dash">
-  <div class="ph"><div><h1 id="dg">早安 👋</h1><p id="dd"></p></div></div>
-
-  <!-- KPI Row -->
-  <div class="g5" style="margin-bottom:16px">
-    <div class="kpi gold"><div class="kpi-l">活躍客戶</div><div class="kpi-v" id="k-cli">0</div><div class="kpi-d">合作中</div></div>
-    <div class="kpi yel"><div class="kpi-l">進行任務</div><div class="kpi-v" id="k-tsk">0</div><div class="kpi-d">待完成</div></div>
-    <div class="kpi pur"><div class="kpi-l">KOL 資料</div><div class="kpi-v" id="k-kol">0</div><div class="kpi-d">位</div></div>
-    <div class="kpi cyn"><div class="kpi-l">團購主</div><div class="kpi-v" id="k-gb">0</div><div class="kpi-d">位</div></div>
-    <div class="kpi grn"><div class="kpi-l">30 天業績</div><div class="kpi-v" id="k-rev" style="font-size:20px">$0</div><div class="kpi-d" id="k-rev-d">—</div></div>
+  <div class="ph">
+    <div><h1 id="dg">早安 👋</h1><p id="dd"></p></div>
+    <div class="ph-a">
+      <button class="btn btn-g btn-sm" onclick="openDashCustomize()">⚙ 自訂版面</button>
+    </div>
   </div>
 
-  <!-- Today / This Week Tasks -->
-  <div class="cd" style="margin-bottom:14px">
-    <div class="cd-h" style="display:flex;justify-content:space-between;align-items:center">
-      <div><div class="cd-t">📋 待辦任務</div><div class="cd-s" id="d-task-sub">—</div></div>
-      <div class="tab-sw" id="d-task-range">
-        <button class="tab-sw-b on" data-r="today" onclick="setDashTaskRange('today')">今天</button>
-        <button class="tab-sw-b" data-r="week" onclick="setDashTaskRange('week')">本週</button>
-        <button class="tab-sw-b" data-r="all" onclick="setDashTaskRange('all')">全部</button>
+  <div id="dash-blocks">
+    <!-- KPI Row -->
+    <div class="dash-block" data-block="kpi">
+      <div class="g5" style="margin-bottom:16px">
+        <div class="kpi gold"><div class="kpi-l">活躍客戶</div><div class="kpi-v" id="k-cli">0</div><div class="kpi-d">合作中</div></div>
+        <div class="kpi yel"><div class="kpi-l">進行任務</div><div class="kpi-v" id="k-tsk">0</div><div class="kpi-d">待完成</div></div>
+        <div class="kpi pur"><div class="kpi-l">KOL 資料</div><div class="kpi-v" id="k-kol">0</div><div class="kpi-d">位</div></div>
+        <div class="kpi cyn"><div class="kpi-l">團購主</div><div class="kpi-v" id="k-gb">0</div><div class="kpi-d">位</div></div>
+        <div class="kpi grn"><div class="kpi-l">30 天業績</div><div class="kpi-v" id="k-rev" style="font-size:20px">$0</div><div class="kpi-d" id="k-rev-d">—</div></div>
       </div>
     </div>
-    <div id="d-tasks" style="padding:2px 0"></div>
-  </div>
 
-  <!-- Revenue Timeline -->
-  <div class="cd" style="margin-bottom:14px">
-    <div class="cd-h" style="display:flex;justify-content:space-between;align-items:center">
-      <div><div class="cd-t">📊 近 30 天業績時間軸</div><div class="cd-s" id="d-rev-sub">全客戶合計</div></div>
-      <button class="btn btn-g btn-sm" onclick="go('revenue')">查看明細 →</button>
+    <!-- Today / This Week Tasks -->
+    <div class="dash-block" data-block="tasks">
+      <div class="cd" style="margin-bottom:14px">
+        <div class="cd-h" style="display:flex;justify-content:space-between;align-items:center">
+          <div><div class="cd-t">📋 待辦任務</div><div class="cd-s" id="d-task-sub">—</div></div>
+          <div class="tab-sw" id="d-task-range">
+            <button class="tab-sw-b on" data-r="today" onclick="setDashTaskRange('today')">今天</button>
+            <button class="tab-sw-b" data-r="week" onclick="setDashTaskRange('week')">本週</button>
+            <button class="tab-sw-b" data-r="all" onclick="setDashTaskRange('all')">全部</button>
+          </div>
+        </div>
+        <div id="d-tasks" style="padding:2px 0"></div>
+      </div>
     </div>
-    <div id="d-rev-chart" style="padding:10px 6px"></div>
-    <div id="d-rev-brands" style="padding:0 14px 14px 14px"></div>
-  </div>
 
-  <!-- Attention Clients + Active Campaigns -->
-  <div class="g2">
-    <div class="cd">
-      <div class="cd-h"><div class="cd-t">⚠️ 需要關注的客戶</div><div class="cd-s" id="d-att-sub">—</div></div>
-      <div id="d-attention" style="padding:2px 0"></div>
+    <!-- Revenue Timeline -->
+    <div class="dash-block" data-block="revenue">
+      <div class="cd" style="margin-bottom:14px">
+        <div class="cd-h" style="display:flex;justify-content:space-between;align-items:center">
+          <div><div class="cd-t">📊 近 30 天業績時間軸</div><div class="cd-s" id="d-rev-sub">全客戶合計</div></div>
+          <button class="btn btn-g btn-sm" onclick="go('revenue')">查看明細 →</button>
+        </div>
+        <div id="d-rev-chart" style="padding:10px 6px"></div>
+        <div id="d-rev-brands" style="padding:0 14px 14px 14px"></div>
+      </div>
     </div>
-    <div class="cd">
-      <div class="cd-h"><div class="cd-t">🛒 進行中開團</div><div class="cd-s" id="d-active-sub">—</div></div>
-      <div id="d-active-camps" style="padding:2px 0"></div>
+
+    <!-- Attention Clients -->
+    <div class="dash-block" data-block="attention">
+      <div class="cd" style="margin-bottom:14px">
+        <div class="cd-h"><div class="cd-t">⚠️ 需要關注的客戶</div><div class="cd-s" id="d-att-sub">—</div></div>
+        <div id="d-attention" style="padding:2px 0"></div>
+      </div>
+    </div>
+
+    <!-- Active Campaigns -->
+    <div class="dash-block" data-block="active-camps">
+      <div class="cd">
+        <div class="cd-h"><div class="cd-t">🛒 進行中開團</div><div class="cd-s" id="d-active-sub">—</div></div>
+        <div id="d-active-camps" style="padding:2px 0"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -1244,6 +1275,7 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
       <button class="tab-sw-b on" data-mwv="kanban" onclick="setMyWorkView('kanban')">看板</button>
       <button class="tab-sw-b" data-mwv="list" onclick="setMyWorkView('list')">列表</button>
       <button class="tab-sw-b" data-mwv="cal" onclick="setMyWorkView('cal')">日曆</button>
+      <button class="tab-sw-b" data-mwv="gantt" onclick="setMyWorkView('gantt')">甘特圖</button>
     </div>
     <select class="btn btn-g" style="padding:6px 10px" id="mw-filter" onchange="renderMyWork()">
       <option value="all">全部</option>
@@ -1269,6 +1301,7 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
       <button class="tab-sw-b on" data-view="kanban" onclick="taskViewMode('kanban')">看板</button>
       <button class="tab-sw-b" data-view="list" onclick="taskViewMode('list')">列表</button>
       <button class="tab-sw-b" data-view="cal" onclick="taskViewMode('cal')">日曆</button>
+      <button class="tab-sw-b" data-view="gantt" onclick="taskViewMode('gantt')">甘特圖</button>
     </div>
     <select class="btn btn-g" style="padding:6px 10px" id="ft-brand" onchange="renderTasksView()"></select>
     <select class="btn btn-g" style="padding:6px 10px" id="ft-owner" onchange="renderTasksView()"></select>
@@ -2187,7 +2220,118 @@ function emptyHTML(i,m){return '<div class="empty"><div class="empty-i">'+i+'</d
 /* ═══ DASHBOARD (V4.2 全新設計) ═══ */
 let DASH_STATE = { taskRange: 'today' };
 
+/* ═══ DASH CUSTOMIZE (V4.6) ═══ */
+const DASH_BLOCK_DEFS = [
+  { id:'kpi',         label:'KPI 統計列',       desc:'活躍客戶 / 任務 / KOL / 團購主 / 業績' },
+  { id:'tasks',       label:'待辦任務',         desc:'今天 / 本週 / 全部待辦清單' },
+  { id:'revenue',     label:'業績時間軸',       desc:'近 30 天業績折線圖 + TOP 品牌' },
+  { id:'attention',   label:'需要關注的客戶',   desc:'業績異常 / 任務停滯 / 檔期臨近' },
+  { id:'active-camps',label:'進行中開團',       desc:'即時進度條 + 業績累計' }
+];
+const DASH_DEFAULT_LAYOUT = ['kpi','tasks','revenue','attention','active-camps'];
+
+function getDashLayout() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('dashLayout')||'null');
+    if (saved && saved.order && saved.visible) return saved;
+  } catch(e) {}
+  // 預設：全部顯示，預設順序
+  const visible = {};
+  DASH_BLOCK_DEFS.forEach(b => visible[b.id] = true);
+  return { order: DASH_DEFAULT_LAYOUT.slice(), visible };
+}
+
+function applyDashLayout() {
+  const layout = getDashLayout();
+  const container = $('dash-blocks');
+  if (!container) return;
+  // 重新排序：把 block 元素按 order 移動
+  const blockMap = {};
+  container.querySelectorAll('.dash-block[data-block]').forEach(el => {
+    blockMap[el.dataset.block] = el;
+  });
+  layout.order.forEach(id => {
+    const el = blockMap[id];
+    if (el) container.appendChild(el);
+  });
+  // 不在 order 中的（理論上不會有）放最後
+  Object.keys(blockMap).forEach(id => {
+    if (layout.order.indexOf(id) < 0) container.appendChild(blockMap[id]);
+  });
+  // 顯示/隱藏
+  Object.keys(blockMap).forEach(id => {
+    blockMap[id].style.display = layout.visible[id] === false ? 'none' : '';
+  });
+}
+
+let _DASH_TEMP_LAYOUT = null;
+
+function openDashCustomize() {
+  _DASH_TEMP_LAYOUT = JSON.parse(JSON.stringify(getDashLayout()));
+  renderDashCustList();
+  openM('m-dash-customize');
+}
+
+function renderDashCustList() {
+  const layout = _DASH_TEMP_LAYOUT;
+  let h = '';
+  layout.order.forEach((id, idx) => {
+    const def = DASH_BLOCK_DEFS.find(d => d.id === id);
+    if (!def) return;
+    const checked = layout.visible[id] !== false;
+    h += '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--li);border-radius:4px;margin-bottom:6px;background:'+(checked?'#fff':'var(--bg2)')+'">';
+    h += '<label style="display:flex;align-items:center;gap:8px;flex:1;cursor:pointer">';
+    h += '<input type="checkbox" '+(checked?'checked':'')+' onchange="toggleDashBlock(\''+id+'\')">';
+    h += '<div><div style="font-size:13px;font-weight:600;letter-spacing:1px">'+esc(def.label)+'</div>';
+    h += '<div style="font-size:10px;color:var(--tx3);letter-spacing:1px">'+esc(def.desc)+'</div></div>';
+    h += '</label>';
+    h += '<div style="display:flex;gap:4px">';
+    h += '<button class="btn btn-g btn-sm" onclick="moveDashBlock(\''+id+'\',-1)" '+(idx===0?'disabled':'')+' style="padding:4px 8px">↑</button>';
+    h += '<button class="btn btn-g btn-sm" onclick="moveDashBlock(\''+id+'\',1)" '+(idx===layout.order.length-1?'disabled':'')+' style="padding:4px 8px">↓</button>';
+    h += '</div>';
+    h += '</div>';
+  });
+  $('dash-cust-list').innerHTML = h;
+}
+
+function toggleDashBlock(id) {
+  if (!_DASH_TEMP_LAYOUT) return;
+  _DASH_TEMP_LAYOUT.visible[id] = !_DASH_TEMP_LAYOUT.visible[id];
+  renderDashCustList();
+}
+
+function moveDashBlock(id, dir) {
+  if (!_DASH_TEMP_LAYOUT) return;
+  const order = _DASH_TEMP_LAYOUT.order;
+  const idx = order.indexOf(id);
+  if (idx < 0) return;
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= order.length) return;
+  [order[idx], order[newIdx]] = [order[newIdx], order[idx]];
+  renderDashCustList();
+}
+
+function resetDashLayout() {
+  _DASH_TEMP_LAYOUT = {
+    order: DASH_DEFAULT_LAYOUT.slice(),
+    visible: {}
+  };
+  DASH_BLOCK_DEFS.forEach(b => _DASH_TEMP_LAYOUT.visible[b.id] = true);
+  renderDashCustList();
+}
+
+function saveDashLayout() {
+  if (!_DASH_TEMP_LAYOUT) return;
+  try {
+    localStorage.setItem('dashLayout', JSON.stringify(_DASH_TEMP_LAYOUT));
+  } catch(e) {}
+  applyDashLayout();
+  closeM('m-dash-customize');
+  toast('版面已更新','success');
+}
+
 function renderDash() {
+  applyDashLayout();
   const now = new Date(), hr = now.getHours();
   const gr = hr<12?'早安':hr<18?'午安':'晚安';
   $('dg').textContent = gr+'，'+(CU?CU.name:'用戶')+' 👋';
@@ -2789,6 +2933,173 @@ function rerenderActiveTaskView() {
   else if (cur.view === 'tasks') renderTasksView();
 }
 
+// === Gantt View (V4.6) ===
+let GANTT_RANGE = 30; // 預設顯示 30 天
+
+function renderTaskGantt(tasks, target, brandId) {
+  // 過濾出有日期資料的任務
+  const today = new Date(); today.setHours(0,0,0,0);
+  const todayStr = today.toISOString().split('T')[0];
+
+  // 計算每個任務的 [start, end]
+  // - 有 start_date + due → 用兩者
+  // - 只有 due → start = today（如果 due > today）或 due-1day
+  // - 都沒有 → 不畫
+  const items = [];
+  tasks.forEach(t => {
+    let start = t.start_date;
+    let end = t.due;
+    if (!end && !start) return;
+    if (!start && end) {
+      // 沒開始日 → 用 due 當作單日任務
+      start = end;
+    }
+    if (!end && start) {
+      end = start;
+    }
+    items.push({ task:t, start, end });
+  });
+
+  if (!items.length) {
+    target.innerHTML = '<div class="cd"><div style="padding:50px 20px;text-align:center"><div style="font-size:36px;margin-bottom:10px">📊</div><div style="font-size:13px;color:var(--tx2);letter-spacing:2px;margin-bottom:6px">沒有任務有日期資料</div><div style="font-size:11px;color:var(--tx3);letter-spacing:1.5px">請編輯任務並填入「開始日期」和「截止日期」</div></div></div>';
+    return;
+  }
+
+  // 計算時間範圍：從最早 start 到最晚 end，至少 GANTT_RANGE 天
+  const allDates = [];
+  items.forEach(i => { allDates.push(new Date(i.start)); allDates.push(new Date(i.end)); });
+  let minD = new Date(Math.min(...allDates));
+  let maxD = new Date(Math.max(...allDates));
+  // 前後加 padding
+  minD.setDate(minD.getDate() - 2);
+  maxD.setDate(maxD.getDate() + 2);
+  // 至少要顯示 GANTT_RANGE 天
+  const span = Math.max(GANTT_RANGE, Math.ceil((maxD - minD) / 86400000) + 1);
+  const dayPx = Math.max(20, Math.min(40, 1100 / span)); // 每天像素寬度（自適應）
+  const dates = [];
+  for (let i = 0; i < span; i++) {
+    const d = new Date(minD); d.setDate(minD.getDate() + i);
+    dates.push(d);
+  }
+
+  // 排序任務（按 start_date asc）
+  items.sort((a,b) => (a.start || '').localeCompare(b.start || ''));
+
+  const ROW_H = 32;
+  const HEADER_H = 56;
+  const LABEL_W = 220;
+  const totalW = LABEL_W + dates.length * dayPx;
+  const totalH = HEADER_H + items.length * ROW_H + 12;
+
+  // SVG 開始
+  let svg = '<div class="cd" style="overflow-x:auto"><div style="padding:14px;min-width:'+totalW+'px">';
+  svg += '<svg viewBox="0 0 '+totalW+' '+totalH+'" style="width:100%;min-width:'+totalW+'px;height:'+totalH+'px;display:block;font-family:var(--mo)">';
+
+  // 日期 header
+  let curMonth = -1;
+  dates.forEach((d, i) => {
+    const x = LABEL_W + i * dayPx;
+    const isWeekend = d.getDay() === 0 || d.getDay() === 6;
+    const isToday = d.toISOString().split('T')[0] === todayStr;
+    // 月份標籤（每月第一天或第一個格子）
+    if (d.getMonth() !== curMonth || i === 0) {
+      curMonth = d.getMonth();
+      svg += '<text x="'+(x+2)+'" y="14" font-size="10" font-weight="700" fill="var(--tx2)" letter-spacing="1.5">'+(d.getMonth()+1)+'月</text>';
+    }
+    // 週末背景
+    if (isWeekend) {
+      svg += '<rect x="'+x+'" y="22" width="'+dayPx+'" height="'+(totalH-22)+'" fill="var(--s4)" opacity="0.4"/>';
+    }
+    // 今天高亮
+    if (isToday) {
+      svg += '<rect x="'+x+'" y="22" width="'+dayPx+'" height="'+(totalH-22)+'" fill="var(--gold)" opacity="0.08"/>';
+      svg += '<line x1="'+x+'" y1="22" x2="'+x+'" y2="'+totalH+'" stroke="var(--gold)" stroke-width="1.5" stroke-dasharray="2,3"/>';
+    }
+    // 日期
+    svg += '<text x="'+(x+dayPx/2)+'" y="36" font-size="9" text-anchor="middle" fill="'+(isToday?'var(--gold)':'var(--tx3)')+'" font-weight="'+(isToday?'700':'500')+'">'+d.getDate()+'</text>';
+    // 星期
+    svg += '<text x="'+(x+dayPx/2)+'" y="50" font-size="8" text-anchor="middle" fill="'+(isWeekend?'var(--red)':'var(--tx3)')+'" letter-spacing="0.5">'+'日一二三四五六'[d.getDay()]+'</text>';
+  });
+
+  // header 底線
+  svg += '<line x1="0" y1="'+HEADER_H+'" x2="'+totalW+'" y2="'+HEADER_H+'" stroke="var(--li)" stroke-width="0.8"/>';
+  // 標籤欄背景
+  svg += '<rect x="0" y="0" width="'+LABEL_W+'" height="'+totalH+'" fill="#fff"/>';
+  svg += '<line x1="'+LABEL_W+'" y1="0" x2="'+LABEL_W+'" y2="'+totalH+'" stroke="var(--li)" stroke-width="0.8"/>';
+
+  // 任務列
+  items.forEach((item, idx) => {
+    const t = item.task;
+    const y = HEADER_H + idx * ROW_H + 4;
+    const sd = new Date(item.start);
+    const ed = new Date(item.end);
+    const offsetDays = Math.round((sd - minD) / 86400000);
+    const lengthDays = Math.max(1, Math.round((ed - sd) / 86400000) + 1);
+    const x = LABEL_W + offsetDays * dayPx;
+    const w = lengthDays * dayPx - 2;
+
+    // 列 hover 背景（隔行）
+    if (idx % 2 === 0) {
+      svg += '<rect x="0" y="'+(y-4)+'" width="'+totalW+'" height="'+ROW_H+'" fill="var(--s3)" opacity="0.5"/>';
+    }
+
+    // 任務名稱（label）
+    const isOverdue = item.end < todayStr && t.status !== 'done';
+    const labelColor = isOverdue ? 'var(--red)' : 'var(--tx)';
+    const escapedName = (t.name||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const truncName = escapedName.length > 22 ? escapedName.slice(0,21)+'…' : escapedName;
+    svg += '<text x="10" y="'+(y+ROW_H/2-2)+'" font-size="11" fill="'+labelColor+'" letter-spacing="0.5" style="cursor:pointer" onclick="openRP('+t.id+')">'+truncName+'</text>';
+    // 品牌標籤（小字）
+    if (t.brand) {
+      svg += '<text x="10" y="'+(y+ROW_H-2)+'" font-size="8.5" fill="var(--tx3)" letter-spacing="1">'+(t.brand||'').slice(0,12)+'</text>';
+    }
+
+    // 任務條
+    const priColor = t.priority === 'high' ? 'var(--red)' : t.priority === 'low' ? 'var(--grn)' : 'var(--gold)';
+    const statusColor = {
+      todo: 'var(--tx3)',
+      doing: 'var(--gold)',
+      review: 'var(--yel)',
+      done: 'var(--grn)',
+      hold: 'var(--tx3)'
+    }[t.status] || 'var(--tx3)';
+    const fillColor = t.status === 'done' ? 'var(--grn)' : (isOverdue ? 'var(--red)' : statusColor);
+
+    // 條形外框
+    svg += '<rect x="'+x+'" y="'+(y+2)+'" width="'+w+'" height="'+(ROW_H-12)+'" rx="3" fill="'+fillColor+'" opacity="0.85" style="cursor:pointer" onclick="openRP('+t.id+')"/>';
+    // 進度條（如果有 progress 欄位）
+    const prog = t.progress || (t.status === 'done' ? 100 : 0);
+    if (prog > 0 && prog < 100) {
+      svg += '<rect x="'+x+'" y="'+(y+2)+'" width="'+(w*prog/100)+'" height="'+(ROW_H-12)+'" rx="3" fill="'+fillColor+'" opacity="1"/>';
+    }
+    // 優先級色帶（左邊細條）
+    svg += '<rect x="'+x+'" y="'+(y+2)+'" width="3" height="'+(ROW_H-12)+'" rx="1" fill="'+priColor+'"/>';
+
+    // 條形內文字（如果夠寬）
+    if (w > 80) {
+      const innerName = escapedName.length > Math.floor(w/8) ? escapedName.slice(0, Math.floor(w/8)-1)+'…' : escapedName;
+      svg += '<text x="'+(x+8)+'" y="'+(y+ROW_H/2+2)+'" font-size="9.5" fill="#fff" font-weight="600" letter-spacing="0.5" style="pointer-events:none">'+innerName+'</text>';
+    }
+
+    // tooltip (title)
+    svg += '<title>'+escapedName+' · '+(t.brand||'—')+'\n'+item.start+' ~ '+item.end+'\n'+(t.owner||'未指派')+' · '+(t.status||'todo')+'</title>';
+  });
+
+  svg += '</svg></div></div>';
+
+  // 圖例
+  svg += '<div style="padding:10px 14px;font-size:10px;color:var(--tx3);letter-spacing:1.5px;display:flex;gap:14px;align-items:center;flex-wrap:wrap">';
+  svg += '<span style="display:inline-flex;align-items:center;gap:4px"><span style="display:inline-block;width:10px;height:10px;background:var(--gold);border-radius:2px"></span>進行中</span>';
+  svg += '<span style="display:inline-flex;align-items:center;gap:4px"><span style="display:inline-block;width:10px;height:10px;background:var(--yel);border-radius:2px"></span>待審核</span>';
+  svg += '<span style="display:inline-flex;align-items:center;gap:4px"><span style="display:inline-block;width:10px;height:10px;background:var(--grn);border-radius:2px"></span>已完成</span>';
+  svg += '<span style="display:inline-flex;align-items:center;gap:4px"><span style="display:inline-block;width:10px;height:10px;background:var(--red);border-radius:2px"></span>逾期</span>';
+  svg += '<span style="display:inline-flex;align-items:center;gap:4px"><span style="display:inline-block;width:10px;height:10px;background:var(--tx3);border-radius:2px"></span>待執行</span>';
+  svg += '<span style="margin-left:auto">共 '+items.length+' / '+tasks.length+' 個任務（其餘無日期）</span>';
+  svg += '</div>';
+
+  target.innerHTML = svg;
+}
+
 function renderKanbanTasks(tasks, target, brandId) {
   const COLS = [
     {s:'todo',l:'待執行',c:'var(--tx3)'},
@@ -2950,6 +3261,7 @@ function openTaskM(taskId, defaultBrandId, defaultStatus, defaultDate) {
   $('mt-desc').value = '';
   $('mt-kpi').value = '';
   $('mt-due').value = defaultDate || '';
+  $('mt-start').value = '';
   $('mt-hours').value = '';
   $('mt-priority').value = 'mid';
   $('mt-status').value = defaultStatus || 'todo';
@@ -2967,6 +3279,7 @@ function openTaskM(taskId, defaultBrandId, defaultStatus, defaultDate) {
     $('mt-domain').value = t.domain||'ec';
     $('mt-owner').value = t.owner||'';
     $('mt-due').value = t.due||'';
+    $('mt-start').value = t.start_date||'';
     $('mt-hours').value = t.hours||'';
     $('mt-priority').value = t.priority||'mid';
     $('mt-status').value = t.status||'todo';
@@ -3000,6 +3313,7 @@ function saveTaskM() {
     domain: $('mt-domain').value,
     owner: $('mt-owner').value,
     due: $('mt-due').value || null,
+    start_date: $('mt-start').value || null,
     hours: parseFloat($('mt-hours').value) || 0,
     priority: $('mt-priority').value,
     status: $('mt-status').value,
@@ -3874,6 +4188,7 @@ function renderTasksView() {
   if (fo) tasks = tasks.filter(t=>t.owner===fo);
   if (taskView==='kanban') renderKanbanTasks(tasks, $('tasks-content'), null);
   else if (taskView==='cal') renderTaskCal(tasks, $('tasks-content'), null);
+  else if (taskView==='gantt') renderTaskGantt(tasks, $('tasks-content'), null);
   else renderListTasks(tasks, $('tasks-content'), null, []);
 }
 
@@ -3930,6 +4245,8 @@ function renderMyWork() {
     renderKanbanTasks(tasks, $('mw-content'), null);
   } else if (myWorkView === 'cal') {
     renderTaskCal(tasks, $('mw-content'), null);
+  } else if (myWorkView === 'gantt') {
+    renderTaskGantt(tasks, $('mw-content'), null);
   } else {
     renderListTasks(tasks, $('mw-content'), null, []);
   }
