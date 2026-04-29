@@ -343,6 +343,8 @@ function initTables($pdo) {
     ensureColumn($pdo, 'brands', 'domains', 'JSON NULL');
     ensureColumn($pdo, 'brands', 'product', 'VARCHAR(200) NULL');
     ensureColumn($pdo, 'brands', 'channels', 'JSON NULL');
+    ensureColumn($pdo, 'brands', 'tier', 'VARCHAR(20) NULL');         // V4.7 客戶等級
+    ensureColumn($pdo, 'brands', 'industry', 'VARCHAR(50) NULL');     // V4.7 產業別
     ensureColumn($pdo, 'brands', 'platform_fee', 'TINYINT DEFAULT 0');
     ensureColumn($pdo, 'brands', 'window_am', 'VARCHAR(100) NULL');
     ensureColumn($pdo, 'brands', 'window_pm', 'VARCHAR(100) NULL');
@@ -375,6 +377,13 @@ function initTables($pdo) {
     ensureColumn($pdo, 'kols', 'fans_fb', 'INT NULL');
     ensureColumn($pdo, 'kols', 'fans_ig', 'INT NULL');
     ensureColumn($pdo, 'kols', 'fans_updated', 'VARCHAR(20) NULL');
+    ensureColumn($pdo, 'kols', 'relation_status', "VARCHAR(20) DEFAULT 'pending'"); // V4.7 合作關係狀態
+    ensureColumn($pdo, 'kols', 'tags', 'JSON NULL');                                  // V4.7 自訂標籤（可有酬/可互惠/...)
+    ensureColumn($pdo, 'kols', 'last_collab_date', 'DATE NULL');                       // V4.7 最近合作日
+
+    ensureColumn($pdo, 'group_buyers', 'relation_status', "VARCHAR(20) DEFAULT 'pending'");
+    ensureColumn($pdo, 'group_buyers', 'tags', 'JSON NULL');
+    ensureColumn($pdo, 'group_buyers', 'last_collab_date', 'DATE NULL');
 
     // ── New V4 tables ──
     $pdo->exec("CREATE TABLE IF NOT EXISTS brand_credentials (
@@ -916,6 +925,8 @@ $jsonFields = [
     'tasks' => ['collab','tags','comments','custom_data'],
     'brands' => ['domains','channels','revenue_history','custom_fields','collab_member_ids'],
     'members' => ['permissions','responsible_brands','assigned_brand_ids'],
+    'kols' => ['tags'],
+    'group_buyers' => ['tags'],
     'email_templates' => ['variables'],
     'brand_task_fields' => ['field_options'],
     'task_templates' => ['tasks'],

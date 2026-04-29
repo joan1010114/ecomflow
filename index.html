@@ -91,7 +91,15 @@ body{font-family:var(--fn);color:var(--tx);font-size:13.5px;overflow:hidden;}
 .tb-b:hover{border-color:var(--tx);color:var(--tx);}
 .tb-b:disabled{opacity:.35;cursor:not-allowed;}
 .tb-t{font-size:14px;font-weight:800;flex:1;letter-spacing:.1em;}
-.srch{display:flex;align-items:center;gap:8px;background:var(--s3);border:1px solid var(--b1);border-radius:3px;padding:7px 14px;color:var(--tx3);font-size:12px;cursor:pointer;min-width:180px;}
+.srch{display:flex;align-items:center;gap:8px;background:var(--s3);border:1px solid var(--b1);border-radius:3px;padding:7px 14px;color:var(--tx3);font-size:12px;cursor:pointer;flex:1;max-width:480px;letter-spacing:1px;transition:border-color .15s;}
+.srch:hover{border-color:var(--gold);color:var(--tx2);}
+.tb-inbox{position:relative;background:none;border:1px solid var(--b1);width:34px;height:34px;border-radius:50%;cursor:pointer;color:var(--tx2);display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.tb-inbox:hover{border-color:var(--gold);color:var(--gold);}
+.tb-inbox svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.tb-inbox-dot{position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--red);display:none;border:1.5px solid #fff;}
+.tb-inbox.has-unread .tb-inbox-dot{display:block;}
+.tb-inbox-cnt{position:absolute;top:-3px;right:-3px;background:var(--red);color:#fff;font-size:9px;min-width:16px;height:16px;border-radius:8px;padding:0 4px;display:none;align-items:center;justify-content:center;font-weight:700;font-family:var(--mo);border:1.5px solid #fff;}
+.tb-inbox.has-unread .tb-inbox-cnt{display:flex;}
 .srch:hover{border-color:var(--tx);}
 
 /* BUTTONS */
@@ -282,9 +290,11 @@ textarea.fc{resize:vertical;min-height:72px;line-height:1.6;}
 .perm-row:last-child{border-bottom:none;}
 .perm-name{width:110px;font-size:12px;font-weight:700;flex-shrink:0;}
 .perm-opts{display:flex;gap:8px;flex-wrap:wrap;}
-.perm-opt{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--tx2);cursor:pointer;padding:3px 8px;border-radius:2px;background:var(--s3);}
-.perm-opt input{accent-color:var(--tx);margin:0;}
-.perm-opt.on{background:var(--tx);color:#fff;}
+.perm-opt{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--tx2);cursor:pointer;padding:4px 10px;border-radius:3px;background:var(--s3);border:1px solid var(--b1);transition:all .12s;}
+.perm-opt:hover{border-color:var(--gold);background:var(--goldl);}
+.perm-opt input{accent-color:var(--gold);margin:0;}
+.perm-opt.on{background:var(--gold);color:#fff;border-color:var(--gold);font-weight:600;}
+.perm-opt.on input{accent-color:#fff;}
 
 /* TOAST */
 .toast{position:fixed;bottom:22px;right:22px;background:#fff;border:1px solid var(--b1);border-radius:3px;padding:12px 16px;font-size:12.5px;font-weight:600;z-index:9999;box-shadow:var(--sh3);display:flex;align-items:center;gap:8px;transform:translateX(140%);transition:transform .3s;max-width:300px;}
@@ -633,6 +643,31 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
     <div class="fg"><label>合約狀態</label><select class="fc" id="b-status"><option value="active">合作中</option><option value="pending">洽談中</option><option value="paused">暫停</option><option value="ended">已結束</option></select></div>
   </div>
   <div class="fr">
+    <div class="fg"><label>客戶等級</label>
+      <select class="fc" id="b-tier">
+        <option value="">—</option>
+        <option value="vip">⭐ VIP（核心戰略客戶）</option>
+        <option value="A">A 級（高價值，業績 / 合作量大）</option>
+        <option value="B">B 級（中價值，穩定合作）</option>
+        <option value="C">C 級（一般，量小）</option>
+        <option value="trial">試合作（短期觀察）</option>
+      </select>
+    </div>
+    <div class="fg"><label>產業別</label>
+      <select class="fc" id="b-industry">
+        <option value="">—</option>
+        <option value="食品">🍱 食品</option>
+        <option value="保健">💊 保健 / 美容</option>
+        <option value="美妝">💄 美妝 / 個人護理</option>
+        <option value="家用">🏠 家用 / 生活</option>
+        <option value="服飾">👕 服飾 / 配件</option>
+        <option value="3C">📱 3C / 家電</option>
+        <option value="母嬰">👶 母嬰 / 寵物</option>
+        <option value="其他">📎 其他</option>
+      </select>
+    </div>
+  </div>
+  <div class="fr">
     <div class="fg"><label>合作起始日</label><input class="fc" type="date" id="b-start"></div>
     <div class="fg"><label>合作結束日</label><input class="fc" type="date" id="b-end"></div>
   </div>
@@ -765,8 +800,24 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
   </div>
   <div class="fg"><label>地址</label><input class="fc" id="k-addr"></div>
   <div class="fr">
-    <div class="fg"><label>狀態</label><select class="fc" id="k-status"><option value="active">合作中</option><option value="pending">接洽中</option><option value="paused">暫停</option><option value="ended">結束</option></select></div>
-    <div class="fg"><label>標籤</label><input class="fc" id="k-tags"></div>
+    <div class="fg"><label>合作關係狀態</label>
+      <select class="fc" id="k-rel-status">
+        <option value="pending">待接洽</option>
+        <option value="contacting">接洽中</option>
+        <option value="active">已合作</option>
+        <option value="repeated">多次合作</option>
+        <option value="lost">失聯</option>
+        <option value="blacklist">不合作</option>
+      </select>
+    </div>
+    <div class="fg"><label>最近合作日</label><input class="fc" type="date" id="k-last-collab"></div>
+  </div>
+  <div class="fg"><label>分類標籤（可複選）</label>
+    <div id="k-tags-cb" class="cbl" style="grid-template-columns:repeat(3,1fr)"></div>
+  </div>
+  <div class="fr">
+    <div class="fg" style="display:none"><label>舊狀態（保留）</label><select class="fc" id="k-status"><option value="active">合作中</option><option value="pending">接洽中</option><option value="paused">暫停</option><option value="ended">結束</option></select></div>
+    <div class="fg"><label>自訂備註標籤（文字）</label><input class="fc" id="k-tags" placeholder="逗號分隔"></div>
   </div>
   <div class="fg"><label>備註</label><textarea class="fc" id="k-note"></textarea></div>
   <div class="mft">
@@ -833,6 +884,22 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
   </div>
   <div class="fg"><label>地址</label><input class="fc" id="gb-addr"></div>
   <div class="fg"><label>已合作品牌</label><input class="fc" id="gb-brands" placeholder="大野,人良,幸福巷"></div>
+  <div class="fr">
+    <div class="fg"><label>合作關係狀態</label>
+      <select class="fc" id="gb-rel-status">
+        <option value="pending">待接洽</option>
+        <option value="contacting">接洽中</option>
+        <option value="active">已合作</option>
+        <option value="repeated">多次合作</option>
+        <option value="lost">失聯</option>
+        <option value="blacklist">不合作</option>
+      </select>
+    </div>
+    <div class="fg"><label>最近合作日</label><input class="fc" type="date" id="gb-last-collab"></div>
+  </div>
+  <div class="fg"><label>分類標籤（可複選）</label>
+    <div id="gb-tags-cb" class="cbl" style="grid-template-columns:repeat(3,1fr)"></div>
+  </div>
   <div class="fg"><label>備註</label><textarea class="fc" id="gb-note"></textarea></div>
   <div class="mft">
     <button class="btn btn-g" onclick="closeM('m-gb')">取消</button>
@@ -1155,7 +1222,11 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
   <button class="tb-b" id="btn-back" onclick="navBack()">←</button>
   <button class="tb-b" id="btn-fwd" onclick="navFwd()">→</button>
   <div class="tb-t" id="tbt">總覽儀表板</div>
-  <div class="srch" onclick="openSrch()">🔍 搜尋...</div>
+  <div class="srch" onclick="openSrch()">🔍 搜尋客戶 / KOL / 任務 / 開團...</div>
+  <button class="tb-inbox" id="tb-inbox-btn" onclick="go('inbox')" title="通知中心">
+    <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    <span class="tb-inbox-cnt" id="tb-inbox-cnt">0</span>
+  </button>
 </div>
 
 <div class="pg" id="pg">
@@ -1276,6 +1347,28 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
     <div class="kpi grn"><div class="kpi-l">月營收</div><div class="kpi-v" id="cs-rev" style="font-size:20px">$0</div></div>
     <div class="kpi pur"><div class="kpi-l">已結束</div><div class="kpi-v" id="cs-ended">0</div></div>
   </div>
+  <!-- V4.7: 分類 tab + 等級篩選 -->
+  <div class="cd" style="margin-bottom:14px">
+    <div style="padding:10px 14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <div class="tab-sw" id="cli-tabs">
+        <button class="tab-sw-b on" data-cs="all" onclick="setClientStatus('all')">全部</button>
+        <button class="tab-sw-b" data-cs="active" onclick="setClientStatus('active')">合作中</button>
+        <button class="tab-sw-b" data-cs="pending" onclick="setClientStatus('pending')">洽談中</button>
+        <button class="tab-sw-b" data-cs="paused" onclick="setClientStatus('paused')">暫停</button>
+        <button class="tab-sw-b" data-cs="ended" onclick="setClientStatus('ended')">已結束</button>
+      </div>
+      <div style="flex:1"></div>
+      <select class="btn btn-g" style="padding:6px 10px" id="cli-f-tier" onchange="renderClients()">
+        <option value="">全部等級</option>
+        <option value="vip">⭐ VIP</option>
+        <option value="A">A 級（高價值）</option>
+        <option value="B">B 級（中價值）</option>
+        <option value="C">C 級（一般）</option>
+        <option value="trial">試合作</option>
+      </select>
+      <input class="fc" id="cli-search" placeholder="🔍 搜尋名稱..." style="padding:6px 10px;width:160px" oninput="renderClients()">
+    </div>
+  </div>
   <div id="cli-list"></div>
 </div>
 
@@ -1383,6 +1476,30 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
     <div class="kpi yel"><div class="kpi-l">接洽中</div><div class="kpi-v" id="ks-p">0</div></div>
     <div class="kpi pur"><div class="kpi-l">總粉絲數</div><div class="kpi-v" id="ks-f" style="font-size:20px">0</div></div>
   </div>
+  <!-- V4.7: 關係狀態 tab + 標籤篩選 -->
+  <div class="cd" style="margin-bottom:14px">
+    <div style="padding:10px 14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <div class="tab-sw" id="kol-tabs">
+        <button class="tab-sw-b on" data-ks="all" onclick="setKolStatus('all')">全部</button>
+        <button class="tab-sw-b" data-ks="pending" onclick="setKolStatus('pending')">待接洽</button>
+        <button class="tab-sw-b" data-ks="contacting" onclick="setKolStatus('contacting')">接洽中</button>
+        <button class="tab-sw-b" data-ks="active" onclick="setKolStatus('active')">已合作</button>
+        <button class="tab-sw-b" data-ks="repeated" onclick="setKolStatus('repeated')">多次合作</button>
+        <button class="tab-sw-b" data-ks="lost" onclick="setKolStatus('lost')">失聯</button>
+        <button class="tab-sw-b" data-ks="blacklist" onclick="setKolStatus('blacklist')">不合作</button>
+      </div>
+      <div style="flex:1"></div>
+      <select class="btn btn-g" style="padding:6px 10px" id="ft-kol-tag" onchange="renderKol()">
+        <option value="">全部標籤</option>
+        <option value="paid">💰 可有酬</option>
+        <option value="barter">🎁 可互惠</option>
+        <option value="vip">⭐ VIP / 優質</option>
+        <option value="new">🆕 新合作</option>
+        <option value="responsive">⚡ 回應快</option>
+        <option value="data_strong">📊 數據好</option>
+      </select>
+    </div>
+  </div>
   <div class="cd" id="kol-list-box"></div>
 </div>
 
@@ -1407,6 +1524,30 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
     <button class="btn btn-g" onclick="expGBCSV()">📤 匯出</button>
     <button class="btn btn-p" onclick="openGBM()">+ 新增團購主</button>
   </div></div>
+  <!-- V4.7: 關係狀態 tab + tag 篩選 -->
+  <div class="cd" style="margin-bottom:14px">
+    <div style="padding:10px 14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <div class="tab-sw" id="gb-tabs">
+        <button class="tab-sw-b on" data-gs="all" onclick="setGBStatus('all')">全部</button>
+        <button class="tab-sw-b" data-gs="pending" onclick="setGBStatus('pending')">待接洽</button>
+        <button class="tab-sw-b" data-gs="contacting" onclick="setGBStatus('contacting')">接洽中</button>
+        <button class="tab-sw-b" data-gs="active" onclick="setGBStatus('active')">已合作</button>
+        <button class="tab-sw-b" data-gs="repeated" onclick="setGBStatus('repeated')">多次合作</button>
+        <button class="tab-sw-b" data-gs="lost" onclick="setGBStatus('lost')">失聯</button>
+        <button class="tab-sw-b" data-gs="blacklist" onclick="setGBStatus('blacklist')">不合作</button>
+      </div>
+      <div style="flex:1"></div>
+      <select class="btn btn-g" style="padding:6px 10px" id="ft-gb-tag" onchange="renderGB()">
+        <option value="">全部標籤</option>
+        <option value="paid">💰 可有酬</option>
+        <option value="barter">🎁 可互惠</option>
+        <option value="vip">⭐ VIP / 優質</option>
+        <option value="new">🆕 新合作</option>
+        <option value="responsive">⚡ 回應快</option>
+        <option value="data_strong">📊 業績好</option>
+      </select>
+    </div>
+  </div>
   <div class="cd" id="gb-list-box"></div>
 </div>
 
@@ -1789,7 +1930,7 @@ const VIEW_PERM = {
   rev2: ['group_campaigns','view'],
   campaigns2: ['group_campaigns','view'],
   members: ['members','view'],
-  report: ['finance','view_revenue'],
+  report: ['report','view'],
   inbox: null
 };
 
@@ -1797,50 +1938,66 @@ const VIEW_PERM = {
 const DEFAULT_ROLE_PERMS = {
   operator: {
     clients:{view:1,edit:1,delete:0,credentials:1},
+    brand_links:{view:1,edit:1},
     tasks:{view:1,edit:1,delete:1,fields:1},
+    brand_campaigns:{view:1,edit:1,delete:0},
     kols:{view:1,edit:1,delete:0},
     group_buyers:{view:1,edit:1,delete:0},
     group_campaigns:{view:1,edit:1,payment:0},
     commissions:{view:1,edit:0,payment:0},
     members:{view:1,manage:0},
     finance:{view_revenue:1,view_profit:0,view_fee:0},
-    export:{clients:1,kols:1,campaigns:1},
+    report:{view:1,export:0},
+    activity:{view:1},
+    export:{clients:1,kols:1,campaigns:1,revenue:1},
     import:{clients:0,kols:0,campaigns:0}
   },
   finance: {
     clients:{view:1,edit:0,delete:0,credentials:0},
+    brand_links:{view:1,edit:0},
     tasks:{view:1,edit:0,delete:0,fields:0},
+    brand_campaigns:{view:1,edit:0,delete:0},
     kols:{view:1,edit:0,delete:0},
     group_buyers:{view:1,edit:0,delete:0},
     group_campaigns:{view:1,edit:1,payment:1},
     commissions:{view:1,edit:1,payment:1},
     members:{view:1,manage:0},
     finance:{view_revenue:1,view_profit:1,view_fee:1},
-    export:{clients:1,kols:0,campaigns:1},
+    report:{view:1,export:1},
+    activity:{view:1},
+    export:{clients:1,kols:0,campaigns:1,revenue:1},
     import:{clients:0,kols:0,campaigns:0}
   },
   support: {
     clients:{view:1,edit:1,delete:0,credentials:0},
+    brand_links:{view:1,edit:1},
     tasks:{view:1,edit:0,delete:0,fields:0},
+    brand_campaigns:{view:1,edit:0,delete:0},
     kols:{view:1,edit:1,delete:0},
     group_buyers:{view:1,edit:1,delete:0},
     group_campaigns:{view:1,edit:0,payment:0},
     commissions:{view:0,edit:0,payment:0},
     members:{view:0,manage:0},
     finance:{view_revenue:0,view_profit:0,view_fee:0},
-    export:{clients:0,kols:0,campaigns:0},
+    report:{view:0,export:0},
+    activity:{view:0},
+    export:{clients:0,kols:0,campaigns:0,revenue:0},
     import:{clients:0,kols:0,campaigns:0}
   },
   viewer: {
     clients:{view:1,edit:0,delete:0,credentials:0},
+    brand_links:{view:1,edit:0},
     tasks:{view:1,edit:0,delete:0,fields:0},
+    brand_campaigns:{view:1,edit:0,delete:0},
     kols:{view:1,edit:0,delete:0},
     group_buyers:{view:1,edit:0,delete:0},
     group_campaigns:{view:1,edit:0,payment:0},
     commissions:{view:1,edit:0,payment:0},
     members:{view:0,manage:0},
     finance:{view_revenue:1,view_profit:0,view_fee:0},
-    export:{clients:0,kols:0,campaigns:0},
+    report:{view:1,export:0},
+    activity:{view:0},
+    export:{clients:0,kols:0,campaigns:0,revenue:0},
     import:{clients:0,kols:0,campaigns:0}
   }
 };
@@ -1854,15 +2011,19 @@ const ROLE_DESC = {
 
 const PERM_STRUCTURE = [
   {key:'clients', name:'客戶資料', opts:[['view','看'],['edit','編輯'],['delete','刪除'],['credentials','看帳密']]},
+  {key:'brand_links', name:'客戶資源', opts:[['view','看'],['edit','編輯']]},
   {key:'tasks', name:'任務', opts:[['view','看'],['edit','編輯'],['delete','刪除'],['fields','自訂欄位']]},
+  {key:'brand_campaigns', name:'檔期活動', opts:[['view','看'],['edit','編輯'],['delete','刪除']]},
   {key:'kols', name:'KOL/公關', opts:[['view','看'],['edit','編輯'],['delete','刪除']]},
   {key:'group_buyers', name:'團購主', opts:[['view','看'],['edit','編輯'],['delete','刪除']]},
   {key:'group_campaigns', name:'開團紀錄', opts:[['view','看'],['edit','編輯'],['payment','執行匯款']]},
   {key:'commissions', name:'分潤', opts:[['view','看'],['edit','編輯'],['payment','匯款']]},
   {key:'members', name:'成員', opts:[['view','看'],['manage','管理帳號']]},
-  {key:'finance', name:'財務', opts:[['view_revenue','看營收'],['view_profit','看淨利'],['view_fee','看月費']]},
-  {key:'export', name:'匯出', opts:[['clients','客戶'],['kols','KOL'],['campaigns','開團']]},
-  {key:'import', name:'匯入', opts:[['clients','客戶'],['kols','KOL'],['campaigns','開團']]}
+  {key:'finance', name:'財務檢視', opts:[['view_revenue','看營收'],['view_profit','看淨利'],['view_fee','看月費']]},
+  {key:'report', name:'績效報告', opts:[['view','看'],['export','匯出']]},
+  {key:'activity', name:'活動紀錄', opts:[['view','看']]},
+  {key:'export', name:'資料匯出', opts:[['clients','客戶'],['kols','KOL'],['campaigns','開團'],['revenue','對帳單']]},
+  {key:'import', name:'資料匯入', opts:[['clients','客戶'],['kols','KOL'],['campaigns','開團']]}
 ];
 
 // State
@@ -2245,6 +2406,13 @@ function updateBadges() {
   }
   $('nb-m').textContent = DB.members.length;
   $('nb-n').textContent = DB.notifications.filter(n=>!n.read).length;
+  // V4.7: 同步頂部通知按鈕
+  const unread = DB.notifications.filter(n=>!n.read).length;
+  const btn = $('tb-inbox-btn');
+  if (btn) {
+    btn.classList.toggle('has-unread', unread > 0);
+    $('tb-inbox-cnt').textContent = unread > 99 ? '99+' : unread;
+  }
 }
 
 // Helpers
@@ -3018,6 +3186,23 @@ function renderDashActiveCamps() {
 }
 
 /* ═══ CLIENTS ═══ */
+let CLI_STATUS = 'all'; // 客戶頁面前 tab 狀態
+function setClientStatus(s) {
+  CLI_STATUS = s;
+  document.querySelectorAll('#cli-tabs .tab-sw-b').forEach(b => {
+    b.classList.toggle('on', b.dataset.cs === s);
+  });
+  renderClients();
+}
+
+const TIER_LBL = {
+  vip:   { lbl:'VIP',     ic:'⭐', color:'var(--gold)', bg:'rgba(168,138,90,0.12)' },
+  A:     { lbl:'A 級',    ic:'A',  color:'var(--red)',  bg:'rgba(180,80,80,0.10)' },
+  B:     { lbl:'B 級',    ic:'B',  color:'var(--cyn)',  bg:'rgba(80,140,180,0.10)' },
+  C:     { lbl:'C 級',    ic:'C',  color:'var(--tx3)',  bg:'rgba(168,162,153,0.10)' },
+  trial: { lbl:'試合作',  ic:'試', color:'var(--pur)',  bg:'rgba(140,100,160,0.10)' }
+};
+
 function renderClients() {
   const acts = $('cli-acts');
   acts.innerHTML = hasPerm('clients','edit')?'<button class="btn btn-p" onclick="openBrandM()">+ 新增客戶</button>':'';
@@ -3028,15 +3213,44 @@ function renderClients() {
   $('cs-pending').textContent = pending.length;
   $('cs-rev').textContent = '$'+fmt(active.reduce((s,b)=>s+(b.fee||0),0));
   $('cs-ended').textContent = ended.length;
-  $('cli-sub').textContent = '共 '+DB.brands.length+' 位客戶';
+
+  // 篩選
+  let filtered = DB.brands.slice();
+  if (CLI_STATUS !== 'all') {
+    if (CLI_STATUS === 'ended') {
+      filtered = filtered.filter(b => b.archived || b.status === 'ended');
+    } else {
+      filtered = filtered.filter(b => !b.archived && b.status === CLI_STATUS);
+    }
+  }
+  const tierFilter = $('cli-f-tier') ? $('cli-f-tier').value : '';
+  if (tierFilter) filtered = filtered.filter(b => (b.tier||'') === tierFilter);
+  const q = $('cli-search') ? $('cli-search').value.trim().toLowerCase() : '';
+  if (q) {
+    filtered = filtered.filter(b => {
+      return ((b.name||'')+(b.short||'')+(b.code||'')+(b.product||'')+(b.cat||'')).toLowerCase().indexOf(q) >= 0;
+    });
+  }
+
+  $('cli-sub').textContent = '顯示 '+filtered.length+' / 共 '+DB.brands.length+' 位';
 
   const list = $('cli-list');
   if (!DB.brands.length) { list.innerHTML = emptyHTML('🏢','尚無客戶'); return; }
+  if (!filtered.length) {
+    list.innerHTML = '<div class="cd"><div style="padding:50px 20px;text-align:center;color:var(--tx3);letter-spacing:2px">沒有符合條件的客戶</div></div>';
+    return;
+  }
+
+  // Sort：合作中優先 → 洽談中 → 暫停 → 已結束；同狀態按 fee desc
+  const stOrd = { active:0, pending:1, paused:2, ended:3 };
+  filtered.sort((a,b) => {
+    const oa = stOrd[a.status] ?? 9, ob = stOrd[b.status] ?? 9;
+    if (oa !== ob) return oa - ob;
+    return (b.fee||0) - (a.fee||0);
+  });
 
   let h = '';
-  // Active first, then ended
-  const order = [...active, ...pending, ...ended];
-  order.forEach(b => {
+  filtered.forEach(b => {
     const bt = DB.tasks.filter(t=>t.brand===b.short);
     const bd = bt.filter(t=>t.status==='done').length;
     const rate = bt.length?Math.round(bd/bt.length*100):0;
@@ -3044,11 +3258,14 @@ function renderClients() {
     const bCamps = DB.campaigns.filter(c=>c.brand_id===b.id);
     const gmv = bCamps.reduce((s,c)=>s+(c.revenue||0),0);
 
+    const tier = TIER_LBL[b.tier];
+    const tierBadge = tier ? '<span class="cli-tier" style="background:'+tier.bg+';color:'+tier.color+';font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;letter-spacing:1px;flex-shrink:0">'+tier.ic+' '+tier.lbl+'</span>' : '';
+
     h += '<div class="cc" onclick="go(\'client-detail\',\''+b.id+'\')">';
     h += '<div class="cc-h">';
     h += '<div class="cc-ico">'+esc(b.emoji||'📦')+'</div>';
     h += '<div style="flex:1;min-width:0">';
-    h += '<div class="cc-t">'+esc(b.name)+'</div>';
+    h += '<div class="cc-t" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+esc(b.name)+tierBadge+'</div>';
     h += '<div class="cc-c">'+esc(b.code||'—')+' · '+esc(b.product||b.cat||'—')+' · '+tag(CLST_TG[b.status]||'tg-gr',CLST_LBL[b.status]||b.status)+' · '+tag('tg-gold',PLAN_LBL[b.plan]||'—')+'</div>';
     h += '</div>';
     if (hasPerm('clients','edit'))
@@ -4456,6 +4673,8 @@ function openBrandM(eid) {
   $('b-fee').value = '25000';
   $('b-status').value = 'active';
   $('b-start').value = today();
+  if ($('b-tier')) $('b-tier').value = '';
+  if ($('b-industry')) $('b-industry').value = '';
 
   // Domains
   let domH = '';
@@ -4503,6 +4722,8 @@ function openBrandM(eid) {
     $('b-status').value = b.status||'active';
     $('b-start').value = b.start_date||'';
     $('b-end').value = b.end_date||'';
+    if ($('b-tier')) $('b-tier').value = b.tier||'';
+    if ($('b-industry')) $('b-industry').value = b.industry||'';
     $('b-wam').value = b.window_am||'';
     $('b-wpm').value = b.window_pm||'';
     $('b-note').value = b.note||'';
@@ -4537,6 +4758,7 @@ function saveBrand() {
     email:$('b-email').value.trim(), phone:$('b-phone').value.trim(),
     owner:$('b-owner').value, plan:$('b-plan').value,
     fee:parseInt($('b-fee').value)||0, status:$('b-status').value,
+    tier:$('b-tier')?$('b-tier').value:'', industry:$('b-industry')?$('b-industry').value:'',
     start_date:$('b-start').value, end_date:$('b-end').value,
     domains:doms, channels:chs,
     window_am:$('b-wam').value.trim(), window_pm:$('b-wpm').value.trim(),
@@ -4773,10 +4995,37 @@ function calNav(d){calM+=d;if(calM<1){calM=12;calY--;}if(calM>12){calM=1;calY++;
 function calTo(){const n=new Date();calY=n.getFullYear();calM=n.getMonth()+1;renderCal();}
 
 /* ═══ KOL DATABASE ═══ */
+let KOL_STATUS = 'all';
+function setKolStatus(s) {
+  KOL_STATUS = s;
+  document.querySelectorAll('#kol-tabs .tab-sw-b').forEach(b => {
+    b.classList.toggle('on', b.dataset.ks === s);
+  });
+  renderKol();
+}
+
+const KOL_REL_LBL = {
+  pending:    { lbl:'待接洽',   tg:'tg-gr' },
+  contacting: { lbl:'接洽中',   tg:'tg-yel' },
+  active:     { lbl:'已合作',   tg:'tg-grn' },
+  repeated:   { lbl:'多次合作', tg:'tg-gold' },
+  lost:       { lbl:'失聯',     tg:'tg-red' },
+  blacklist:  { lbl:'不合作',   tg:'tg-gr' }
+};
+const KOL_TAG_LBL = {
+  paid:         { lbl:'可有酬',  ic:'💰' },
+  barter:       { lbl:'可互惠',  ic:'🎁' },
+  vip:          { lbl:'VIP',     ic:'⭐' },
+  new:          { lbl:'新合作',  ic:'🆕' },
+  responsive:   { lbl:'回應快',  ic:'⚡' },
+  data_strong:  { lbl:'數據好',  ic:'📊' }
+};
+
 function renderKol() {
   const q = ($('kol-search').value||'').toLowerCase().trim();
   const fb = $('ft-kol-brand').value;
   const ft = $('ft-kol-type').value;
+  const ftag = $('ft-kol-tag') ? $('ft-kol-tag').value : '';
   let list = DB.kols;
   if (q) list = list.filter(k=>(k.name||'').toLowerCase().indexOf(q)>-1 || (k.ig_id||'').toLowerCase().indexOf(q)>-1);
   if (fb) {
@@ -4788,11 +5037,17 @@ function renderKol() {
     }
   }
   if (ft) list = list.filter(k=>k.kol_type===ft);
+  // V4.7 status filter
+  if (KOL_STATUS !== 'all') {
+    list = list.filter(k => (k.relation_status||'pending') === KOL_STATUS);
+  }
+  // V4.7 tag filter
+  if (ftag) list = list.filter(k => Array.isArray(k.tags) && k.tags.indexOf(ftag) > -1);
 
   $('kol-sub').textContent = '共 '+DB.kols.length+' 位 KOL（顯示 '+list.length+'）';
   $('ks-t').textContent = DB.kols.length;
-  $('ks-a').textContent = DB.kols.filter(k=>k.status==='active').length;
-  $('ks-p').textContent = DB.kols.filter(k=>k.status==='pending').length;
+  $('ks-a').textContent = DB.kols.filter(k=>(k.relation_status==='active' || k.relation_status==='repeated')).length;
+  $('ks-p').textContent = DB.kols.filter(k=>k.relation_status==='contacting' || k.relation_status==='pending' || !k.relation_status).length;
   const tf = DB.kols.reduce((s,k)=>s+(k.fans_ig||k.fans||0),0);
   $('ks-f').textContent = fmtK(tf);
 
@@ -4801,19 +5056,28 @@ function renderKol() {
   list = list.slice(0, page);
 
   let h = '<div class="cd-t"><div class="cd-tt">🌟 KOL 列表</div></div>';
-  h += '<div class="tw"><table class="tbl-t"><thead><tr><th>名稱</th><th>類型</th><th>IG</th><th>粉絲</th><th>合作品牌</th><th>Email</th><th>狀態</th><th>操作</th></tr></thead><tbody>';
-  if (!list.length) h += '<tr><td colspan="8" style="text-align:center;color:var(--tx3);padding:28px">尚無 KOL</td></tr>';
+  h += '<div class="tw"><table class="tbl-t"><thead><tr><th>名稱</th><th>類型</th><th>IG</th><th>粉絲</th><th>合作品牌</th><th>標籤</th><th>狀態</th><th>操作</th></tr></thead><tbody>';
+  if (!list.length) h += '<tr><td colspan="8" style="text-align:center;color:var(--tx3);padding:28px">尚無符合條件的 KOL</td></tr>';
   list.forEach(k=>{
     const myRels = DB.kolRelations.filter(r=>r.kol_id===k.id);
     const brandNames = myRels.map(r=>{const b=DB.brands.find(x=>x.id===r.brand_id);return b?b.short:'';}).filter(Boolean);
+    const rs = KOL_REL_LBL[k.relation_status||'pending'] || KOL_REL_LBL.pending;
+    const tagsArr = Array.isArray(k.tags) ? k.tags : [];
+    let tagsHtml = tagsArr.slice(0, 3).map(tg => {
+      const t = KOL_TAG_LBL[tg];
+      return t ? '<span style="font-size:10px;padding:1px 5px;background:var(--goldl);color:var(--gold);border-radius:8px;margin-right:3px;letter-spacing:.5px">'+t.ic+' '+t.lbl+'</span>' : '';
+    }).join('');
+    if (tagsArr.length > 3) tagsHtml += '<span style="font-size:10px;color:var(--tx3)">+'+(tagsArr.length-3)+'</span>';
+    if (!tagsHtml) tagsHtml = '<span style="color:var(--tx3)">—</span>';
+
     h += '<tr onclick="go(\'kol-detail\',\''+k.id+'\')">';
     h += '<td style="font-weight:700">'+esc(k.name)+'</td>';
     h += '<td>'+esc(k.kol_type||'—')+'</td>';
     h += '<td style="font-family:var(--mo);font-size:11px">'+esc(k.ig_id||'—')+'</td>';
     h += '<td style="font-family:var(--mo)">'+fmtK(k.fans_ig||k.fans||0)+'</td>';
     h += '<td>'+(brandNames.length?brandNames.slice(0,2).map(b=>tag('tg-gold',b)).join(' '):'—')+(brandNames.length>2?' +'+(brandNames.length-2):'')+'</td>';
-    h += '<td style="font-family:var(--mo);font-size:11px">'+esc(k.mail||k.email||'—')+'</td>';
-    h += '<td>'+tag(k.status==='active'?'tg-grn':'tg-yel', k.status||'—')+'</td>';
+    h += '<td>'+tagsHtml+'</td>';
+    h += '<td>'+tag(rs.tg, rs.lbl)+'</td>';
     h += '<td onclick="event.stopPropagation()"><button class="btn btn-g btn-sm" onclick="openKolM('+k.id+')">✏️</button></td>';
     h += '</tr>';
   });
@@ -5763,6 +6027,25 @@ function openKolM(eid) {
   ['k-name','k-type','k-ig-id','k-ig','k-fb','k-yt','k-blog','k-mail','k-line','k-recipient','k-phone','k-addr','k-tags','k-note'].forEach(id=>$(id).value='');
   ['k-fans-ig','k-fans-fb','k-er'].forEach(id=>$(id).value='');
   $('k-status').value = 'active';
+  if ($('k-rel-status')) $('k-rel-status').value = 'pending';
+  if ($('k-last-collab')) $('k-last-collab').value = '';
+
+  // 填充 tags checkbox
+  if ($('k-tags-cb')) {
+    let cbH = '';
+    Object.keys(KOL_TAG_LBL).forEach(key => {
+      const t = KOL_TAG_LBL[key];
+      cbH += '<label class="cb-item"><input type="checkbox" value="'+key+'"><div><div class="cb-item-t">'+t.ic+' '+t.lbl+'</div></div></label>';
+    });
+    $('k-tags-cb').innerHTML = cbH;
+    document.querySelectorAll('#k-tags-cb .cb-item').forEach(el=>{
+      el.addEventListener('click', e=>{
+        if (e.target.tagName!=='INPUT') el.querySelector('input').checked = !el.querySelector('input').checked;
+        el.classList.toggle('on', el.querySelector('input').checked);
+      });
+    });
+  }
+
   if (eid) {
     const k = DB.kols.find(x=>x.id===eid);
     if (!k) return;
@@ -5783,8 +6066,18 @@ function openKolM(eid) {
     $('k-recipient').value = k.recipient||'';
     $('k-phone').value = k.phone||'';
     $('k-addr').value = k.address||'';
-    $('k-tags').value = k.tags||'';
+    // tags 處理：陣列才放 checkbox、字串就放 k-tags 文字
+    if (Array.isArray(k.tags)) {
+      k.tags.forEach(t => {
+        const cb = document.querySelector('#k-tags-cb input[value="'+t+'"]');
+        if (cb) { cb.checked = true; cb.closest('.cb-item').classList.add('on'); }
+      });
+    } else if (typeof k.tags === 'string') {
+      $('k-tags').value = k.tags;
+    }
     $('k-status').value = k.status||'active';
+    $('k-rel-status').value = k.relation_status||'pending';
+    $('k-last-collab').value = k.last_collab_date||'';
     $('k-note').value = k.note||'';
   }
   openM('m-kol');
@@ -5794,6 +6087,8 @@ function saveKol() {
   const name = $('k-name').value.trim();
   if (!name) { toast('請填名稱','error'); return; }
   const eid = parseInt($('k-eid').value) || null;
+  // 抓多選的 tags
+  const tagArr = Array.from(document.querySelectorAll('#k-tags-cb input:checked')).map(c => c.value);
   const data = {
     name, kol_type:$('k-type').value.trim(),
     ig_id:$('k-ig-id').value.trim(), ig_url:$('k-ig').value.trim(),
@@ -5806,8 +6101,11 @@ function saveKol() {
     mail:$('k-mail').value.trim(), email:$('k-mail').value.trim(),
     line_id:$('k-line').value.trim(), line:$('k-line').value.trim(),
     recipient:$('k-recipient').value.trim(), phone:$('k-phone').value.trim(),
-    address:$('k-addr').value.trim(), tags:$('k-tags').value.trim(),
+    address:$('k-addr').value.trim(),
+    tags: tagArr,
     status:$('k-status').value, note:$('k-note').value.trim(),
+    relation_status: $('k-rel-status') ? $('k-rel-status').value : 'pending',
+    last_collab_date: $('k-last-collab') ? ($('k-last-collab').value || null) : null,
     platform:'Instagram', handle:$('k-ig-id').value.trim()
   };
   const p = eid ? apiPut('kols', eid, data) : apiPost('kols', data);
@@ -5822,28 +6120,53 @@ function saveKol() {
 
 
 /* ═══ GROUP BUYERS ═══ */
+let GB_STATUS = 'all';
+function setGBStatus(s) {
+  GB_STATUS = s;
+  document.querySelectorAll('#gb-tabs .tab-sw-b').forEach(b => {
+    b.classList.toggle('on', b.dataset.gs === s);
+  });
+  renderGB();
+}
+
 function renderGB() {
   const q = ($('gb-search').value||'').toLowerCase().trim();
   let list = DB.groupBuyers;
   if (q) list = list.filter(g=>(g.nickname||'').toLowerCase().indexOf(q)>-1 || (g.ig_handle||'').toLowerCase().indexOf(q)>-1);
+  // V4.7 status filter
+  if (GB_STATUS !== 'all') {
+    list = list.filter(g => (g.relation_status||'pending') === GB_STATUS);
+  }
+  // V4.7 tag filter
+  const ftag = $('ft-gb-tag') ? $('ft-gb-tag').value : '';
+  if (ftag) list = list.filter(g => Array.isArray(g.tags) && g.tags.indexOf(ftag) > -1);
+
   $('gb-sub').textContent = '共 '+DB.groupBuyers.length+' 位團購主（顯示 '+list.length+'）';
 
   const page = 50;
   list = list.slice(0, page);
 
   let h = '<div class="cd-t"><div class="cd-tt">🛍️ 團購主列表</div></div>';
-  h += '<div class="tw"><table class="tbl-t"><thead><tr><th>稱呼</th><th>類型</th><th>IG</th><th>邀約日</th><th>回覆</th><th>合作方式</th><th>已合作品牌</th><th>電話</th><th>操作</th></tr></thead><tbody>';
-  if (!list.length) h += '<tr><td colspan="9" style="text-align:center;color:var(--tx3);padding:28px">尚無資料</td></tr>';
+  h += '<div class="tw"><table class="tbl-t"><thead><tr><th>稱呼</th><th>類型</th><th>IG</th><th>標籤</th><th>合作方式</th><th>已合作品牌</th><th>狀態</th><th>操作</th></tr></thead><tbody>';
+  if (!list.length) h += '<tr><td colspan="8" style="text-align:center;color:var(--tx3);padding:28px">尚無符合條件的資料</td></tr>';
   list.forEach(g=>{
+    const rs = KOL_REL_LBL[g.relation_status||'pending'] || KOL_REL_LBL.pending;
+    const tagsArr = Array.isArray(g.tags) ? g.tags : [];
+    let tagsHtml = tagsArr.slice(0, 3).map(tg => {
+      const t = KOL_TAG_LBL[tg];
+      return t ? '<span style="font-size:10px;padding:1px 5px;background:var(--goldl);color:var(--gold);border-radius:8px;margin-right:3px;letter-spacing:.5px">'+t.ic+' '+t.lbl+'</span>' : '';
+    }).join('');
+    if (tagsArr.length > 3) tagsHtml += '<span style="font-size:10px;color:var(--tx3)">+'+(tagsArr.length-3)+'</span>';
+    if (!tagsHtml) tagsHtml = '<span style="color:var(--tx3)">—</span>';
+
     h += '<tr onclick="openGBM('+g.id+')">';
     h += '<td style="font-weight:700">'+esc(g.nickname)+'</td>';
     h += '<td>'+esc(g.gb_type||'—')+'</td>';
     h += '<td style="font-family:var(--mo);font-size:11px">'+esc(g.ig_handle||'—')+'</td>';
-    h += '<td style="font-family:var(--mo);font-size:11px">'+(g.invite_date||'—')+'</td>';
-    h += '<td>'+esc(g.reply||'—')+'</td>';
-    h += '<td style="font-size:11px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(g.collab_method||'—')+'</td>';
+    h += '<td>'+tagsHtml+'</td>';
+    h += '<td style="font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(g.collab_method||'—')+'</td>';
     h += '<td>'+(g.collab_brands?tag('tg-gold', g.collab_brands):'—')+'</td>';
-    h += '<td style="font-family:var(--mo);font-size:11px">'+esc(g.phone||'—')+'</td>';
+    h += '<td>'+tag(rs.tg, rs.lbl)+'</td>';
     h += '<td onclick="event.stopPropagation()"><button class="btn btn-g btn-sm" onclick="openGBM('+g.id+')">✏️</button></td>';
     h += '</tr>';
   });
@@ -5857,6 +6180,24 @@ function openGBM(eid) {
   $('gb-eid').value = '';
   $('mgb-t').textContent = '🛍️ 新增團購主';
   ['gb-name','gb-type','gb-ig','gb-fb','gb-mail','gb-invite','gb-reply','gb-collab','gb-recipient','gb-phone','gb-addr','gb-brands','gb-note'].forEach(id=>$(id).value='');
+  if ($('gb-rel-status')) $('gb-rel-status').value = 'pending';
+  if ($('gb-last-collab')) $('gb-last-collab').value = '';
+  // 填充 tags checkbox
+  if ($('gb-tags-cb')) {
+    let cbH = '';
+    Object.keys(KOL_TAG_LBL).forEach(key => {
+      const t = KOL_TAG_LBL[key];
+      cbH += '<label class="cb-item"><input type="checkbox" value="'+key+'"><div><div class="cb-item-t">'+t.ic+' '+t.lbl+'</div></div></label>';
+    });
+    $('gb-tags-cb').innerHTML = cbH;
+    document.querySelectorAll('#gb-tags-cb .cb-item').forEach(el=>{
+      el.addEventListener('click', e=>{
+        if (e.target.tagName!=='INPUT') el.querySelector('input').checked = !el.querySelector('input').checked;
+        el.classList.toggle('on', el.querySelector('input').checked);
+      });
+    });
+  }
+
   if (eid) {
     const g = DB.groupBuyers.find(x=>x.id===eid);
     if (!g) return;
@@ -5875,6 +6216,14 @@ function openGBM(eid) {
     $('gb-addr').value = g.address||'';
     $('gb-brands').value = g.collab_brands||'';
     $('gb-note').value = g.note||'';
+    if ($('gb-rel-status')) $('gb-rel-status').value = g.relation_status || 'pending';
+    if ($('gb-last-collab')) $('gb-last-collab').value = g.last_collab_date || '';
+    if (Array.isArray(g.tags)) {
+      g.tags.forEach(t => {
+        const cb = document.querySelector('#gb-tags-cb input[value="'+t+'"]');
+        if (cb) { cb.checked = true; cb.closest('.cb-item').classList.add('on'); }
+      });
+    }
   }
   openM('m-gb');
 }
@@ -5883,6 +6232,7 @@ function saveGB() {
   const name = $('gb-name').value.trim();
   if (!name) { toast('請填稱呼','error'); return; }
   const eid = parseInt($('gb-eid').value) || null;
+  const tagArr = Array.from(document.querySelectorAll('#gb-tags-cb input:checked')).map(c => c.value);
   const data = {
     nickname:name, gb_type:$('gb-type').value.trim(),
     ig_handle:$('gb-ig').value.trim(), fb_url:$('gb-fb').value.trim(),
@@ -5891,7 +6241,10 @@ function saveGB() {
     collab_method:$('gb-collab').value.trim(),
     recipient:$('gb-recipient').value.trim(), phone:$('gb-phone').value.trim(),
     address:$('gb-addr').value.trim(),
-    collab_brands:$('gb-brands').value.trim(), note:$('gb-note').value.trim()
+    collab_brands:$('gb-brands').value.trim(), note:$('gb-note').value.trim(),
+    relation_status: $('gb-rel-status') ? $('gb-rel-status').value : 'pending',
+    last_collab_date: $('gb-last-collab') ? ($('gb-last-collab').value || null) : null,
+    tags: tagArr
   };
   const p = eid ? apiPut('group_buyers', eid, data) : apiPost('group_buyers', data);
   p.then(()=>loadDB()).then(()=>{
@@ -7238,7 +7591,7 @@ function buildPermMatrix(currentPerms) {
           const checked = !!rowPerms[k];
           const showLbl = byCol[col].length > 1 ? esc(lbl) : (col === byCol[col][0]  // single opt shows clean label
             ? '' : esc(lbl));
-          h += '<label class="perm-opt'+(checked?' on':'')+'" style="display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 8px;border:1px solid '+(checked?'var(--gold)':'var(--li)')+';border-radius:4px;cursor:pointer;background:'+(checked?'rgba(180,140,80,0.12)':'transparent')+';letter-spacing:1px;white-space:nowrap">';
+          h += '<label class="perm-opt'+(checked?' on':'')+'" style="letter-spacing:1px;white-space:nowrap">';
           h += '<input type="checkbox" data-cat="'+cat.key+'" data-action="'+k+'" '+(checked?'checked':'')+' style="margin:0">';
           // 若該欄只有一個選項，用欄位標籤（看/編輯/刪除）；否則用原 label
           if (byCol[col].length === 1) {
@@ -7266,12 +7619,6 @@ function applyPermPreset(key) {
     const should = !!((tgtPerms[cat]||{})[act]);
     cb.checked = should;
     cb.closest('.perm-opt').classList.toggle('on', should);
-    // 更新視覺樣式（border/background）
-    const label = cb.closest('.perm-opt');
-    if (label) {
-      label.style.borderColor = should ? 'var(--gold)' : 'var(--li)';
-      label.style.background = should ? 'rgba(180,140,80,0.12)' : 'transparent';
-    }
   });
   if (key !== 'clear') toast('已套用「'+(ROLE_LBL[key]||key)+'」預設','info');
 }
@@ -7340,8 +7687,6 @@ function attachPermListeners() {
       const label = this.closest('.perm-opt');
       if (!label) return;
       label.classList.toggle('on', this.checked);
-      label.style.borderColor = this.checked ? 'var(--gold)' : 'var(--li)';
-      label.style.background = this.checked ? 'rgba(180,140,80,0.12)' : 'transparent';
     });
   });
 }
