@@ -4189,21 +4189,20 @@ function renderClients() {
   const acts = $('cli-acts');
   if (acts) acts.innerHTML = hasPerm('clients','edit')?'<button class="btn btn-p" onclick="openBrandM()">+ 新增客戶</button>':'';
   const active = DB.brands.filter(b=>b.status==='active'&&!b.archived);
-  const pending = DB.brands.filter(b=>b.status==='pending');
-  const ended = DB.brands.filter(b=>b.archived||b.status==='ended');
+  const pending = DB.brands.filter(b=>b.status==='pending'&&!b.archived);
+  const ended = DB.brands.filter(b=>b.status==='ended');
   if ($('cs-active'))  $('cs-active').textContent  = active.length;
   if ($('cs-pending')) $('cs-pending').textContent = pending.length;
   if ($('cs-rev'))     $('cs-rev').textContent     = '$'+fmt(active.reduce((s,b)=>s+(b.fee||0),0));
   if ($('cs-ended'))   $('cs-ended').textContent   = ended.length;
 
-  // 篩選
+  // 篩選：純粹依 status（archived 是另一個獨立旗標，由「批次封存」管理）
   let filtered = DB.brands.slice();
   if (CLI_STATUS !== 'all') {
-    if (CLI_STATUS === 'ended') {
-      filtered = filtered.filter(b => b.archived || b.status === 'ended');
-    } else {
-      filtered = filtered.filter(b => !b.archived && b.status === CLI_STATUS);
-    }
+    filtered = filtered.filter(b => (b.status||'active') === CLI_STATUS);
+  } else {
+    // 全部 tab 也排除已封存的（避免看到歸檔資料）
+    filtered = filtered.filter(b => !b.archived);
   }
   const tierFilter = $('cli-f-tier') ? $('cli-f-tier').value : '';
   if (tierFilter) filtered = filtered.filter(b => (b.tier||'') === tierFilter);
@@ -5827,6 +5826,12 @@ function saveBrand() {
     note: v('b-note'),
     color: 'var(--tx)'
   };
+
+  // 自動同步 archived：status 不是 ended 時自動 unarchive
+  // （這樣使用者從「已結束」tab 把客戶改回「合作中」會自動取消歸檔）
+  if (data.status !== 'ended') {
+    data.archived = 0;
+  }
 
   // 記住改前的狀態，方便決定是否需要切 tab
   const oldStatus = eid ? ((DB.brands.find(x=>x.id===eid)||{}).status || 'active') : null;
