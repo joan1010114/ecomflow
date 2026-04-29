@@ -1223,6 +1223,46 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
         <div id="d-active-camps" style="padding:2px 0"></div>
       </div>
     </div>
+
+    <!-- My Revenue Contribution -->
+    <div class="dash-block" data-block="my-revenue-contrib">
+      <div class="cd" style="margin-bottom:14px">
+        <div class="cd-h"><div class="cd-t">💼 我的業績貢獻</div><div class="cd-s" id="d-mrc-sub">我主責品牌的本月業績</div></div>
+        <div id="d-mrc" style="padding:14px"></div>
+      </div>
+    </div>
+
+    <!-- Brand Health -->
+    <div class="dash-block" data-block="brand-health">
+      <div class="cd" style="margin-bottom:14px">
+        <div class="cd-h"><div class="cd-t">🏥 品牌健康度</div><div class="cd-s" id="d-bh-sub">我負責品牌的紅黃綠燈</div></div>
+        <div id="d-bh" style="padding:6px 0"></div>
+      </div>
+    </div>
+
+    <!-- Pending Payments -->
+    <div class="dash-block" data-block="pending-payments">
+      <div class="cd" style="margin-bottom:14px">
+        <div class="cd-h"><div class="cd-t">💵 應收應付摘要</div><div class="cd-s" id="d-pp-sub">未匯款 + 月費收入</div></div>
+        <div id="d-pp" style="padding:14px"></div>
+      </div>
+    </div>
+
+    <!-- Team Workload -->
+    <div class="dash-block" data-block="team-workload">
+      <div class="cd" style="margin-bottom:14px">
+        <div class="cd-h"><div class="cd-t">👥 團隊任務分佈</div><div class="cd-s" id="d-tw-sub">每人手上任務量</div></div>
+        <div id="d-tw" style="padding:6px 0"></div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="dash-block" data-block="recent-activity">
+      <div class="cd">
+        <div class="cd-h"><div class="cd-t">📜 最近活動</div><div class="cd-s" id="d-ra-sub">系統最近 20 筆操作</div></div>
+        <div id="d-ra" style="padding:6px 0"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -2222,23 +2262,81 @@ let DASH_STATE = { taskRange: 'today' };
 
 /* ═══ DASH CUSTOMIZE (V4.6) ═══ */
 const DASH_BLOCK_DEFS = [
-  { id:'kpi',         label:'KPI 統計列',       desc:'活躍客戶 / 任務 / KOL / 團購主 / 業績' },
-  { id:'tasks',       label:'待辦任務',         desc:'今天 / 本週 / 全部待辦清單' },
-  { id:'revenue',     label:'業績時間軸',       desc:'近 30 天業績折線圖 + TOP 品牌' },
-  { id:'attention',   label:'需要關注的客戶',   desc:'業績異常 / 任務停滯 / 檔期臨近' },
-  { id:'active-camps',label:'進行中開團',       desc:'即時進度條 + 業績累計' }
+  { id:'kpi',               label:'KPI 統計列',      desc:'活躍客戶 / 任務 / KOL / 團購主 / 業績' },
+  { id:'tasks',             label:'待辦任務',        desc:'今天 / 本週 / 全部待辦清單' },
+  { id:'revenue',           label:'業績時間軸',      desc:'近 30 天業績折線圖 + TOP 品牌' },
+  { id:'attention',         label:'需要關注的客戶',  desc:'業績異常 / 任務停滯 / 檔期臨近' },
+  { id:'active-camps',      label:'進行中開團',      desc:'即時進度條 + 業績累計' },
+  { id:'my-revenue-contrib',label:'我的業績貢獻',    desc:'我主責品牌的本月業績 vs 上月' },
+  { id:'brand-health',      label:'品牌健康度',      desc:'我負責品牌的業績紅黃綠燈' },
+  { id:'pending-payments',  label:'應收應付',        desc:'未匯款開團 + 月費收入摘要' },
+  { id:'team-workload',     label:'團隊任務分佈',    desc:'每人手上任務量' },
+  { id:'recent-activity',   label:'最近活動',        desc:'誰最近改了什麼' }
 ];
 const DASH_DEFAULT_LAYOUT = ['kpi','tasks','revenue','attention','active-camps'];
+
+// 依角色預設不同版面
+const DASH_ROLE_PRESETS = {
+  admin: {
+    order: ['kpi','tasks','revenue','attention','active-camps','team-workload','pending-payments','recent-activity','my-revenue-contrib','brand-health'],
+    visible: { kpi:1, tasks:1, revenue:1, attention:1, 'active-camps':1, 'team-workload':1, 'pending-payments':1, 'recent-activity':1, 'my-revenue-contrib':0, 'brand-health':0 }
+  },
+  manager: {
+    order: ['kpi','tasks','revenue','attention','active-camps','team-workload','pending-payments','recent-activity','my-revenue-contrib','brand-health'],
+    visible: { kpi:1, tasks:1, revenue:1, attention:1, 'active-camps':1, 'team-workload':1, 'pending-payments':1, 'recent-activity':1, 'my-revenue-contrib':0, 'brand-health':0 }
+  },
+  operator: {
+    order: ['kpi','tasks','my-revenue-contrib','brand-health','revenue','attention','active-camps','team-workload','pending-payments','recent-activity'],
+    visible: { kpi:1, tasks:1, 'my-revenue-contrib':1, 'brand-health':1, revenue:1, attention:1, 'active-camps':1, 'team-workload':0, 'pending-payments':0, 'recent-activity':0 }
+  },
+  finance: {
+    order: ['kpi','revenue','my-revenue-contrib','pending-payments','recent-activity','tasks','attention','active-camps','team-workload','brand-health'],
+    visible: { kpi:1, revenue:1, 'my-revenue-contrib':1, 'pending-payments':1, 'recent-activity':1, tasks:0, attention:0, 'active-camps':0, 'team-workload':0, 'brand-health':0 }
+  },
+  support: {
+    order: ['tasks','attention','active-camps','kpi','revenue','my-revenue-contrib','brand-health','team-workload','pending-payments','recent-activity'],
+    visible: { tasks:1, attention:1, 'active-camps':1, kpi:0, revenue:0, 'my-revenue-contrib':0, 'brand-health':0, 'team-workload':0, 'pending-payments':0, 'recent-activity':0 }
+  },
+  viewer: {
+    order: ['kpi','revenue','attention','tasks','active-camps','my-revenue-contrib','brand-health','team-workload','pending-payments','recent-activity'],
+    visible: { kpi:1, revenue:1, attention:1, tasks:0, 'active-camps':0, 'my-revenue-contrib':0, 'brand-health':0, 'team-workload':0, 'pending-payments':0, 'recent-activity':0 }
+  }
+};
+
+// 取得當前使用者角色（用於決定預設版面）
+function getUserRole() {
+  if (!CU) return 'viewer';
+  if (isAdmin()) return 'admin';
+  if (CU.perm === 'manager') return 'manager';
+  // 從 permissions 推測角色（粗略）
+  const p = CU.permissions || {};
+  if (p.commissions && p.commissions.payment) return 'finance';
+  if (p.tasks && p.tasks.edit && !p.members?.manage) return 'operator';
+  if (p.clients && p.clients.edit && !p.tasks?.edit) return 'support';
+  return 'operator'; // 預設操盤手
+}
 
 function getDashLayout() {
   try {
     const saved = JSON.parse(localStorage.getItem('dashLayout')||'null');
-    if (saved && saved.order && saved.visible) return saved;
+    if (saved && saved.order && saved.visible) {
+      // 補齊新增的板塊（避免舊 localStorage 缺欄位）
+      DASH_BLOCK_DEFS.forEach(b => {
+        if (saved.order.indexOf(b.id) < 0) saved.order.push(b.id);
+        if (saved.visible[b.id] === undefined) saved.visible[b.id] = false;
+      });
+      return saved;
+    }
   } catch(e) {}
-  // 預設：全部顯示，預設順序
-  const visible = {};
-  DASH_BLOCK_DEFS.forEach(b => visible[b.id] = true);
-  return { order: DASH_DEFAULT_LAYOUT.slice(), visible };
+  // 沒儲存的就用角色預設
+  return getRoleDefaultLayout();
+}
+
+function getRoleDefaultLayout() {
+  const role = getUserRole();
+  const preset = DASH_ROLE_PRESETS[role] || DASH_ROLE_PRESETS.operator;
+  // deep clone
+  return JSON.parse(JSON.stringify(preset));
 }
 
 function applyDashLayout() {
@@ -2274,7 +2372,16 @@ function openDashCustomize() {
 
 function renderDashCustList() {
   const layout = _DASH_TEMP_LAYOUT;
-  let h = '';
+  // 補齊新板塊（避免舊版本缺欄位）
+  DASH_BLOCK_DEFS.forEach(b => {
+    if (layout.order.indexOf(b.id) < 0) layout.order.push(b.id);
+    if (layout.visible[b.id] === undefined) layout.visible[b.id] = false;
+  });
+
+  const role = getUserRole();
+  let h = '<div style="padding:8px 12px;background:var(--s3);border:1px solid var(--li);border-radius:3px;margin-bottom:10px;font-size:11px;color:var(--tx2);letter-spacing:1.5px">';
+  h += '👤 您的角色：<strong>'+(ROLE_LBL_TXT[role]||'操盤手')+'</strong>　·　按「↺ 還原預設」可恢復此角色推薦的版面';
+  h += '</div>';
   layout.order.forEach((id, idx) => {
     const def = DASH_BLOCK_DEFS.find(d => d.id === id);
     if (!def) return;
@@ -2312,13 +2419,12 @@ function moveDashBlock(id, dir) {
 }
 
 function resetDashLayout() {
-  _DASH_TEMP_LAYOUT = {
-    order: DASH_DEFAULT_LAYOUT.slice(),
-    visible: {}
-  };
-  DASH_BLOCK_DEFS.forEach(b => _DASH_TEMP_LAYOUT.visible[b.id] = true);
+  _DASH_TEMP_LAYOUT = getRoleDefaultLayout();
   renderDashCustList();
+  toast('已還原為「'+ROLE_LBL_TXT[getUserRole()]+'」的預設版面','info');
 }
+
+const ROLE_LBL_TXT = { admin:'最高管理員', manager:'主管', operator:'操盤手', finance:'財務', support:'客服', viewer:'僅檢視' };
 
 function saveDashLayout() {
   if (!_DASH_TEMP_LAYOUT) return;
@@ -2358,6 +2464,286 @@ function renderDash() {
 
   // ── 進行中開團 ──
   renderDashActiveCamps();
+
+  // ── V4.6 Round 3 新板塊（只渲染可見的，避免不必要的 API 呼叫）──
+  const layout = getDashLayout();
+  if (layout.visible['my-revenue-contrib']) renderDashMyRevContrib();
+  if (layout.visible['brand-health'])       renderDashBrandHealth();
+  if (layout.visible['pending-payments'])   renderDashPendingPayments();
+  if (layout.visible['team-workload'])      renderDashTeamWorkload();
+  if (layout.visible['recent-activity'])    renderDashRecentActivity();
+}
+
+/* ═══ Dash 新板塊 render 函式 (V4.6 Round 3) ═══ */
+
+// 我的業績貢獻：本月 vs 上月
+function renderDashMyRevContrib() {
+  const box = $('d-mrc');
+  if (!box || !CU) return;
+
+  const myBrandIds = DB.brands.filter(b => {
+    if (b.archived) return false;
+    if (b.owner_member_id === CU.id) return true;
+    const collab = b.collab_member_ids || [];
+    return collab.indexOf(CU.id) > -1;
+  }).map(b => b.id);
+  const myBrandShorts = new Set(DB.brands.filter(b => myBrandIds.indexOf(b.id) > -1).map(b => b.short || b.name));
+
+  if (!myBrandIds.length) {
+    box.innerHTML = '<div style="text-align:center;color:var(--tx3);padding:20px;letter-spacing:1.5px;font-size:11px">您目前沒有負責或協作的品牌</div>';
+    return;
+  }
+
+  const now = new Date();
+  const ym = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  const lastM = new Date(now.getFullYear(), now.getMonth()-1, 1);
+  const lastYm = lastM.getFullYear()+'-'+String(lastM.getMonth()+1).padStart(2,'0');
+
+  apiGet('daily_revenue').then(rows => {
+    rows = rows || [];
+    let thisMonth = 0, lastMonth = 0;
+    rows.forEach(r => {
+      if (myBrandIds.indexOf(parseInt(r.brand_id)) < 0) return;
+      const d = r.revenue_date || '';
+      if (d.startsWith(ym)) thisMonth += +r.amount || 0;
+      else if (d.startsWith(lastYm)) lastMonth += +r.amount || 0;
+    });
+    // 加上 group_campaigns 的業績（屬於我品牌的）
+    (DB.campaigns||[]).forEach(c => {
+      if (myBrandIds.indexOf(parseInt(c.brand_id)) < 0) return;
+      const d = c.create_date || '';
+      const rev = +c.revenue || 0;
+      if (d.startsWith(ym)) thisMonth += rev;
+      else if (d.startsWith(lastYm)) lastMonth += rev;
+    });
+
+    const delta = thisMonth - lastMonth;
+    const deltaPct = lastMonth > 0 ? Math.round(delta/lastMonth*100) : (thisMonth > 0 ? 100 : 0);
+    const trendColor = delta >= 0 ? 'var(--grn)' : 'var(--red)';
+    const trendIcon = delta >= 0 ? '▲' : '▼';
+
+    let h = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:center">';
+    h += '<div>';
+    h += '<div style="font-size:9px;color:var(--tx3);letter-spacing:.2em;font-family:var(--mo)">本月業績</div>';
+    h += '<div style="font-size:28px;font-weight:800;color:var(--tx);font-family:var(--mo);letter-spacing:.02em;line-height:1.1;margin-top:4px">$'+fmt(thisMonth)+'</div>';
+    h += '<div style="font-size:11px;color:var(--tx3);margin-top:4px;letter-spacing:1px">主責 '+myBrandIds.length+' 個品牌</div>';
+    h += '</div>';
+    h += '<div style="border-left:1px solid var(--li);padding-left:14px">';
+    h += '<div style="font-size:9px;color:var(--tx3);letter-spacing:.2em;font-family:var(--mo)">較上月</div>';
+    h += '<div style="font-size:22px;font-weight:800;color:'+trendColor+';font-family:var(--mo);letter-spacing:.02em;line-height:1.1;margin-top:4px">'+trendIcon+' '+Math.abs(deltaPct)+'%</div>';
+    h += '<div style="font-size:11px;color:var(--tx3);margin-top:4px;letter-spacing:1px">'+(delta>=0?'+':'')+'$'+fmt(Math.abs(delta))+' vs 上月 $'+fmt(lastMonth)+'</div>';
+    h += '</div>';
+    h += '</div>';
+    box.innerHTML = h;
+  }).catch(()=>{
+    box.innerHTML = '<div style="text-align:center;color:var(--tx3);padding:20px;letter-spacing:1.5px;font-size:11px">載入失敗</div>';
+  });
+}
+
+// 品牌健康度
+function renderDashBrandHealth() {
+  const box = $('d-bh');
+  if (!box || !CU) return;
+  const myBrands = DB.brands.filter(b => {
+    if (b.archived) return false;
+    if (isAdmin() || CU.perm === 'manager') return true;
+    if (b.owner_member_id === CU.id) return true;
+    const collab = b.collab_member_ids || [];
+    return collab.indexOf(CU.id) > -1;
+  });
+
+  if (!myBrands.length) {
+    box.innerHTML = '<div style="text-align:center;color:var(--tx3);padding:20px;letter-spacing:1.5px;font-size:11px">沒有可分析的品牌</div>';
+    return;
+  }
+
+  apiGet('daily_revenue').then(rows => {
+    const dailyByBrand = {};
+    (rows||[]).forEach(r => {
+      const bid = parseInt(r.brand_id);
+      if (!dailyByBrand[bid]) dailyByBrand[bid] = [];
+      dailyByBrand[bid].push(r);
+    });
+
+    const now = new Date();
+    const todayStr = today();
+    const ago30 = new Date(now); ago30.setDate(now.getDate()-30);
+    const ago30Str = ago30.toISOString().split('T')[0];
+    const ago60 = new Date(now); ago60.setDate(now.getDate()-60);
+    const ago60Str = ago60.toISOString().split('T')[0];
+
+    let h = '<div style="padding:0 14px">';
+    myBrands.slice(0, 8).forEach(b => {
+      const rs = dailyByBrand[b.id] || [];
+      const recent30 = rs.filter(r => r.revenue_date >= ago30Str).reduce((s,r)=>s+(+r.amount||0),0);
+      const prev30 = rs.filter(r => r.revenue_date >= ago60Str && r.revenue_date < ago30Str).reduce((s,r)=>s+(+r.amount||0),0);
+
+      // 任務停滯：doing 狀態超過 7 天沒更新
+      const stagnant = DB.tasks.filter(t => {
+        if (t.brand !== (b.short||b.name) || t.status !== 'doing') return false;
+        const upd = (t.updated_at||t.created_at||'').split(' ')[0];
+        if (!upd) return false;
+        const days = (new Date(todayStr) - new Date(upd)) / 86400000;
+        return days > 7;
+      }).length;
+
+      // 業績趨勢
+      let trend = 'flat';
+      if (prev30 > 0) {
+        if (recent30 > prev30 * 1.1) trend = 'up';
+        else if (recent30 < prev30 * 0.7) trend = 'down';
+      } else if (recent30 > 0) {
+        trend = 'up';
+      } else {
+        trend = 'down';
+      }
+
+      // 健康燈
+      let health = 'green', healthLabel = '健康', healthColor = 'var(--grn)';
+      if (trend === 'down' || stagnant > 2) {
+        health = 'red'; healthLabel = '需關注'; healthColor = 'var(--red)';
+      } else if (trend === 'flat' || stagnant > 0) {
+        health = 'yellow'; healthLabel = '注意'; healthColor = 'var(--yel)';
+      }
+
+      h += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed var(--li);cursor:pointer" onclick="go(\'client-detail\','+b.id+')">';
+      h += '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+healthColor+';flex-shrink:0"></span>';
+      h += '<div style="flex:1;min-width:0">';
+      h += '<div style="font-size:12px;font-weight:600;letter-spacing:.05em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(b.short||b.name)+'</div>';
+      h += '<div style="font-size:10px;color:var(--tx3);letter-spacing:1px;margin-top:1px">';
+      h += '近 30 天 $'+fmt(recent30);
+      if (trend === 'up') h += ' · <span style="color:var(--grn)">▲ 上升</span>';
+      else if (trend === 'down') h += ' · <span style="color:var(--red)">▼ 下降</span>';
+      else h += ' · <span style="color:var(--tx3)">— 持平</span>';
+      if (stagnant > 0) h += ' · <span style="color:var(--red)">'+stagnant+' 任務停滯</span>';
+      h += '</div></div>';
+      h += '<span class="tg" style="background:'+healthColor+'15;color:'+healthColor+';font-size:10px">'+healthLabel+'</span>';
+      h += '</div>';
+    });
+    if (myBrands.length > 8) {
+      h += '<div style="text-align:center;color:var(--tx3);font-size:10px;letter-spacing:1.5px;padding:8px 0">還有 '+(myBrands.length-8)+' 個品牌 — <a href="javascript:void(0)" onclick="go(\'clients\')" style="color:var(--gold)">查看全部 →</a></div>';
+    }
+    h += '</div>';
+    box.innerHTML = h;
+  }).catch(()=>{
+    box.innerHTML = '<div style="text-align:center;color:var(--tx3);padding:20px;letter-spacing:1.5px;font-size:11px">載入失敗</div>';
+  });
+}
+
+// 應收應付摘要
+function renderDashPendingPayments() {
+  const box = $('d-pp');
+  if (!box) return;
+
+  // 未匯款開團
+  const unpaid = (DB.campaigns||[]).filter(c => !c.wired);
+  const unpaidTotal = unpaid.reduce((s,c)=>s+(+c.pending_amount||0), 0);
+
+  // 月費收入（合作中品牌的 fee 加總）
+  const activeBrands = DB.brands.filter(b => !b.archived && b.status==='active');
+  const monthlyFeeTotal = activeBrands.reduce((s,b)=>s+(+b.fee||0), 0);
+
+  let h = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">';
+  // 應付（未匯款）
+  h += '<div style="padding:14px;background:rgba(180,80,80,0.06);border:1px solid rgba(180,80,80,0.15);border-radius:4px">';
+  h += '<div style="font-size:9px;color:var(--red);letter-spacing:.2em;font-family:var(--mo);font-weight:700">應付未匯款</div>';
+  h += '<div style="font-size:24px;font-weight:800;color:var(--red);font-family:var(--mo);margin-top:4px;letter-spacing:.02em">$'+fmt(unpaidTotal)+'</div>';
+  h += '<div style="font-size:11px;color:var(--tx2);margin-top:4px;letter-spacing:1px">'+unpaid.length+' 筆開團未匯款</div>';
+  h += '<a href="javascript:void(0)" onclick="go(\'comm\')" style="font-size:10px;color:var(--gold);letter-spacing:1.5px;margin-top:6px;display:inline-block">處理匯款 →</a>';
+  h += '</div>';
+  // 應收（月費）
+  h += '<div style="padding:14px;background:rgba(80,140,80,0.06);border:1px solid rgba(80,140,80,0.15);border-radius:4px">';
+  h += '<div style="font-size:9px;color:var(--grn);letter-spacing:.2em;font-family:var(--mo);font-weight:700">本月代操月費</div>';
+  h += '<div style="font-size:24px;font-weight:800;color:var(--grn);font-family:var(--mo);margin-top:4px;letter-spacing:.02em">$'+fmt(monthlyFeeTotal)+'</div>';
+  h += '<div style="font-size:11px;color:var(--tx2);margin-top:4px;letter-spacing:1px">'+activeBrands.length+' 個合作品牌</div>';
+  h += '<a href="javascript:void(0)" onclick="go(\'clients\')" style="font-size:10px;color:var(--gold);letter-spacing:1.5px;margin-top:6px;display:inline-block">客戶清單 →</a>';
+  h += '</div>';
+  h += '</div>';
+  box.innerHTML = h;
+}
+
+// 團隊任務分佈
+function renderDashTeamWorkload() {
+  const box = $('d-tw');
+  if (!box) return;
+
+  const counts = {};
+  DB.members.forEach(m => { counts[m.name] = { mem: m, total: 0, overdue: 0 }; });
+  const td = today();
+  DB.tasks.forEach(t => {
+    if (t.status === 'done') return;
+    if (t.owner && counts[t.owner]) {
+      counts[t.owner].total++;
+      if (t.due && t.due < td) counts[t.owner].overdue++;
+    }
+  });
+
+  const arr = Object.values(counts).filter(c => c.total > 0).sort((a,b) => b.total - a.total);
+  if (!arr.length) {
+    box.innerHTML = '<div style="text-align:center;color:var(--tx3);padding:20px;letter-spacing:1.5px;font-size:11px">目前沒有未完成任務</div>';
+    return;
+  }
+
+  const max = Math.max(...arr.map(c => c.total));
+  let h = '<div style="padding:0 14px">';
+  arr.slice(0, 8).forEach(c => {
+    const pct = Math.round(c.total / max * 100);
+    h += '<div style="padding:7px 0;border-bottom:1px dashed var(--li)">';
+    h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">';
+    h += '<div style="font-size:12px;font-weight:600;letter-spacing:.05em;flex:1">'+esc(c.mem.name)+'</div>';
+    h += '<div style="font-size:11px;font-family:var(--mo);color:var(--tx2);letter-spacing:1px">'+c.total+(c.overdue ? ' <span style="color:var(--red)">('+c.overdue+' 逾期)</span>' : '')+'</div>';
+    h += '</div>';
+    h += '<div style="height:5px;background:var(--s4);border-radius:3px;overflow:hidden">';
+    const barColor = c.overdue > 0 ? 'var(--red)' : 'var(--gold)';
+    h += '<div style="height:100%;width:'+pct+'%;background:'+barColor+';border-radius:3px"></div>';
+    h += '</div></div>';
+  });
+  h += '</div>';
+  box.innerHTML = h;
+}
+
+// 最近活動 feed
+function renderDashRecentActivity() {
+  const box = $('d-ra');
+  if (!box) return;
+
+  const opts = { headers: {} };
+  if (CU && CU.email) opts.headers['X-User-Email'] = CU.email;
+  fetch(API+'?path=activity&limit=20', opts).then(r => {
+    if (!r.ok) throw new Error('HTTP '+r.status);
+    return r.json();
+  }).then(j => {
+    const rows = j.data || [];
+    if (!rows.length) {
+      box.innerHTML = '<div style="text-align:center;color:var(--tx3);padding:20px;letter-spacing:1.5px;font-size:11px">沒有最近活動</div>';
+      return;
+    }
+    const ACT_LBL = { create:'建立', update:'修改', delete:'刪除', view_credential:'查看帳密' };
+    const ACT_COLOR = { create:'var(--grn)', update:'var(--gold)', delete:'var(--red)', view_credential:'var(--cyn)' };
+    const ENT_LBL = { tasks:'任務', clients:'客戶', brands:'品牌', kols:'KOL', group_campaigns:'開團', group_buyers:'團購主', commissions:'分潤', members:'成員', daily_revenue:'業績', brand_credentials:'帳密', brand_links:'資源', brand_campaigns:'檔期' };
+    let h = '<div style="padding:0 14px;max-height:280px;overflow-y:auto">';
+    rows.forEach(a => {
+      const lbl = ACT_LBL[a.action] || a.action;
+      const color = ACT_COLOR[a.action] || 'var(--tx3)';
+      const ent = ENT_LBL[a.entity_type] || a.entity_type;
+      const when = (typeof formatActivityTime === 'function') ? formatActivityTime(a.created_at) : (a.created_at||'').slice(5,16).replace('T',' ');
+      let extra = '';
+      if (a.details && a.details.name) extra = '「'+esc(a.details.name).slice(0,20)+'」';
+      else if (a.details && a.details.fields && a.details.fields.length) {
+        const flds = a.details.fields.slice(0,3).map(f => (typeof FIELD_LBL !== 'undefined' && FIELD_LBL[f]) ? FIELD_LBL[f] : f).join('、');
+        extra = ' · '+flds;
+      }
+      h += '<div style="padding:5px 0;border-bottom:1px dashed var(--li);display:flex;align-items:center;gap:8px;font-size:11px">';
+      h += '<span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:'+color+';flex-shrink:0"></span>';
+      h += '<span style="flex:1;letter-spacing:.05em"><strong>'+esc(a.user_name||'?')+'</strong> <span style="color:var(--tx3)">'+esc(lbl)+' '+esc(ent)+'</span> '+extra+'</span>';
+      h += '<span style="font-family:var(--mo);font-size:10px;color:var(--tx3);letter-spacing:1px;flex-shrink:0">'+esc(when)+'</span>';
+      h += '</div>';
+    });
+    h += '</div>';
+    box.innerHTML = h;
+  }).catch(()=>{
+    box.innerHTML = '<div style="text-align:center;color:var(--tx3);padding:20px;letter-spacing:1.5px;font-size:11px">載入失敗（需有活動權限）</div>';
+  });
 }
 
 function setDashTaskRange(r) {
