@@ -647,6 +647,27 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
     <div class="fg"><label>月費</label><input class="fc" type="number" id="b-fee" value="25000"></div>
     <div class="fg"><label>合約狀態</label><select class="fc" id="b-status"><option value="active">合作中</option><option value="pending">洽談中</option><option value="paused">暫停</option><option value="ended">已結束</option></select></div>
   </div>
+
+  <!-- V4.9 (Q6): 分潤設定 -->
+  <div style="padding:12px 14px;background:var(--bg2);border:1px solid var(--li);border-radius:4px;margin-bottom:12px">
+    <div style="font-size:10px;color:var(--tx3);letter-spacing:.2em;font-weight:700;margin-bottom:8px">💰 分潤設定（用於開團活動預設值）</div>
+    <div class="fr3">
+      <div class="fg"><label>分潤方式</label>
+        <select class="fc" id="b-comm-type" onchange="onBrandCommTypeChange()">
+          <option value="">— 未設定 —</option>
+          <option value="percentage">% 抽業績</option>
+          <option value="fixed">固定服務費</option>
+          <option value="tier">階梯式</option>
+        </select>
+      </div>
+      <div class="fg" id="b-comm-rate-wrap" style="display:none"><label>抽成 %</label><input class="fc" type="number" id="b-comm-rate" step="0.5" placeholder="15"></div>
+      <div class="fg" id="b-comm-fixed-wrap" style="display:none"><label>固定費 ($)</label><input class="fc" type="number" id="b-comm-fixed" placeholder="0"></div>
+    </div>
+    <div class="fg" id="b-comm-tier-wrap" style="display:none"><label>階梯設定（每行：起_迄_%，例：0_500000_10）</label>
+      <textarea class="fc" id="b-comm-tier" placeholder="0_500000_10&#10;500000_1000000_12&#10;1000000_999999999_15" style="min-height:60px;font-family:var(--mo)"></textarea>
+    </div>
+    <div style="font-size:10px;color:var(--tx3);letter-spacing:1px;margin-top:4px">📌 此為品牌預設分潤，建立開團活動時會自動帶入，可逐檔調整</div>
+  </div>
   <div class="fr">
     <div class="fg"><label>客戶等級</label>
       <select class="fc" id="b-tier">
@@ -671,6 +692,19 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
         <option value="其他">📎 其他</option>
       </select>
     </div>
+  </div>
+  <!-- V4.7: 業績分潤設定 -->
+  <div style="padding:12px 14px;background:rgba(168,138,90,0.06);border:1px solid rgba(168,138,90,0.2);border-radius:4px;margin-bottom:12px">
+    <div style="font-size:10px;color:var(--gold);letter-spacing:.2em;font-weight:700;margin-bottom:8px">💰 業績分潤設定（與月費獨立）</div>
+    <div class="fr">
+      <div class="fg"><label>業績分潤 %</label>
+        <input class="fc" type="number" id="b-rsr" step="0.5" placeholder="0" title="從業績抽多少 %（獨立於月費，例：3.5 表示 3.5%）">
+      </div>
+      <div class="fg"><label>分潤備註</label>
+        <input class="fc" id="b-rsn" placeholder="例：滿 100 萬抽 5%、未滿抽 3%">
+      </div>
+    </div>
+    <div style="font-size:10px;color:var(--tx3);letter-spacing:1px;margin-top:4px">月費是固定費，分潤是依業績抽 % — 兩者可同時存在或擇一</div>
   </div>
   <div class="fr">
     <div class="fg"><label>合作起始日</label><input class="fc" type="date" id="b-start"></div>
@@ -839,7 +873,7 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
 
   <div class="fr">
     <div class="fg"><label>活動名稱 *</label><input class="fc" id="c2-name" placeholder="例：大野山 6.6 蝦皮品牌日"></div>
-    <div class="fg"><label>品牌 *</label><select class="fc" id="c2-brand"></select></div>
+    <div class="fg"><label>品牌 *</label><select class="fc" id="c2-brand" onchange="onC2BrandChange()"></select></div>
   </div>
 
   <div class="fr3">
@@ -1711,9 +1745,9 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
 <div class="vw" id="v-kol">
   <div class="ph"><div><h1>KOL 資料庫</h1><p id="kol-sub"></p></div>
   <div class="ph-a">
-    <input class="fc" id="kol-search" placeholder="🔍 搜尋名稱/IG..." style="width:180px;padding:7px 10px" oninput="renderKol()">
-    <select class="btn btn-g" style="padding:6px 10px" id="ft-kol-brand" onchange="renderKol()"></select>
-    <select class="btn btn-g" style="padding:6px 10px" id="ft-kol-type" onchange="renderKol()"></select>
+    <input class="fc" id="kol-search" placeholder="🔍 搜尋名稱/IG..." style="width:180px;padding:7px 10px" oninput="KOL_PAGE=1;renderKol()">
+    <select class="btn btn-g" style="padding:6px 10px" id="ft-kol-brand" onchange="KOL_PAGE=1;renderKol()"></select>
+    <select class="btn btn-g" style="padding:6px 10px" id="ft-kol-type" onchange="KOL_PAGE=1;renderKol()"></select>
     <button class="btn btn-g" onclick="expKolCSV()">📤 匯出</button>
     <button class="btn btn-p" onclick="openKolM()">+ 新增 KOL</button>
   </div></div>
@@ -1736,7 +1770,7 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
         <button class="tab-sw-b" data-ks="blacklist" onclick="setKolStatus('blacklist')">不合作</button>
       </div>
       <div style="flex:1"></div>
-      <select class="btn btn-g" style="padding:6px 10px" id="ft-kol-tag" onchange="renderKol()">
+      <select class="btn btn-g" style="padding:6px 10px" id="ft-kol-tag" onchange="KOL_PAGE=1;renderKol()">
         <option value="">全部標籤</option>
         <option value="paid">💰 可有酬</option>
         <option value="barter">🎁 可互惠</option>
@@ -1784,6 +1818,9 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
         <button class="tab-sw-b" data-gs="blacklist" onclick="setGBStatus('blacklist')">不合作</button>
       </div>
       <div style="flex:1"></div>
+      <select class="btn btn-g" style="padding:6px 10px" id="ft-gb-type" onchange="renderGB()">
+        <option value="">全部類型</option>
+      </select>
       <select class="btn btn-g" style="padding:6px 10px" id="ft-gb-tag" onchange="renderGB()">
         <option value="">全部標籤</option>
         <option value="paid">💰 可有酬</option>
@@ -2880,9 +2917,13 @@ function populateSels() {
   // Unique KOL types
   const types = [...new Set(DB.kols.map(k=>k.kol_type).filter(Boolean))];
   const tOpts = '<option value="">全部類型</option>'+types.map(t=>'<option>'+esc(t)+'</option>').join('');
+  // V4.7 Unique GB types
+  const gbTypes = [...new Set(DB.groupBuyers.map(g=>g.gb_type).filter(Boolean))];
+  const gbTOpts = '<option value="">全部類型</option>'+gbTypes.map(t=>'<option>'+esc(t)+'</option>').join('');
   const ids = {
     'b-owner':mOpts, 'ft-brand':bAll, 'ft-owner':mAll,
     'ft-kol-brand':bAll, 'ft-kol-type':tOpts, 'ft-camp-brand':bAll,
+    'ft-gb-type':gbTOpts,
     'cam-gb':'<option value="">選擇團購主</option>'+gbOpts,
     'cam-brand':bById
   };
@@ -3875,6 +3916,9 @@ function renderClientOverview(b, body) {
   h += '<div><span style="color:var(--tx3)">客戶編號：</span><span style="font-family:var(--mo);font-weight:700">'+esc(b.code||'—')+'</span></div>';
   h += '<div><span style="color:var(--tx3)">合作方案：</span>'+tag('tg-gold',PLAN_LBL[b.plan]||'—')+'</div>';
   h += '<div><span style="color:var(--tx3)">月費：</span><span style="font-family:var(--mo);font-weight:800">$'+fmt(b.fee||0)+'</span></div>';
+  if (+b.revenue_share_rate > 0) {
+    h += '<div><span style="color:var(--tx3)">業績分潤：</span><span style="font-family:var(--mo);font-weight:800;color:var(--gold)">'+(+b.revenue_share_rate).toFixed(1)+'%</span>'+(b.revenue_share_note?' <span style="font-size:10px;color:var(--tx3)">（'+esc(b.revenue_share_note)+'）</span>':'')+'</div>';
+  }
   h += '<div><span style="color:var(--tx3)">狀態：</span>'+tag(CLST_TG[b.status]||'tg-gr',CLST_LBL[b.status]||'—')+'</div>';
   h += '<div><span style="color:var(--tx3)">起始：</span>'+(b.start_date||'—')+'</div>';
   if (b.end_date) h += '<div><span style="color:var(--tx3)">結束：</span>'+b.end_date+'</div>';
@@ -5165,6 +5209,14 @@ function genClientCode() {
   return '52EC-'+year+'-'+String(maxNum+1).padStart(3,'0');
 }
 
+// V4.9 (Q6): 切換分潤方式時顯示對應欄位
+function onBrandCommTypeChange() {
+  const v = $('b-comm-type') ? $('b-comm-type').value : '';
+  if ($('b-comm-rate-wrap'))  $('b-comm-rate-wrap').style.display  = v === 'percentage' ? '' : 'none';
+  if ($('b-comm-fixed-wrap')) $('b-comm-fixed-wrap').style.display = v === 'fixed' ? '' : 'none';
+  if ($('b-comm-tier-wrap'))  $('b-comm-tier-wrap').style.display  = v === 'tier' ? '' : 'none';
+}
+
 function openBrandM(eid) {
   if (!hasPerm('clients','edit')) { toast('無權限','error'); return; }
   populateSels();
@@ -5180,6 +5232,14 @@ function openBrandM(eid) {
   $('b-start').value = today();
   if ($('b-tier')) $('b-tier').value = '';
   if ($('b-industry')) $('b-industry').value = '';
+  // V4.9 (Q6) 分潤
+  if ($('b-comm-type')) $('b-comm-type').value = '';
+  if ($('b-comm-rate')) $('b-comm-rate').value = '';
+  if ($('b-comm-fixed')) $('b-comm-fixed').value = '';
+  if ($('b-comm-tier')) $('b-comm-tier').value = '';
+  if (typeof onBrandCommTypeChange === 'function') onBrandCommTypeChange();
+  if ($('b-rsr')) $('b-rsr').value = '';
+  if ($('b-rsn')) $('b-rsn').value = '';
 
   // Domains
   let domH = '';
@@ -5229,6 +5289,13 @@ function openBrandM(eid) {
     $('b-end').value = b.end_date||'';
     if ($('b-tier')) $('b-tier').value = b.tier||'';
     if ($('b-industry')) $('b-industry').value = b.industry||'';
+    if ($('b-comm-type')) $('b-comm-type').value = b.commission_type||'';
+    if ($('b-comm-rate')) $('b-comm-rate').value = b.commission_rate||'';
+    if ($('b-comm-fixed')) $('b-comm-fixed').value = b.commission_fixed||'';
+    if ($('b-comm-tier')) $('b-comm-tier').value = b.commission_tier||'';
+    if (typeof onBrandCommTypeChange === 'function') onBrandCommTypeChange();
+    if ($('b-rsr')) $('b-rsr').value = b.revenue_share_rate||'';
+    if ($('b-rsn')) $('b-rsn').value = b.revenue_share_note||'';
     $('b-wam').value = b.window_am||'';
     $('b-wpm').value = b.window_pm||'';
     $('b-note').value = b.note||'';
@@ -5264,6 +5331,12 @@ function saveBrand() {
     owner:$('b-owner').value, plan:$('b-plan').value,
     fee:parseInt($('b-fee').value)||0, status:$('b-status').value,
     tier:$('b-tier')?$('b-tier').value:'', industry:$('b-industry')?$('b-industry').value:'',
+    commission_type: $('b-comm-type') ? $('b-comm-type').value : '',
+    commission_rate: $('b-comm-rate') ? (parseFloat($('b-comm-rate').value) || 0) : 0,
+    commission_fixed: $('b-comm-fixed') ? (parseFloat($('b-comm-fixed').value) || 0) : 0,
+    commission_tier: $('b-comm-tier') ? $('b-comm-tier').value.trim() : '',
+    revenue_share_rate: $('b-rsr')?(parseFloat($('b-rsr').value)||0):0,
+    revenue_share_note: $('b-rsn')?$('b-rsn').value.trim():'',
     start_date:$('b-start').value, end_date:$('b-end').value,
     domains:doms, channels:chs,
     window_am:$('b-wam').value.trim(), window_pm:$('b-wpm').value.trim(),
@@ -5274,8 +5347,21 @@ function saveBrand() {
     closeM('m-brand');
     updateBadges();
     populateSels();
+    // V4.7: 改狀態後若客戶頁正在篩特定 tab，且新狀態不在當前 tab，自動切到對應 tab
+    const newStatus = data.status || 'active';
     const cur = NAV_HISTORY[NAV_INDEX];
-    renderView(cur.view, cur.param);
+    if (cur && cur.view === 'clients' && typeof CLI_STATUS !== 'undefined' &&
+        CLI_STATUS !== 'all' && CLI_STATUS !== newStatus) {
+      // setClientStatus 內部會呼叫 renderClients，不需要再 renderView
+      if (typeof setClientStatus === 'function') {
+        setClientStatus(newStatus);
+        toast('已切換到「'+(CLST_LBL[newStatus]||newStatus)+'」分頁','info');
+      } else {
+        renderView(cur.view, cur.param);
+      }
+    } else {
+      renderView(cur.view, cur.param);
+    }
     toast(eid?'已更新':'已新增','success');
   }).catch(e=>toast('失敗：'+e.message,'error'));
 }
@@ -5620,12 +5706,21 @@ function calTo(){const n=new Date();calY=n.getFullYear();calM=n.getMonth()+1;ren
 
 /* ═══ KOL DATABASE ═══ */
 let KOL_STATUS = 'all';
+let KOL_PAGE = 1;
 function setKolStatus(s) {
   KOL_STATUS = s;
+  KOL_PAGE = 1; // 切 tab 時回第 1 頁
   document.querySelectorAll('#kol-tabs .tab-sw-b').forEach(b => {
     b.classList.toggle('on', b.dataset.ks === s);
   });
   renderKol();
+}
+function setKolPage(p) {
+  KOL_PAGE = p;
+  renderKol();
+  // 滾到頂
+  const box = $('kol-list-box');
+  if (box) box.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 const KOL_REL_LBL = {
@@ -5636,6 +5731,20 @@ const KOL_REL_LBL = {
   lost:       { lbl:'失聯',     tg:'tg-red' },
   blacklist:  { lbl:'不合作',   tg:'tg-gr' }
 };
+
+// V4.7: 推測 KOL 的關係狀態（給沒填新欄位的舊資料用）
+function inferKolRelStatus(k) {
+  if (k.relation_status) return k.relation_status;
+  // 從舊 status 推
+  if (k.status === 'ended' || k.status === 'paused') return 'lost';
+  if (k.status === 'active') return 'active';
+  if (k.status === 'pending') return 'contacting';
+  // 從類型推：含「失聯」「結束」字眼
+  const t = (k.kol_type||'')+' '+(k.note||'');
+  if (/失聯|連絡不上|無法聯繫/.test(t)) return 'lost';
+  if (/不合作|拒絕|黑名單/.test(t)) return 'blacklist';
+  return 'pending';
+}
 const KOL_TAG_LBL = {
   paid:         { lbl:'可有酬',  ic:'💰' },
   barter:       { lbl:'可互惠',  ic:'🎁' },
@@ -5663,21 +5772,26 @@ function renderKol() {
   if (ft) list = list.filter(k=>k.kol_type===ft);
   // V4.7 status filter
   if (KOL_STATUS !== 'all') {
-    list = list.filter(k => (k.relation_status||'pending') === KOL_STATUS);
+    list = list.filter(k => inferKolRelStatus(k) === KOL_STATUS);
   }
   // V4.7 tag filter
   if (ftag) list = list.filter(k => Array.isArray(k.tags) && k.tags.indexOf(ftag) > -1);
 
   $('kol-sub').textContent = '共 '+DB.kols.length+' 位 KOL（顯示 '+list.length+'）';
   $('ks-t').textContent = DB.kols.length;
-  $('ks-a').textContent = DB.kols.filter(k=>(k.relation_status==='active' || k.relation_status==='repeated')).length;
-  $('ks-p').textContent = DB.kols.filter(k=>k.relation_status==='contacting' || k.relation_status==='pending' || !k.relation_status).length;
+  $('ks-a').textContent = DB.kols.filter(k=>{const s=inferKolRelStatus(k);return s==='active'||s==='repeated';}).length;
+  $('ks-p').textContent = DB.kols.filter(k=>{const s=inferKolRelStatus(k);return s==='contacting'||s==='pending';}).length;
   const tf = DB.kols.reduce((s,k)=>s+(k.fans_ig||k.fans||0),0);
   $('ks-f').textContent = fmtK(tf);
 
-  // Pagination for large KOL lists
-  const page = 50;
-  list = list.slice(0, page);
+  // V4.7 分頁
+  const pageSize = 50;
+  const totalCount = list.length;
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+  if (KOL_PAGE > totalPages) KOL_PAGE = totalPages;
+  if (KOL_PAGE < 1) KOL_PAGE = 1;
+  const startIdx = (KOL_PAGE - 1) * pageSize;
+  list = list.slice(startIdx, startIdx + pageSize);
 
   let h = '<div class="cd-t"><div class="cd-tt">🌟 KOL 列表</div></div>';
   h += '<div class="tw"><table class="tbl-t"><thead><tr><th>名稱</th><th>類型</th><th>IG</th><th>粉絲</th><th>合作品牌</th><th>標籤</th><th>狀態</th><th>操作</th></tr></thead><tbody>';
@@ -5685,7 +5799,7 @@ function renderKol() {
   list.forEach(k=>{
     const myRels = DB.kolRelations.filter(r=>r.kol_id===k.id);
     const brandNames = myRels.map(r=>{const b=DB.brands.find(x=>x.id===r.brand_id);return b?b.short:'';}).filter(Boolean);
-    const rs = KOL_REL_LBL[k.relation_status||'pending'] || KOL_REL_LBL.pending;
+    const rs = KOL_REL_LBL[inferKolRelStatus(k)] || KOL_REL_LBL.pending;
     const tagsArr = Array.isArray(k.tags) ? k.tags : [];
     let tagsHtml = tagsArr.slice(0, 3).map(tg => {
       const t = KOL_TAG_LBL[tg];
@@ -5706,9 +5820,41 @@ function renderKol() {
     h += '</tr>';
   });
   h += '</tbody></table>';
-  if (DB.kols.length>page) h += '<div style="padding:12px;text-align:center;color:var(--tx3);font-size:11px">顯示前 '+page+' 筆，共 '+DB.kols.length+' 筆 · 使用搜尋找特定 KOL</div>';
+  // V4.7 分頁列
+  h += renderPager('KOL_PAGE', KOL_PAGE, totalPages, totalCount, 'setKolPage', pageSize);
   h += '</div>';
   $('kol-list-box').innerHTML = h;
+}
+
+// V4.7 通用分頁元件
+function renderPager(stateName, current, totalPages, totalCount, fnName, pageSize) {
+  if (totalCount === 0) return '';
+  const startIdx = (current - 1) * pageSize + 1;
+  const endIdx = Math.min(current * pageSize, totalCount);
+  let h = '<div style="padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--li);font-size:11px;color:var(--tx3);letter-spacing:.05em">';
+  h += '<div>顯示 '+startIdx+' - '+endIdx+' / 共 '+totalCount+' 筆</div>';
+  if (totalPages > 1) {
+    h += '<div style="display:flex;gap:4px;align-items:center">';
+    h += '<button class="btn btn-g btn-sm" onclick="'+fnName+'(1)" '+(current===1?'disabled':'')+'>«</button>';
+    h += '<button class="btn btn-g btn-sm" onclick="'+fnName+'('+(current-1)+')" '+(current===1?'disabled':'')+'>← 上一頁</button>';
+    // 中間頁碼（顯示前後 2 頁）
+    const startP = Math.max(1, current - 2);
+    const endP = Math.min(totalPages, current + 2);
+    if (startP > 1) h += '<span style="padding:0 4px">...</span>';
+    for (let p = startP; p <= endP; p++) {
+      if (p === current) {
+        h += '<button class="btn btn-p btn-sm" style="min-width:32px">'+p+'</button>';
+      } else {
+        h += '<button class="btn btn-g btn-sm" style="min-width:32px" onclick="'+fnName+'('+p+')">'+p+'</button>';
+      }
+    }
+    if (endP < totalPages) h += '<span style="padding:0 4px">...</span>';
+    h += '<button class="btn btn-g btn-sm" onclick="'+fnName+'('+(current+1)+')" '+(current===totalPages?'disabled':'')+'>下一頁 →</button>';
+    h += '<button class="btn btn-g btn-sm" onclick="'+fnName+'('+totalPages+')" '+(current===totalPages?'disabled':'')+'>»</button>';
+    h += '</div>';
+  }
+  h += '</div>';
+  return h;
 }
 
 function renderKolDetail(id) {
@@ -5945,8 +6091,13 @@ function doCopy(txt) {
 // ── 合作品牌 chip 卡片 ──
 function buildBrandsCard(k, brandCount) {
   const sorted = Object.entries(brandCount).sort((a,b)=>b[1]-a[1]);
+  const canEdit = hasPerm('kols','edit');
   let h = '<div class="ev-card" draggable="true" data-block="brands" ondragstart="evBlockDragStart(event)" ondragend="evBlockDragEnd(event)">';
-  h += '<div class="ev-card-h"><div class="ev-card-t">◆ BRANDS</div><span style="font-size:10px;color:var(--tx3);font-family:var(--mo)">'+sorted.length+' 個品牌</span></div>';
+  h += '<div class="ev-card-h"><div class="ev-card-t">◆ BRANDS</div>';
+  h += '<div style="display:flex;gap:6px;align-items:center">';
+  h += '<span style="font-size:10px;color:var(--tx3);font-family:var(--mo)">'+sorted.length+' 個品牌</span>';
+  if (canEdit) h += '<button class="btn btn-g btn-sm" onclick="event.stopPropagation();openKolBrandsEdit('+k.id+')" style="padding:2px 8px;font-size:10px">✏️ 編輯</button>';
+  h += '</div></div>';
   h += '<div class="ev-card-b">';
   if (sorted.length) {
     h += '<div class="ev-chips">';
@@ -5959,9 +6110,75 @@ function buildBrandsCard(k, brandCount) {
     h += '</div>';
   } else {
     h += '<div style="font-size:11px;color:var(--tx3);text-align:center;padding:6px">尚無合作品牌</div>';
+    if (canEdit) h += '<div style="text-align:center;margin-top:6px"><button class="btn btn-g btn-sm" onclick="openKolBrandsEdit('+k.id+')">+ 加入合作品牌</button></div>';
   }
   h += '</div></div>';
   return h;
+}
+
+// V4.7 編輯 KOL 合作品牌
+function openKolBrandsEdit(kid) {
+  if (!hasPerm('kols','edit')) { toast('無權限','error'); return; }
+  const k = DB.kols.find(x=>x.id===kid);
+  if (!k) return;
+  const myRels = DB.kolRelations.filter(r=>r.kol_id===kid);
+  const linkedIds = new Set(myRels.map(r=>r.brand_id));
+
+  // 動態建 modal
+  let m = $('m-kol-brands-edit');
+  if (!m) {
+    m = document.createElement('div');
+    m.className = 'mbk';
+    m.id = 'm-kol-brands-edit';
+    m.innerHTML = '<div class="mdl"><h2 id="mkbe-t">✏️ 編輯合作品牌</h2><div id="mkbe-body"></div><div class="mft"><button class="btn btn-g" onclick="closeM(\'m-kol-brands-edit\')">取消</button><button class="btn btn-p" id="mkbe-ok">💾 儲存</button></div></div>';
+    document.body.appendChild(m);
+  }
+  $('mkbe-t').textContent = '✏️ '+k.name+' 的合作品牌';
+
+  let h = '<div style="font-size:11px;color:var(--tx3);letter-spacing:1.5px;margin-bottom:10px">勾選此 KOL 合作過的品牌（多選）</div>';
+  h += '<div class="cbl" style="grid-template-columns:repeat(2,1fr);max-height:50vh;overflow-y:auto">';
+  DB.brands.filter(b=>!b.archived).forEach(b => {
+    const checked = linkedIds.has(b.id);
+    h += '<label class="cb-item'+(checked?' on':'')+'"><input type="checkbox" value="'+b.id+'"'+(checked?' checked':'')+'><div><div class="cb-item-t">'+esc(b.emoji||'📦')+' '+esc(b.short||b.name)+'</div><div class="cb-item-s">'+esc(b.product||b.cat||'—')+'</div></div></label>';
+  });
+  h += '</div>';
+  $('mkbe-body').innerHTML = h;
+
+  // click 切換 on/off
+  document.querySelectorAll('#mkbe-body .cb-item').forEach(el=>{
+    el.addEventListener('click', e=>{
+      if (e.target.tagName!=='INPUT') {
+        const cb = el.querySelector('input');
+        cb.checked = !cb.checked;
+      }
+      el.classList.toggle('on', el.querySelector('input').checked);
+    });
+  });
+
+  $('mkbe-ok').onclick = ()=>{
+    const checked = Array.from(document.querySelectorAll('#mkbe-body input:checked')).map(c=>parseInt(c.value));
+    const checkedSet = new Set(checked);
+    const toAdd = checked.filter(id => !linkedIds.has(id));
+    const toRemove = myRels.filter(r => !checkedSet.has(r.brand_id));
+
+    if (!toAdd.length && !toRemove.length) { toast('沒有變動','info'); closeM('m-kol-brands-edit'); return; }
+
+    const tasks = [];
+    toAdd.forEach(bid => {
+      tasks.push(apiPost('kol_brand_relations', { kol_id:kid, brand_id:bid, status:'active' }));
+    });
+    toRemove.forEach(r => {
+      tasks.push(apiDel('kol_brand_relations', r.id));
+    });
+
+    Promise.all(tasks).then(()=>loadDB()).then(()=>{
+      closeM('m-kol-brands-edit');
+      toast('已更新合作品牌（新增 '+toAdd.length+'、移除 '+toRemove.length+'）','success');
+      renderKolDetail(kid);
+    }).catch(e=>{ if (e.code !== 403) toast('更新失敗：'+(e.message||''),'error'); });
+  };
+
+  openM('m-kol-brands-edit');
 }
 
 // ── 歷年業績長條圖 ──
@@ -6745,12 +6962,20 @@ function saveKol() {
 
 /* ═══ GROUP BUYERS ═══ */
 let GB_STATUS = 'all';
+let GB_PAGE = 1;
 function setGBStatus(s) {
   GB_STATUS = s;
+  GB_PAGE = 1;
   document.querySelectorAll('#gb-tabs .tab-sw-b').forEach(b => {
     b.classList.toggle('on', b.dataset.gs === s);
   });
   renderGB();
+}
+function setGBPage(p) {
+  GB_PAGE = p;
+  renderGB();
+  const box = $('gb-list-box');
+  if (box) box.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 function renderGB() {
@@ -6759,8 +6984,11 @@ function renderGB() {
   if (q) list = list.filter(g=>(g.nickname||'').toLowerCase().indexOf(q)>-1 || (g.ig_handle||'').toLowerCase().indexOf(q)>-1);
   // V4.7 status filter
   if (GB_STATUS !== 'all') {
-    list = list.filter(g => (g.relation_status||'pending') === GB_STATUS);
+    list = list.filter(g => inferKolRelStatus(g) === GB_STATUS);
   }
+  // V4.7 type filter
+  const ftType = $('ft-gb-type') ? $('ft-gb-type').value : '';
+  if (ftType) list = list.filter(g => (g.gb_type||'') === ftType);
   // V4.7 tag filter
   const ftag = $('ft-gb-tag') ? $('ft-gb-tag').value : '';
   if (ftag) list = list.filter(g => Array.isArray(g.tags) && g.tags.indexOf(ftag) > -1);
@@ -6774,7 +7002,7 @@ function renderGB() {
   h += '<div class="tw"><table class="tbl-t"><thead><tr><th>稱呼</th><th>類型</th><th>IG</th><th>標籤</th><th>合作方式</th><th>已合作品牌</th><th>狀態</th><th>操作</th></tr></thead><tbody>';
   if (!list.length) h += '<tr><td colspan="8" style="text-align:center;color:var(--tx3);padding:28px">尚無符合條件的資料</td></tr>';
   list.forEach(g=>{
-    const rs = KOL_REL_LBL[g.relation_status||'pending'] || KOL_REL_LBL.pending;
+    const rs = KOL_REL_LBL[inferKolRelStatus(g)] || KOL_REL_LBL.pending;
     const tagsArr = Array.isArray(g.tags) ? g.tags : [];
     let tagsHtml = tagsArr.slice(0, 3).map(tg => {
       const t = KOL_TAG_LBL[tg];
@@ -8634,6 +8862,23 @@ function renderCamp2Card(c) {
 }
 
 // ═══ Modal: 新增/編輯活動 ═══
+// V4.9 (Q6): 選品牌後自動帶入該品牌預設分潤
+function onC2BrandChange() {
+  const eid = parseInt($('c2-eid').value);
+  if (eid) return; // 編輯模式不覆蓋
+  const bid = parseInt($('c2-brand').value);
+  if (!bid) return;
+  const b = DB.brands.find(x=>x.id===bid);
+  if (!b) return;
+  if (b.commission_type) $('c2-ct').value = b.commission_type === 'tier' ? 'percentage' : b.commission_type;
+  if (b.commission_rate)  $('c2-rate').value  = b.commission_rate;
+  if (b.commission_fixed) $('c2-fixed').value = b.commission_fixed;
+  if (typeof onC2CtChange === 'function') onC2CtChange();
+  if (b.commission_type) {
+    toast('已帶入品牌預設分潤：'+(b.commission_type==='percentage'?b.commission_rate+'%':b.commission_type==='fixed'?'$'+fmt(b.commission_fixed):'階梯式'),'info');
+  }
+}
+
 function openCamp2M(id) {
   if (!hasPerm('group_campaigns','edit')) { toast('無權限','error'); return; }
   $('c2-eid').value = '';

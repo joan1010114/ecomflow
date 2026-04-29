@@ -349,6 +349,12 @@ function initTables($pdo) {
     ensureColumn($pdo, 'brands', 'channels', 'JSON NULL');
     ensureColumn($pdo, 'brands', 'tier', 'VARCHAR(20) NULL');         // V4.7 客戶等級
     ensureColumn($pdo, 'brands', 'industry', 'VARCHAR(50) NULL');     // V4.7 產業別
+    ensureColumn($pdo, 'brands', 'commission_type', 'VARCHAR(20) NULL');     // V4.9 預設分潤類型
+    ensureColumn($pdo, 'brands', 'commission_rate', 'DECIMAL(5,2) DEFAULT 0'); // V4.9 預設抽成%
+    ensureColumn($pdo, 'brands', 'commission_fixed', 'DECIMAL(12,2) DEFAULT 0'); // V4.9 預設固定費
+    ensureColumn($pdo, 'brands', 'commission_tier', 'TEXT NULL');     // V4.9 階梯式設定
+    ensureColumn($pdo, 'brands', 'revenue_share_rate', 'DECIMAL(5,2) DEFAULT 0'); // V4.7 業績分潤 %
+    ensureColumn($pdo, 'brands', 'revenue_share_note', 'TEXT NULL');  // V4.7 分潤備註
     ensureColumn($pdo, 'brands', 'platform_fee', 'TINYINT DEFAULT 0');
     ensureColumn($pdo, 'brands', 'window_am', 'VARCHAR(100) NULL');
     ensureColumn($pdo, 'brands', 'window_pm', 'VARCHAR(100) NULL');
@@ -388,6 +394,22 @@ function initTables($pdo) {
     ensureColumn($pdo, 'group_buyers', 'relation_status', "VARCHAR(20) DEFAULT 'pending'");
     ensureColumn($pdo, 'group_buyers', 'tags', 'JSON NULL');
     ensureColumn($pdo, 'group_buyers', 'last_collab_date', 'DATE NULL');
+
+    // V4.9 (Q1): 一次性把舊的 status 對應到 relation_status（只對沒填過 relation_status 的）
+    try {
+        $pdo->exec("UPDATE kols SET relation_status = CASE
+            WHEN status = 'ended' THEN 'lost'
+            WHEN status = 'paused' THEN 'lost'
+            WHEN status = 'active' THEN 'active'
+            WHEN status = 'pending' THEN 'contacting'
+            ELSE 'pending'
+        END WHERE relation_status = 'pending' OR relation_status IS NULL");
+        $pdo->exec("UPDATE group_buyers SET relation_status = CASE
+            WHEN reply LIKE '%失聯%' OR reply LIKE '%沒回%' OR reply LIKE '%no reply%' THEN 'lost'
+            WHEN collab_brands IS NOT NULL AND collab_brands != '' THEN 'active'
+            ELSE 'pending'
+        END WHERE relation_status = 'pending' OR relation_status IS NULL");
+    } catch (Exception $e) { /* silent */ }
 
     // ── New V4 tables ──
     $pdo->exec("CREATE TABLE IF NOT EXISTS brand_credentials (
