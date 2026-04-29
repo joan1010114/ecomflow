@@ -320,6 +320,11 @@ textarea.fc{resize:vertical;min-height:72px;line-height:1.6;}
 .tab-sw-b{background:none;border:none;padding:6px 14px;font-size:11.5px;color:var(--tx2);cursor:pointer;border-radius:2px;font-family:var(--fn);font-weight:600;}
 .tab-sw-b.on{background:#fff;color:var(--tx);box-shadow:var(--sh1);}
 
+/* V4.8 detail panel tab */
+.tab-tb{background:none;border:none;padding:14px 18px;font-size:12.5px;color:var(--tx2);cursor:pointer;font-family:var(--fn);font-weight:600;letter-spacing:.05em;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;}
+.tab-tb:hover{color:var(--tx);}
+.tab-tb.on{color:var(--gold);border-bottom-color:var(--gold);}
+
 /* Credential row */
 .cred-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fff;border:1px solid var(--b1);border-radius:3px;margin-bottom:6px;}
 .cred-label{font-size:12px;font-weight:700;width:80px;flex-shrink:0;}
@@ -827,6 +832,221 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
 </div></div>
 
 <!-- Campaign (開團) Modal -->
+<!-- ═══ V4.8 新增/編輯開團活動 modal ═══ -->
+<div class="mbk" id="m-camp2"><div class="mdl mdl-lg">
+  <h2 id="mc2-t-modal">🎯 新增開團活動</h2>
+  <input type="hidden" id="c2-eid">
+
+  <div class="fr">
+    <div class="fg"><label>活動名稱 *</label><input class="fc" id="c2-name" placeholder="例：大野山 6.6 蝦皮品牌日"></div>
+    <div class="fg"><label>品牌 *</label><select class="fc" id="c2-brand"></select></div>
+  </div>
+
+  <div class="fr3">
+    <div class="fg"><label>類型</label>
+      <select class="fc" id="c2-type">
+        <option value="platform">🛒 平台檔期</option>
+        <option value="group_buy">🛍️ 團購</option>
+        <option value="official">🏠 官網檔期</option>
+        <option value="kol">🌟 KOL 業配</option>
+        <option value="live">🎥 直播</option>
+        <option value="other">📎 其他</option>
+      </select>
+    </div>
+    <div class="fg"><label>平台</label>
+      <select class="fc" id="c2-platform">
+        <option value="">—</option>
+        <optgroup label="主要電商">
+          <option value="蝦皮">蝦皮</option>
+          <option value="momo">momo</option>
+          <option value="Amazon">Amazon</option>
+          <option value="Yahoo">Yahoo</option>
+          <option value="PChome">PChome</option>
+          <option value="官網">官網</option>
+        </optgroup>
+        <optgroup label="特殊通路">
+          <option value="團購">團購</option>
+          <option value="東森">東森</option>
+          <option value="1shop">1shop</option>
+        </optgroup>
+        <optgroup label="社群平台">
+          <option value="Threads">Threads</option>
+          <option value="IG">IG</option>
+          <option value="FB">FB</option>
+          <option value="TikTok">TikTok</option>
+          <option value="YouTube">YouTube</option>
+        </optgroup>
+        <option value="其他">其他</option>
+      </select>
+    </div>
+    <div class="fg"><label>目標業績</label><input class="fc" type="number" id="c2-target" placeholder="0"></div>
+  </div>
+
+  <div class="fr">
+    <div class="fg"><label>開始日</label><input class="fc" type="date" id="c2-start"></div>
+    <div class="fg"><label>結束日</label><input class="fc" type="date" id="c2-end"></div>
+  </div>
+
+  <div class="fr">
+    <div class="fg"><label>品牌方狀態</label>
+      <select class="fc" id="c2-bs">
+        <option value="proposal">📝 提案中</option>
+        <option value="confirming_kols">📋 名單提案</option>
+        <option value="confirmed">✅ 已確認合作</option>
+        <option value="running">▶️ 進行中</option>
+        <option value="wrapped">🏁 業績達成</option>
+        <option value="invoicing">💸 對帳請款中</option>
+        <option value="closed">✓ 已結案</option>
+        <option value="cancelled">✕ 已取消</option>
+      </select>
+    </div>
+    <div class="fg"><label>款項狀態</label>
+      <select class="fc" id="c2-ps">
+        <option value="pending">未請款</option>
+        <option value="invoiced">已寄帳單</option>
+        <option value="received">已收款</option>
+        <option value="partial">部分收款</option>
+        <option value="overdue">逾期</option>
+      </select>
+    </div>
+  </div>
+
+  <div style="padding:12px 14px;background:var(--bg2);border:1px solid var(--li);border-radius:4px;margin-bottom:12px">
+    <div style="font-size:10px;color:var(--tx3);letter-spacing:.2em;font-weight:700;margin-bottom:8px">💰 抽成設定（與品牌方協議）</div>
+    <div class="fr3">
+      <div class="fg"><label>抽成方式</label>
+        <select class="fc" id="c2-ct" onchange="onC2CtChange()">
+          <option value="percentage">% 抽業績</option>
+          <option value="fixed">固定金額</option>
+        </select>
+      </div>
+      <div class="fg" id="c2-rate-wrap"><label>抽成 %</label><input class="fc" type="number" id="c2-rate" step="0.5" placeholder="15"></div>
+      <div class="fg" id="c2-fixed-wrap" style="display:none"><label>固定費用 ($)</label><input class="fc" type="number" id="c2-fixed" placeholder="0"></div>
+    </div>
+    <div class="fg" style="margin-top:8px"><label>金流走向（KOL 費用怎麼走）</label>
+      <select class="fc" id="c2-flow">
+        <option value="agency">🏢 走我（品牌付給我，我再結 KOL）</option>
+        <option value="direct">↔️ 走品牌（品牌直接付 KOL，我只收抽成）</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="fg"><label>備註</label><textarea class="fc" id="c2-note" style="min-height:60px"></textarea></div>
+
+  <div class="mft">
+    <button class="btn btn-s" id="c2-del-btn" onclick="delC2()" style="display:none;margin-right:auto">🗑️ 刪除</button>
+    <button class="btn btn-g" onclick="closeM('m-camp2')">取消</button>
+    <button class="btn btn-p" onclick="saveC2()">💾 儲存</button>
+  </div>
+</div></div>
+
+<!-- ═══ V4.8 編輯活動 KOL 詳細 modal ═══ -->
+<div class="mbk" id="m-camp2-kol"><div class="mdl mdl-lg">
+  <h2 id="mck2-t">👤 KOL 詳細</h2>
+  <input type="hidden" id="ck2-eid">
+  <input type="hidden" id="ck2-cid">
+
+  <div class="fr">
+    <div class="fg"><label>選擇 KOL / 團購主 *</label>
+      <select class="fc" id="ck2-source" onchange="onCK2SourceChange()">
+        <option value="kol">🌟 從 KOL 庫選</option>
+        <option value="group_buyer">🛍️ 從團購主庫選</option>
+        <option value="manual">✍️ 手動輸入</option>
+      </select>
+    </div>
+    <div class="fg" id="ck2-pick-wrap"><label>選擇</label>
+      <select class="fc" id="ck2-pick"></select>
+    </div>
+  </div>
+
+  <div class="fr">
+    <div class="fg" id="ck2-name-wrap" style="display:none"><label>名稱（手動）*</label><input class="fc" id="ck2-name"></div>
+    <div class="fg"><label>角色 / 定位</label>
+      <select class="fc" id="ck2-role">
+        <option value="main">主推</option>
+        <option value="secondary">次要</option>
+        <option value="support">輔助</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="fg"><label>邀約狀態</label>
+    <select class="fc" id="ck2-is">
+      <option value="inviting">📤 邀約中</option>
+      <option value="confirmed">✅ 已確認</option>
+      <option value="sample_sent">📦 已寄樣</option>
+      <option value="posted">📝 已上稿</option>
+      <option value="data_reported">📊 數據已回報</option>
+      <option value="settled">💰 已結款</option>
+      <option value="declined">❌ 婉拒</option>
+    </select>
+  </div>
+
+  <div style="padding:12px 14px;background:var(--bg2);border:1px solid var(--li);border-radius:4px;margin-bottom:12px">
+    <div style="font-size:10px;color:var(--tx3);letter-spacing:.2em;font-weight:700;margin-bottom:8px">💵 費用設定</div>
+    <div class="fr3">
+      <div class="fg"><label>費用方式</label>
+        <select class="fc" id="ck2-pt">
+          <option value="fixed">💰 固定金額</option>
+          <option value="percentage">% 抽業績</option>
+          <option value="barter">🎁 互惠（無酬）</option>
+        </select>
+      </div>
+      <div class="fg"><label>應付金額 ($)</label><input class="fc" type="number" id="ck2-payout" placeholder="0"></div>
+      <div class="fg"><label>已付金額 ($)</label><input class="fc" type="number" id="ck2-paid" placeholder="0"></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>付款日</label><input class="fc" type="date" id="ck2-paid-date"></div>
+      <div class="fg"><label>金流走向（覆蓋）</label>
+        <select class="fc" id="ck2-flow">
+          <option value="">— 跟隨整個檔期設定 —</option>
+          <option value="agency">🏢 走我（我結 KOL）</option>
+          <option value="direct">↔️ 走品牌（品牌直付 KOL）</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:12px 14px;background:var(--bg2);border:1px solid var(--li);border-radius:4px;margin-bottom:12px">
+    <div style="font-size:10px;color:var(--tx3);letter-spacing:.2em;font-weight:700;margin-bottom:8px">📊 上稿與數據</div>
+    <div class="fr">
+      <div class="fg"><label>上稿日</label><input class="fc" type="date" id="ck2-post-date"></div>
+      <div class="fg"><label>貼文連結</label><input class="fc" id="ck2-post-url" placeholder="https://..."></div>
+    </div>
+    <div class="fr3">
+      <div class="fg"><label>觸及/觀看</label><input class="fc" type="number" id="ck2-views" placeholder="0"></div>
+      <div class="fg"><label>互動數</label><input class="fc" type="number" id="ck2-eng" placeholder="0"></div>
+      <div class="fg"><label>專屬折扣碼</label><input class="fc" id="ck2-coupon" placeholder="例：ABC15"></div>
+    </div>
+    <div class="fg"><label>歸因業績 ($)</label><input class="fc" type="number" id="ck2-rev" placeholder="0" title="此 KOL 帶進來的業績（手動填）"></div>
+  </div>
+
+  <div class="fg"><label>備註</label><textarea class="fc" id="ck2-note" style="min-height:50px"></textarea></div>
+
+  <div class="mft">
+    <button class="btn btn-s" id="ck2-del-btn" onclick="delCK2()" style="display:none;margin-right:auto">🗑️ 移除</button>
+    <button class="btn btn-g" onclick="closeM('m-camp2-kol')">取消</button>
+    <button class="btn btn-p" onclick="saveCK2()">💾 儲存</button>
+  </div>
+</div></div>
+
+<!-- ═══ V4.8 D-4 標記匯款 modal（通用：品牌收款 / KOL 付款）═══ -->
+<div class="mbk" id="m-comm-pay"><div class="mdl">
+  <h2 id="mcp-t">💰 標記匯款</h2>
+  <input type="hidden" id="cp-mode">
+  <input type="hidden" id="cp-id">
+  <div id="cp-info" style="padding:12px 14px;background:var(--bg2);border:1px solid var(--li);border-radius:4px;margin-bottom:12px;font-size:12px;letter-spacing:.05em"></div>
+  <div class="fr">
+    <div class="fg"><label>金額 *</label><input class="fc" type="number" id="cp-amount" placeholder="0"></div>
+    <div class="fg"><label>日期 *</label><input class="fc" type="date" id="cp-date"></div>
+  </div>
+  <div class="fg"><label>備註</label><input class="fc" id="cp-note" placeholder="可選"></div>
+  <div class="mft">
+    <button class="btn btn-g" onclick="closeM('m-comm-pay')">取消</button>
+    <button class="btn btn-p" onclick="saveCommPay()">💾 確認</button>
+  </div>
+</div></div>
+
 <div class="mbk" id="m-camp"><div class="mdl mdl-lg">
   <h2 id="mcam-t">🛒 新增開團紀錄</h2>
   <input type="hidden" id="cam-eid">
@@ -1208,8 +1428,9 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
     <div class="nav-sec" data-sec="gb" onclick="toggleNavSec('gb')"><span>團購專區</span><span class="nav-sec-chev"><svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
     <div class="nav-sec-grp" data-grp="gb">
       <div class="ni" data-v="gb" onclick="go('gb')"><span class="ni-i" data-icon="gb"></span>團購主名單<span class="nb" id="nb-g">0</span></div>
-      <div class="ni" data-v="camps" onclick="go('camps')"><span class="ni-i" data-icon="camps"></span>開團紀錄<span class="nb" id="nb-cm">0</span></div>
-      <div class="ni" data-v="comm" onclick="go('comm')"><span class="ni-i" data-icon="comm"></span>分潤管理</div>
+      <div class="ni" data-v="camps2" onclick="go('camps2')"><span class="ni-i" data-icon="camps"></span>開團活動<span class="nb" id="nb-c2">0</span></div>
+      <div class="ni" data-v="comm" onclick="go('comm')"><span class="ni-i" data-icon="comm"></span>結算管理</div>
+      <div class="ni" data-v="camps" onclick="go('camps')" style="opacity:.55"><span class="ni-i" data-icon="camps"></span><span style="font-size:11px">舊版開團（過渡）</span></div>
     </div>
 
     <div class="nav-sec" data-sec="team" onclick="toggleNavSec('team')"><span>團隊</span><span class="nav-sec-chev"><svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
@@ -1578,6 +1799,111 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
 </div>
 
 <!-- Campaigns -->
+<!-- ═══ V4.8 開團活動（campaigns_v2）═══ -->
+<div class="vw" id="v-camps2">
+  <div class="ph">
+    <div><h1>開團活動</h1><p id="c2-sub">—</p></div>
+    <div class="ph-a">
+      <button class="btn btn-g" onclick="loadCamps2()">↻ 重新載入</button>
+      <button class="btn btn-p" id="c2-add-btn" onclick="openCamp2M()">+ 新增開團活動</button>
+    </div>
+  </div>
+  <!-- KPI -->
+  <div class="g4" style="margin-bottom:14px">
+    <div class="kpi gold"><div class="kpi-l">本月活動</div><div class="kpi-v" id="c2-k-month">0</div></div>
+    <div class="kpi grn"><div class="kpi-l">本月實際業績</div><div class="kpi-v" id="c2-k-rev" style="font-size:20px">$0</div></div>
+    <div class="kpi yel"><div class="kpi-l">應收</div><div class="kpi-v" id="c2-k-recv" style="font-size:20px">$0</div></div>
+    <div class="kpi red"><div class="kpi-l">應付 KOL</div><div class="kpi-v" id="c2-k-pay" style="font-size:20px">$0</div></div>
+  </div>
+
+  <!-- 篩選區（雙層 + 雙狀態） -->
+  <div class="cd" style="margin-bottom:14px">
+    <div style="padding:14px 14px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <div style="font-size:10px;color:var(--tx3);letter-spacing:.2em;font-family:var(--mo);font-weight:700;flex-shrink:0">類型</div>
+      <div class="tab-sw" id="c2-type-tabs">
+        <button class="tab-sw-b on" data-c2t="all" onclick="setC2Type('all')">全部</button>
+        <button class="tab-sw-b" data-c2t="platform" onclick="setC2Type('platform')">🛒 平台檔期</button>
+        <button class="tab-sw-b" data-c2t="group_buy" onclick="setC2Type('group_buy')">🛍️ 團購</button>
+        <button class="tab-sw-b" data-c2t="official" onclick="setC2Type('official')">🏠 官網</button>
+        <button class="tab-sw-b" data-c2t="kol" onclick="setC2Type('kol')">🌟 KOL</button>
+        <button class="tab-sw-b" data-c2t="live" onclick="setC2Type('live')">🎥 直播</button>
+        <button class="tab-sw-b" data-c2t="other" onclick="setC2Type('other')">📎 其他</button>
+      </div>
+      <div style="flex:1"></div>
+      <select class="btn btn-g" style="padding:6px 10px" id="c2-f-brand" onchange="renderCamps2()"></select>
+    </div>
+    <div style="padding:8px 14px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-top:1px dashed var(--li);margin-top:8px;padding-top:10px">
+      <div style="font-size:10px;color:var(--tx3);letter-spacing:.2em;font-family:var(--mo);font-weight:700;flex-shrink:0">品牌方狀態</div>
+      <div class="tab-sw" id="c2-bs-tabs" style="flex-wrap:wrap">
+        <button class="tab-sw-b on" data-c2bs="all" onclick="setC2Bs('all')">全部</button>
+        <button class="tab-sw-b" data-c2bs="proposal" onclick="setC2Bs('proposal')">📝 提案中</button>
+        <button class="tab-sw-b" data-c2bs="confirming_kols" onclick="setC2Bs('confirming_kols')">📋 名單提案</button>
+        <button class="tab-sw-b" data-c2bs="confirmed" onclick="setC2Bs('confirmed')">✅ 已確認</button>
+        <button class="tab-sw-b" data-c2bs="running" onclick="setC2Bs('running')">▶️ 進行中</button>
+        <button class="tab-sw-b" data-c2bs="wrapped" onclick="setC2Bs('wrapped')">🏁 業績達成</button>
+        <button class="tab-sw-b" data-c2bs="invoicing" onclick="setC2Bs('invoicing')">💸 對帳請款</button>
+        <button class="tab-sw-b" data-c2bs="closed" onclick="setC2Bs('closed')">✓ 已結案</button>
+      </div>
+    </div>
+    <div style="padding:8px 14px 14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <div style="font-size:10px;color:var(--tx3);letter-spacing:.2em;font-family:var(--mo);font-weight:700;flex-shrink:0">款項狀態</div>
+      <div class="tab-sw" id="c2-ps-tabs">
+        <button class="tab-sw-b on" data-c2ps="all" onclick="setC2Ps('all')">全部</button>
+        <button class="tab-sw-b" data-c2ps="pending" onclick="setC2Ps('pending')">未請款</button>
+        <button class="tab-sw-b" data-c2ps="invoiced" onclick="setC2Ps('invoiced')">已寄帳單</button>
+        <button class="tab-sw-b" data-c2ps="received" onclick="setC2Ps('received')">已收款</button>
+        <button class="tab-sw-b" data-c2ps="partial" onclick="setC2Ps('partial')">部分收款</button>
+        <button class="tab-sw-b" data-c2ps="overdue" onclick="setC2Ps('overdue')">逾期</button>
+      </div>
+      <div style="flex:1"></div>
+      <input class="fc" id="c2-f-from" type="date" style="padding:6px 10px;width:140px" onchange="renderCamps2()" title="開始日">
+      <span style="font-size:10px;color:var(--tx3)">~</span>
+      <input class="fc" id="c2-f-to" type="date" style="padding:6px 10px;width:140px" onchange="renderCamps2()" title="結束日">
+      <button class="btn btn-g btn-sm" onclick="$('c2-f-from').value='';$('c2-f-to').value='';renderCamps2()">清除</button>
+    </div>
+  </div>
+
+  <div id="c2-list-box"></div>
+</div>
+
+<!-- ═══ V4.8 開團活動詳情 ═══ -->
+<div class="vw" id="v-camp2-detail">
+  <div class="ph"><div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <button class="tb-b" onclick="go('camps2')">←</button>
+      <h1 id="c2d-title" style="margin:0">活動詳情</h1>
+      <span id="c2d-bs-badge"></span>
+      <span id="c2d-ps-badge"></span>
+    </div>
+    <p id="c2d-sub" style="margin-top:4px"></p>
+  </div>
+  <div class="ph-a">
+    <button class="btn btn-g" id="c2d-recalc-btn" onclick="c2dRecalc()" title="重新計算業績與結算金額">↻ 重算結算</button>
+    <button class="btn btn-g" onclick="c2dEdit()">✏️ 編輯</button>
+  </div></div>
+
+  <!-- KPI 4 個 -->
+  <div class="g4" style="margin-bottom:14px">
+    <div class="kpi grn"><div class="kpi-l">實際業績</div><div class="kpi-v" id="c2d-k-rev" style="font-size:20px">$0</div><div class="kpi-d" id="c2d-k-rev-d">—</div></div>
+    <div class="kpi gold"><div class="kpi-l">抽成（我方）</div><div class="kpi-v" id="c2d-k-comm" style="font-size:20px">$0</div><div class="kpi-d" id="c2d-k-comm-d">—</div></div>
+    <div class="kpi red"><div class="kpi-l">KOL 費用</div><div class="kpi-v" id="c2d-k-kol" style="font-size:20px">$0</div><div class="kpi-d" id="c2d-k-kol-d">—</div></div>
+    <div class="kpi pur"><div class="kpi-l">淨利</div><div class="kpi-v" id="c2d-k-net" style="font-size:20px">$0</div><div class="kpi-d">扣 KOL 費後</div></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="cd" style="margin-bottom:14px">
+    <div style="padding:0 14px;border-bottom:1px solid var(--li);display:flex;gap:0">
+      <button class="tab-tb on" data-c2dtab="info"   onclick="setC2DTab('info')">📋 基本資訊</button>
+      <button class="tab-tb"    data-c2dtab="kol"    onclick="setC2DTab('kol')">🌟 KOL 列表 (<span id="c2d-kol-count">0</span>)</button>
+      <button class="tab-tb"    data-c2dtab="rev"    onclick="setC2DTab('rev')">💰 業績與結算</button>
+    </div>
+    <div id="c2d-tab-info" class="c2d-tab-pane" style="padding:18px"></div>
+    <div id="c2d-tab-kol" class="c2d-tab-pane" style="display:none"></div>
+    <div id="c2d-tab-rev" class="c2d-tab-pane" style="display:none"></div>
+  </div>
+</div>
+
+<!-- ═══ 舊版 v-camps（過渡）═══ -->
 <div class="vw" id="v-camps">
   <div class="ph"><div><h1>開團紀錄</h1><p id="camps-sub"></p></div>
   <div class="ph-a">
@@ -1659,16 +1985,30 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
 
 <!-- Commission/Payment -->
 <div class="vw" id="v-comm">
-  <div class="ph"><div><h1>分潤與匯款</h1><p>團購主與 KOL 的匯款核算</p></div>
+  <div class="ph"><div><h1>結算管理</h1><p id="cm-sub">品牌方應收 + KOL 應付</p></div>
   <div class="ph-a">
-    <button class="btn btn-g" onclick="expCommCSV()">📤 匯出對帳單</button>
+    <button class="btn btn-g" onclick="renderComm()">↻ 重新載入</button>
   </div></div>
-  <div class="g3" style="margin-bottom:14px">
-    <div class="kpi red"><div class="kpi-l">待匯總額</div><div class="kpi-v" id="pay-p" style="font-size:22px">$0</div><div class="kpi-d" id="pay-pc">0筆</div></div>
-    <div class="kpi grn"><div class="kpi-l">已匯總額</div><div class="kpi-v" id="pay-d" style="font-size:22px">$0</div><div class="kpi-d" id="pay-dc">0筆</div></div>
-    <div class="kpi gold"><div class="kpi-l">代操淨利</div><div class="kpi-v" id="pay-n" style="font-size:22px">$0</div><div class="kpi-d">本月</div></div>
+
+  <!-- KPI 4 個 -->
+  <div class="g4" style="margin-bottom:14px">
+    <div class="kpi red"><div class="kpi-l">待收（品牌方）</div><div class="kpi-v" id="cm-k-recv" style="font-size:20px">$0</div><div class="kpi-d" id="cm-k-recv-c">0 筆</div></div>
+    <div class="kpi yel"><div class="kpi-l">待付（KOL）</div><div class="kpi-v" id="cm-k-pay" style="font-size:20px">$0</div><div class="kpi-d" id="cm-k-pay-c">0 筆</div></div>
+    <div class="kpi grn"><div class="kpi-l">本月已收</div><div class="kpi-v" id="cm-k-recv-m" style="font-size:20px">$0</div><div class="kpi-d">已入帳</div></div>
+    <div class="kpi gold"><div class="kpi-l">本月淨利</div><div class="kpi-v" id="cm-k-net" style="font-size:20px">$0</div><div class="kpi-d">已結案活動</div></div>
   </div>
-  <div class="cd" id="comm-list-box"></div>
+
+  <!-- Tabs -->
+  <div class="cd" style="margin-bottom:14px">
+    <div style="padding:0 14px;border-bottom:1px solid var(--li);display:flex;gap:0">
+      <button class="tab-tb on" data-cmtab="recv" onclick="setCommTab('recv')">📥 品牌方應收 (<span id="cm-tab-recv-c">0</span>)</button>
+      <button class="tab-tb"    data-cmtab="pay"  onclick="setCommTab('pay')">📤 KOL 應付 (<span id="cm-tab-pay-c">0</span>)</button>
+      <button class="tab-tb"    data-cmtab="hist" onclick="setCommTab('hist')">📚 歷史紀錄</button>
+    </div>
+    <div id="comm-tab-recv" class="cm-tab-pane"></div>
+    <div id="comm-tab-pay" class="cm-tab-pane" style="display:none"></div>
+    <div id="comm-tab-hist" class="cm-tab-pane" style="display:none"></div>
+  </div>
 </div>
 
 <!-- Daily Revenue -->
@@ -1828,6 +2168,14 @@ hr{border:none;border-top:1px solid var(--b1);margin:14px 0;}
   <div class="ph"><div><h1>業績登錄</h1><p>三種模式快速錄入：品牌視角、通路視角、網格貼上</p></div>
   <div class="ph-a" id="rev2-acts"></div></div>
 
+  <!-- V4.8 D-4: 自動串接說明 -->
+  <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(168,138,90,0.08);border:1px solid rgba(168,138,90,0.25);border-radius:4px;margin-bottom:14px;font-size:11.5px;color:var(--tx2);letter-spacing:.05em">
+    <span style="font-size:16px">🔗</span>
+    <div>
+      <strong style="color:var(--gold)">自動串接：</strong>業績登錄後，系統會自動偵測該日期/通路是否落入「開團活動」的時間區間，並建立連結，即時更新該活動的「實際業績」。
+    </div>
+  </div>
+
   <!-- Mode tabs -->
   <div class="cd" style="margin-bottom:14px">
     <div style="padding:14px;display:flex;gap:8px;flex-wrap:wrap">
@@ -1974,6 +2322,8 @@ const VIEW_PERM = {
   'kol-detail': ['kols','view'],
   gb: ['group_buyers','view'],
   camps: ['group_campaigns','view'],
+  camps2: ['group_campaigns','view'],
+  'camp2-detail': ['group_campaigns','view'],
   comm: ['commissions','view'],
   revenue: ['group_campaigns','view'],
   rev2: ['group_campaigns','view'],
@@ -2348,7 +2698,7 @@ function getHolidaysOnDate(dateStr) {
   return list;
 }
 
-const VT = {dash:'總覽',mywork:'我的任務',clients:'品牌客戶','client-detail':'客戶詳情',tasks:'營運任務',cal:'行銷日曆',kol:'KOL 資料庫','kol-detail':'KOL 詳情',gb:'團購主',camps:'開團紀錄',comm:'分潤管理',revenue:'業績分析',rev2:'業績登錄',campaigns2:'檔期活動',members:'成員',report:'報告',inbox:'通知'};
+const VT = {dash:'總覽',mywork:'我的任務',clients:'品牌客戶','client-detail':'客戶詳情',tasks:'營運任務',cal:'行銷日曆',kol:'KOL 資料庫','kol-detail':'KOL 詳情',gb:'團購主',camps:'舊版開團',camps2:'開團活動','camp2-detail':'活動詳情',comm:'結算管理',revenue:'業績分析',rev2:'業績登錄',campaigns2:'檔期活動',members:'成員',report:'報告',inbox:'通知'};
 
 // 頁面權限檢查
 function hasViewPerm(view) {
@@ -2451,7 +2801,7 @@ function renderView(view, param) {
       dash:renderDash, mywork:renderMyWork, clients:renderClients, 'client-detail':()=>renderClientDetail(param),
       tasks:renderTasksPage, cal:renderCal, kol:renderKol, 'kol-detail':()=>renderKolDetail(param),
       gb:renderGB, camps:renderCamps, comm:renderComm, revenue:renderRevenue, rev2:renderRev2,
-      campaigns2:renderCampaigns2,
+      campaigns2:renderCampaigns2, camps2:renderCamps2View, 'camp2-detail':()=>renderC2Detail(param),
       members:renderMembers, report:renderReport, inbox:renderInbox
     };
     if (rf[view]) rf[view]();
@@ -6638,48 +6988,323 @@ function saveCamp() {
 }
 
 /* ═══ COMMISSION / PAYMENT ═══ */
+/* ═══════════════════════════════════════
+   V4.8 D-4 結算管理（取代舊版分潤管理）
+   ═══════════════════════════════════════ */
+let COMM_STATE = {
+  tab: 'recv',     // recv / pay / hist
+  camps: [],       // campaigns_v2
+  kols: [],        // campaign_kols_v2
+  loaded: false
+};
+
 function renderComm() {
-  const pend = DB.campaigns.filter(c=>!c.wired && c.payout_to_gb>0);
-  const paid = DB.campaigns.filter(c=>c.wired);
-  const pA = pend.reduce((s,c)=>s+(c.payout_to_gb||0),0);
-  const pD = paid.reduce((s,c)=>s+(c.payout_to_gb||0),0);
-  const totalRev = DB.campaigns.reduce((s,c)=>s+(c.revenue||0),0);
-  const totalPayout = DB.campaigns.reduce((s,c)=>s+(c.payout_to_gb||0),0);
+  // 載入 campaigns_v2 和 campaign_kols_v2
+  if (!COMM_STATE.loaded) {
+    Promise.all([
+      apiGet('campaigns_v2').catch(()=>[]),
+      apiGet('campaign_kols_v2').catch(()=>[])
+    ]).then(arr => {
+      COMM_STATE.camps = arr[0] || [];
+      COMM_STATE.kols = arr[1] || [];
+      COMM_STATE.loaded = true;
+      paintComm();
+    });
+  } else {
+    paintComm();
+  }
+}
 
-  $('pay-p').textContent = '$'+fmt(pA);
-  $('pay-pc').textContent = pend.length+'筆待匯';
-  $('pay-d').textContent = '$'+fmt(pD);
-  $('pay-dc').textContent = paid.length+'筆已匯';
-  $('pay-n').textContent = '$'+fmt(totalRev-totalPayout);
+function paintComm() {
+  const camps = COMM_STATE.camps || [];
+  const kols = COMM_STATE.kols || [];
 
-  let h = '<div class="cd-t"><div class="cd-tt">💰 分潤總表</div></div>';
-  h += '<div class="tw"><table class="tbl-t"><thead><tr><th>日期</th><th>團購主</th><th>品牌</th><th>業績</th><th>抽成</th><th>應付</th><th>結算</th><th>請款</th><th>匯款</th><th>操作</th></tr></thead><tbody>';
-  if (!DB.campaigns.length) h += '<tr><td colspan="10" style="text-align:center;color:var(--tx3);padding:28px">尚無資料</td></tr>';
-  DB.campaigns.forEach(c=>{
-    h += '<tr>';
-    h += '<td style="font-family:var(--mo);font-size:11px">'+(c.create_date||'—')+'</td>';
-    h += '<td style="font-weight:700">'+esc(c.gb_name)+'</td>';
-    h += '<td>'+esc(c.brand_name||'—')+'</td>';
-    h += '<td style="font-family:var(--mo)">$'+fmt(c.revenue)+'</td>';
-    h += '<td style="font-family:var(--mo)">'+Math.round((c.commission_rate||0)*100)+'%</td>';
-    h += '<td style="font-family:var(--mo);color:'+(c.wired?'var(--grn)':'var(--red)')+';font-weight:700">$'+fmt(c.payout_to_gb)+'</td>';
-    h += '<td>'+(c.settled?tag('tg-grn','✓'):tag('tg-gr','—'))+'</td>';
-    h += '<td>'+(c.billed?tag('tg-grn','✓'):tag('tg-gr','—'))+'</td>';
-    h += '<td>'+(c.wired?tag('tg-grn','✓'):tag('tg-red','待匯'))+'</td>';
-    h += '<td>';
-    if (hasPerm('group_campaigns','payment') && !c.wired) h += '<button class="btn btn-s btn-sm" onclick="payCamp('+c.id+')">匯款</button>';
-    else h += '<button class="btn btn-g btn-sm" onclick="openCampM('+c.id+')">✏️</button>';
+  // 應收：brand_status ∈ {wrapped, invoicing, closed} 且 payment_status != received
+  const recv = camps.filter(c => {
+    if (['wrapped','invoicing','closed'].indexOf(c.brand_status) < 0) return false;
+    if (c.payment_status === 'received') return false;
+    const due = (+c.brand_total_billing||0) - (+c.brand_paid_amount||0);
+    return due > 0;
+  }).map(c => ({...c, _due: (+c.brand_total_billing||0) - (+c.brand_paid_amount||0) }));
+
+  // 應付 KOL：invite_status ∈ {posted, data_reported, settled} 且 payout_status != paid
+  // 此 KOL 的金流走我（agency）才需我付，走品牌則跳過
+  const pay = kols.filter(k => {
+    if (['posted','data_reported','settled'].indexOf(k.invite_status) < 0) return false;
+    if (k.payout_status === 'paid') return false;
+    const due = (+k.payout||0) - (+k.payout_paid||0);
+    if (due <= 0) return false;
+    // 確認金流走向
+    const camp = camps.find(c => c.id === k.campaign_id);
+    const flow = k.payment_flow || (camp ? camp.kol_payment_flow : 'agency');
+    return flow !== 'direct'; // direct 不需我付
+  }).map(k => {
+    const camp = camps.find(c => c.id === k.campaign_id);
+    return {...k, _camp: camp, _due: (+k.payout||0) - (+k.payout_paid||0) };
+  });
+
+  // 歷史：已收 + 已付完
+  const histR = camps.filter(c => c.payment_status === 'received');
+  const histP = kols.filter(k => k.payout_status === 'paid');
+
+  // KPI
+  const recvTotal = recv.reduce((s,c) => s + c._due, 0);
+  const payTotal = pay.reduce((s,k) => s + k._due, 0);
+  const now = new Date();
+  const ym = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  const recvMonthTotal = histR.filter(c => (c.brand_paid_date||'').startsWith(ym))
+    .reduce((s,c)=>s+(+c.brand_paid_amount||0), 0);
+  const closedThisMonth = camps.filter(c => c.brand_status==='closed' && (c.updated_at||'').startsWith(ym));
+  const monthNet = closedThisMonth.reduce((s,c)=>s+(+c.agency_net_profit||0), 0);
+
+  $('cm-k-recv').textContent = '$'+fmt(recvTotal);
+  $('cm-k-recv-c').textContent = recv.length+' 筆';
+  $('cm-k-pay').textContent = '$'+fmt(payTotal);
+  $('cm-k-pay-c').textContent = pay.length+' 筆';
+  $('cm-k-recv-m').textContent = '$'+fmt(recvMonthTotal);
+  $('cm-k-net').textContent = '$'+fmt(monthNet);
+  $('cm-tab-recv-c').textContent = recv.length;
+  $('cm-tab-pay-c').textContent = pay.length;
+
+  $('cm-sub').textContent = '應收 '+recv.length+' 筆 · 應付 '+pay.length+' 筆';
+
+  // 渲染各 tab
+  paintCommRecv(recv);
+  paintCommPay(pay);
+  paintCommHist(histR, histP);
+}
+
+function setCommTab(t) {
+  COMM_STATE.tab = t;
+  document.querySelectorAll('[data-cmtab]').forEach(b=>b.classList.toggle('on', b.dataset.cmtab===t));
+  ['recv','pay','hist'].forEach(k=>{
+    $('comm-tab-'+k).style.display = k===t ? '' : 'none';
+  });
+}
+
+// ═══ 應收（品牌方）═══
+function paintCommRecv(rows) {
+  const box = $('comm-tab-recv');
+  if (!rows.length) {
+    box.innerHTML = '<div style="padding:50px 20px;text-align:center;color:var(--tx3);letter-spacing:1.5px">'+
+      '<div style="font-size:36px;margin-bottom:8px">💰</div>'+
+      '<div style="font-size:13px;margin-bottom:4px">沒有待收款項</div>'+
+      '<div style="font-size:11px">當活動進入「業績達成」或「對帳請款」狀態，會自動列在這裡</div>'+
+      '</div>';
+    return;
+  }
+
+  let h = '<div class="tw"><table class="tbl-t"><thead><tr>';
+  h += '<th>活動</th><th>品牌</th><th>期間</th><th style="text-align:right">業績</th><th style="text-align:right">請款額</th><th style="text-align:right">已收</th><th style="text-align:right">應收</th><th>狀態</th><th>寄帳單日</th><th>操作</th>';
+  h += '</tr></thead><tbody>';
+
+  // 排序：應收金額 desc
+  rows.sort((a,b)=>b._due-a._due);
+  rows.forEach(c => {
+    const bsmeta = C2_BS_LBL[c.brand_status||'proposal'] || C2_BS_LBL.proposal;
+    const psmeta = C2_PS_LBL[c.payment_status||'pending'] || C2_PS_LBL.pending;
+    h += '<tr style="cursor:pointer" onclick="go(\'camp2-detail\','+c.id+')">';
+    h += '<td><div style="font-weight:700;font-size:12px">'+esc(c.name||'—')+'</div></td>';
+    h += '<td style="font-size:11px">'+esc(c.brand_name||'—')+'</td>';
+    h += '<td style="font-family:var(--mo);font-size:10px;color:var(--tx3)">'+(c.start_date||'?')+'<br>~ '+(c.end_date||'?')+'</td>';
+    h += '<td style="text-align:right;font-family:var(--mo)">$'+fmt(c.actual_revenue||0)+'</td>';
+    h += '<td style="text-align:right;font-family:var(--mo);font-weight:700">$'+fmt(c.brand_total_billing||0)+'</td>';
+    h += '<td style="text-align:right;font-family:var(--mo);color:var(--grn)">$'+fmt(c.brand_paid_amount||0)+'</td>';
+    h += '<td style="text-align:right;font-family:var(--mo);font-weight:800;color:var(--red)">$'+fmt(c._due)+'</td>';
+    h += '<td>'+tag(psmeta.tg, psmeta.lbl)+'</td>';
+    h += '<td style="font-family:var(--mo);font-size:11px">'+(c.brand_invoice_date||'—')+'</td>';
+    h += '<td onclick="event.stopPropagation()">';
+    if (hasPerm('commissions','payment')) {
+      if (c.payment_status === 'pending') {
+        h += '<button class="btn btn-g btn-sm" onclick="markInvoiced('+c.id+')" title="標記已寄帳單">📨</button> ';
+      }
+      h += '<button class="btn btn-p btn-sm" onclick="openCommPayM(\'recv\','+c.id+')" title="標記收款">💰</button>';
+    }
     h += '</td>';
     h += '</tr>';
   });
   h += '</tbody></table></div>';
-  $('comm-list-box').innerHTML = h;
+  box.innerHTML = h;
+}
+
+// ═══ 應付（KOL）═══
+function paintCommPay(rows) {
+  const box = $('comm-tab-pay');
+  if (!rows.length) {
+    box.innerHTML = '<div style="padding:50px 20px;text-align:center;color:var(--tx3);letter-spacing:1.5px">'+
+      '<div style="font-size:36px;margin-bottom:8px">📤</div>'+
+      '<div style="font-size:13px;margin-bottom:4px">沒有待付款項</div>'+
+      '<div style="font-size:11px">當 KOL 進入「已上稿」或之後狀態，且未付清的會自動列在這裡</div>'+
+      '</div>';
+    return;
+  }
+
+  let h = '<div class="tw"><table class="tbl-t"><thead><tr>';
+  h += '<th>KOL</th><th>活動</th><th>狀態</th><th style="text-align:right">應付</th><th style="text-align:right">已付</th><th style="text-align:right">應付餘額</th><th>上稿日</th><th>付款日</th><th>操作</th>';
+  h += '</tr></thead><tbody>';
+
+  rows.sort((a,b)=>b._due-a._due);
+  rows.forEach(k => {
+    const ismeta = CK_IS_LBL[k.invite_status||'inviting'] || CK_IS_LBL.inviting;
+    h += '<tr style="cursor:pointer" onclick="go(\'camp2-detail\','+k.campaign_id+')">';
+    h += '<td><div style="font-weight:700">'+esc(k.kol_name||'—')+'</div><div style="font-size:9px;color:var(--tx3)">'+(k.kol_type==='group_buyer'?'🛍️ 團購主':'🌟 KOL')+'</div></td>';
+    h += '<td style="font-size:11px">'+esc(k._camp ? k._camp.name : '—')+'<div style="font-size:9px;color:var(--tx3)">'+esc(k._camp ? k._camp.brand_name : '')+'</div></td>';
+    h += '<td>'+tag(ismeta.tg, ismeta.lbl)+'</td>';
+    h += '<td style="text-align:right;font-family:var(--mo);font-weight:700">$'+fmt(k.payout||0)+'</td>';
+    h += '<td style="text-align:right;font-family:var(--mo);color:var(--grn)">$'+fmt(k.payout_paid||0)+'</td>';
+    h += '<td style="text-align:right;font-family:var(--mo);font-weight:800;color:var(--red)">$'+fmt(k._due)+'</td>';
+    h += '<td style="font-family:var(--mo);font-size:11px">'+(k.post_date||'—')+'</td>';
+    h += '<td style="font-family:var(--mo);font-size:11px">'+(k.payout_paid_date||'—')+'</td>';
+    h += '<td onclick="event.stopPropagation()">';
+    if (hasPerm('commissions','payment')) {
+      h += '<button class="btn btn-p btn-sm" onclick="openCommPayM(\'pay\','+k.id+')" title="標記付款">💰</button>';
+    }
+    h += '</td>';
+    h += '</tr>';
+  });
+  h += '</tbody></table></div>';
+  box.innerHTML = h;
+}
+
+// ═══ 歷史紀錄 ═══
+function paintCommHist(histR, histP) {
+  const box = $('comm-tab-hist');
+  let h = '<div style="padding:14px">';
+
+  h += '<div style="font-size:10px;color:var(--tx3);letter-spacing:.2em;font-weight:700;margin-bottom:10px">📥 已收款（最近 30 筆）</div>';
+  if (!histR.length) {
+    h += '<div style="padding:20px;color:var(--tx3);font-size:11px;text-align:center">尚無紀錄</div>';
+  } else {
+    h += '<div class="tw" style="margin-bottom:24px"><table class="tbl-t"><thead><tr><th>活動</th><th>品牌</th><th style="text-align:right">收款金額</th><th>收款日</th></tr></thead><tbody>';
+    histR.sort((a,b)=>(b.brand_paid_date||'').localeCompare(a.brand_paid_date||'')).slice(0, 30).forEach(c => {
+      h += '<tr><td>'+esc(c.name||'—')+'</td><td>'+esc(c.brand_name||'—')+'</td><td style="text-align:right;font-family:var(--mo);color:var(--grn);font-weight:700">$'+fmt(c.brand_paid_amount||0)+'</td><td style="font-family:var(--mo);font-size:11px">'+(c.brand_paid_date||'—')+'</td></tr>';
+    });
+    h += '</tbody></table></div>';
+  }
+
+  h += '<div style="font-size:10px;color:var(--tx3);letter-spacing:.2em;font-weight:700;margin-bottom:10px">📤 已付 KOL（最近 30 筆）</div>';
+  if (!histP.length) {
+    h += '<div style="padding:20px;color:var(--tx3);font-size:11px;text-align:center">尚無紀錄</div>';
+  } else {
+    h += '<div class="tw"><table class="tbl-t"><thead><tr><th>KOL</th><th style="text-align:right">付款金額</th><th>付款日</th></tr></thead><tbody>';
+    histP.sort((a,b)=>(b.payout_paid_date||'').localeCompare(a.payout_paid_date||'')).slice(0, 30).forEach(k => {
+      h += '<tr><td>'+esc(k.kol_name||'—')+'</td><td style="text-align:right;font-family:var(--mo);color:var(--red);font-weight:700">$'+fmt(k.payout_paid||0)+'</td><td style="font-family:var(--mo);font-size:11px">'+(k.payout_paid_date||'—')+'</td></tr>';
+    });
+    h += '</tbody></table></div>';
+  }
+
+  h += '</div>';
+  box.innerHTML = h;
+}
+
+// ═══ 標記寄帳單（一鍵）═══
+function markInvoiced(cid) {
+  if (!hasPerm('commissions','payment')) { toast('無權限','error'); return; }
+  showCf('標記已寄帳單？','將更新狀態為「已寄帳單」並記錄今天日期', ()=>{
+    apiPut('campaigns_v2', cid, {
+      payment_status: 'invoiced',
+      brand_invoice_date: today(),
+      brand_status: 'invoicing'
+    }).then(()=>{
+      toast('已標記','success');
+      COMM_STATE.loaded = false;
+      renderComm();
+    }).catch(e=>{ if (e.code !== 403) toast('失敗','error'); });
+  }, '確認', '📨');
+}
+
+// ═══ 標記匯款 modal（通用）═══
+function openCommPayM(mode, id) {
+  if (!hasPerm('commissions','payment')) { toast('無權限','error'); return; }
+  $('cp-mode').value = mode;
+  $('cp-id').value = id;
+  $('cp-date').value = today();
+  $('cp-note').value = '';
+  if (mode === 'recv') {
+    const c = (COMM_STATE.camps||[]).find(x=>x.id===id);
+    if (!c) return;
+    $('mcp-t').textContent = '💰 標記品牌方收款';
+    const due = (+c.brand_total_billing||0) - (+c.brand_paid_amount||0);
+    $('cp-amount').value = due;
+    $('cp-info').innerHTML =
+      '<div><strong>'+esc(c.name)+'</strong></div>'+
+      '<div style="color:var(--tx3);margin-top:3px">品牌：'+esc(c.brand_name||'—')+'</div>'+
+      '<div style="margin-top:6px;font-family:var(--mo)">請款額 $'+fmt(c.brand_total_billing||0)+' · 已收 $'+fmt(c.brand_paid_amount||0)+' · <strong style="color:var(--red)">應收 $'+fmt(due)+'</strong></div>';
+  } else {
+    const k = (COMM_STATE.kols||[]).find(x=>x.id===id);
+    if (!k) return;
+    $('mcp-t').textContent = '💰 標記 KOL 付款';
+    const due = (+k.payout||0) - (+k.payout_paid||0);
+    $('cp-amount').value = due;
+    $('cp-info').innerHTML =
+      '<div><strong>'+esc(k.kol_name)+'</strong></div>'+
+      '<div style="color:var(--tx3);margin-top:3px">活動：'+esc(k.campaign_name||'')+'</div>'+
+      '<div style="margin-top:6px;font-family:var(--mo)">應付 $'+fmt(k.payout||0)+' · 已付 $'+fmt(k.payout_paid||0)+' · <strong style="color:var(--red)">應付餘額 $'+fmt(due)+'</strong></div>';
+  }
+  openM('m-comm-pay');
+}
+
+function saveCommPay() {
+  const mode = $('cp-mode').value;
+  const id = parseInt($('cp-id').value);
+  const amount = parseFloat($('cp-amount').value);
+  const date = $('cp-date').value;
+  if (!amount || amount <= 0) { toast('請填金額','error'); return; }
+  if (!date) { toast('請填日期','error'); return; }
+
+  if (mode === 'recv') {
+    const c = (COMM_STATE.camps||[]).find(x=>x.id===id);
+    if (!c) return;
+    const newPaid = (+c.brand_paid_amount||0) + amount;
+    const billing = (+c.brand_total_billing||0);
+    let psNew = 'partial';
+    let bsNew = c.brand_status;
+    if (newPaid >= billing) {
+      psNew = 'received';
+      bsNew = 'closed'; // 全部收完自動結案
+    }
+    apiPut('campaigns_v2', id, {
+      brand_paid_amount: newPaid,
+      brand_paid_date: date,
+      payment_status: psNew,
+      brand_status: bsNew
+    }).then(()=>{
+      closeM('m-comm-pay');
+      toast('已記錄收款 $'+fmt(amount),'success');
+      COMM_STATE.loaded = false;
+      renderComm();
+    }).catch(e=>{ if (e.code !== 403) toast('失敗','error'); });
+  } else {
+    // pay = KOL
+    const k = (COMM_STATE.kols||[]).find(x=>x.id===id);
+    if (!k) return;
+    const newPaid = (+k.payout_paid||0) + amount;
+    const due = (+k.payout||0);
+    let psNew = 'partial';
+    let isNew = k.invite_status;
+    if (newPaid >= due) {
+      psNew = 'paid';
+      // 自動推進到 settled（如果還沒）
+      if (k.invite_status !== 'settled' && k.invite_status !== 'declined') isNew = 'settled';
+    }
+    apiPut('campaign_kols_v2', id, {
+      payout_paid: newPaid,
+      payout_paid_date: date,
+      payout_status: psNew,
+      invite_status: isNew
+    }).then(()=>{
+      closeM('m-comm-pay');
+      toast('已記錄付款 $'+fmt(amount),'success');
+      COMM_STATE.loaded = false;
+      renderComm();
+    }).catch(e=>{ if (e.code !== 403) toast('失敗','error'); });
+  }
 }
 
 function payCamp(id) {
+  // 舊版相容（舊版 group_campaigns 還在用）
   showCf('確認匯款？','標記為已匯款？',()=>{
     apiPut('group_campaigns', id, {wired:1}).then(()=>loadDB()).then(()=>{
-      renderComm();
       toast('已標記匯款','success');
     });
   },'確認','💰');
@@ -7164,7 +7789,10 @@ function saveRev2Brand(bid, date) {
     return exist ? apiPut('daily_revenue', exist.id, data) : apiPost('daily_revenue', data);
   });
   Promise.all(tasks).then(()=>{
-    toast('已儲存 '+entries.length+' 筆','success');
+    toast('已儲存 '+entries.length+' 筆 · 已自動串接相關開團活動','success');
+    // 清快取讓開團活動下次重載
+    if (typeof C2_STATE !== 'undefined') C2_STATE.data = [];
+    if (typeof COMM_STATE !== 'undefined') COMM_STATE.loaded = false;
     loadRev2Existing().then(()=>renderRev2BrandForm());
   }).catch(e=>{
     if (e.code !== 403) toast('儲存失敗：'+e.message,'error');
@@ -7253,7 +7881,9 @@ function saveRev2Channel(ch, date) {
     return exist ? apiPut('daily_revenue', exist.id, data) : apiPost('daily_revenue', data);
   });
   Promise.all(tasks).then(()=>{
-    toast('已儲存 '+entries.length+' 筆','success');
+    toast('已儲存 '+entries.length+' 筆 · 已自動串接相關開團活動','success');
+    if (typeof C2_STATE !== 'undefined') C2_STATE.data = [];
+    if (typeof COMM_STATE !== 'undefined') COMM_STATE.loaded = false;
     loadRev2Existing().then(()=>renderRev2ChannelForm());
   }).catch(e=>{
     if (e.code !== 403) toast('儲存失敗：'+e.message,'error');
@@ -7447,7 +8077,9 @@ function saveRev2Grid(bid) {
       return exist ? apiPut('daily_revenue', exist.id, data) : apiPost('daily_revenue', data);
     });
     Promise.all(tasks).then(()=>{
-      toast('已儲存 '+changes.length+' 筆','success');
+      toast('已儲存 '+changes.length+' 筆 · 已自動串接相關開團活動','success');
+      if (typeof C2_STATE !== 'undefined') C2_STATE.data = [];
+      if (typeof COMM_STATE !== 'undefined') COMM_STATE.loaded = false;
       loadRev2Existing().then(()=>renderRev2GridForm());
     }).catch(e=>{
       if (e.code !== 403) toast('儲存失敗：'+e.message,'error');
@@ -7775,6 +8407,854 @@ function delCampaign2() {
     }).catch(e=>{
       if (e.code !== 403) toast('刪除失敗','error');
     });
+  });
+}
+
+/* ═══════════════════════════════════════
+   V4.8 開團活動 (campaigns_v2)
+   ═══════════════════════════════════════ */
+let C2_STATE = {
+  type: 'all',
+  brandStatus: 'all',
+  paymentStatus: 'all',
+  brandId: '',
+  fromDate: '',
+  toDate: '',
+  data: []
+};
+
+const C2_TYPE_LBL = {
+  platform:  { lbl:'平台檔期', ic:'🛒', color:'var(--gold)' },
+  group_buy: { lbl:'團購',     ic:'🛍️', color:'var(--pur)' },
+  official:  { lbl:'官網檔期', ic:'🏠', color:'var(--cyn)' },
+  kol:       { lbl:'KOL 業配', ic:'🌟', color:'var(--org)' },
+  live:      { lbl:'直播',     ic:'🎥', color:'var(--red)' },
+  other:     { lbl:'其他',     ic:'📎', color:'var(--tx3)' }
+};
+
+const C2_BS_LBL = {
+  proposal:        { lbl:'提案中',     ic:'📝', tg:'tg-gr',   color:'var(--tx3)' },
+  confirming_kols: { lbl:'名單提案',   ic:'📋', tg:'tg-cyn',  color:'var(--cyn)' },
+  confirmed:       { lbl:'已確認',     ic:'✅', tg:'tg-grn',  color:'var(--grn)' },
+  running:         { lbl:'進行中',     ic:'▶️', tg:'tg-gold', color:'var(--gold)' },
+  wrapped:         { lbl:'業績達成',   ic:'🏁', tg:'tg-pur',  color:'var(--pur)' },
+  invoicing:       { lbl:'對帳請款',   ic:'💸', tg:'tg-yel',  color:'var(--yel)' },
+  closed:          { lbl:'已結案',     ic:'✓',  tg:'tg-grn',  color:'var(--grn)' },
+  cancelled:       { lbl:'已取消',     ic:'✕',  tg:'tg-red',  color:'var(--red)' }
+};
+
+const C2_PS_LBL = {
+  pending:   { lbl:'未請款',   tg:'tg-gr' },
+  invoiced:  { lbl:'已寄帳單', tg:'tg-cyn' },
+  received:  { lbl:'已收款',   tg:'tg-grn' },
+  partial:   { lbl:'部分收款', tg:'tg-yel' },
+  overdue:   { lbl:'逾期',     tg:'tg-red' }
+};
+
+// 切換 tab helper
+function setC2Type(t)  { C2_STATE.type=t; document.querySelectorAll('#c2-type-tabs .tab-sw-b').forEach(b=>b.classList.toggle('on', b.dataset.c2t===t)); renderCamps2(); }
+function setC2Bs(s)    { C2_STATE.brandStatus=s; document.querySelectorAll('#c2-bs-tabs .tab-sw-b').forEach(b=>b.classList.toggle('on', b.dataset.c2bs===s)); renderCamps2(); }
+function setC2Ps(s)    { C2_STATE.paymentStatus=s; document.querySelectorAll('#c2-ps-tabs .tab-sw-b').forEach(b=>b.classList.toggle('on', b.dataset.c2ps===s)); renderCamps2(); }
+
+// 入口（主 router 呼叫）
+function renderCamps2View() {
+  // 顯示/隱藏 + 新增 按鈕
+  const addBtn = $('c2-add-btn');
+  if (addBtn) addBtn.style.display = hasPerm('group_campaigns','edit') ? '' : 'none';
+  // 填品牌下拉
+  const sel = $('c2-f-brand');
+  if (sel) {
+    sel.innerHTML = '<option value="">全部品牌</option>' +
+      DB.brands.filter(b=>!b.archived).map(b=>'<option value="'+b.id+'">'+esc(b.short||b.name)+'</option>').join('');
+    sel.onchange = () => { C2_STATE.brandId = sel.value; renderCamps2(); };
+  }
+  // 載入資料
+  loadCamps2();
+}
+
+function loadCamps2() {
+  $('c2-list-box').innerHTML = '<div class="cd"><div style="padding:50px 20px;text-align:center;color:var(--tx3);letter-spacing:2px">載入中...</div></div>';
+  apiGet('campaigns_v2').then(rows => {
+    C2_STATE.data = rows || [];
+    renderCamps2();
+  }).catch(e => {
+    if (e.code === 403) {
+      $('c2-list-box').innerHTML = '<div class="cd"><div style="padding:50px 20px;text-align:center;color:var(--tx3);letter-spacing:2px">無權限查看</div></div>';
+    } else {
+      $('c2-list-box').innerHTML = '<div class="cd"><div style="padding:50px 20px;text-align:center;color:var(--red);letter-spacing:2px">載入失敗：'+esc(e.message||'')+'</div></div>';
+    }
+  });
+}
+
+function renderCamps2() {
+  let rows = C2_STATE.data || [];
+  // Filter
+  if (C2_STATE.type !== 'all') rows = rows.filter(r => (r.type||'platform') === C2_STATE.type);
+  if (C2_STATE.brandStatus !== 'all') rows = rows.filter(r => (r.brand_status||'proposal') === C2_STATE.brandStatus);
+  if (C2_STATE.paymentStatus !== 'all') rows = rows.filter(r => (r.payment_status||'pending') === C2_STATE.paymentStatus);
+  if (C2_STATE.brandId) rows = rows.filter(r => r.brand_id == C2_STATE.brandId);
+  const fromV = $('c2-f-from') ? $('c2-f-from').value : '';
+  const toV = $('c2-f-to') ? $('c2-f-to').value : '';
+  if (fromV) rows = rows.filter(r => (r.end_date||r.start_date||'') >= fromV);
+  if (toV) rows = rows.filter(r => (r.start_date||r.end_date||'') <= toV);
+
+  // KPI
+  const now = new Date();
+  const ym = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  const monthCamps = (C2_STATE.data||[]).filter(r => (r.start_date||'').startsWith(ym) || (r.end_date||'').startsWith(ym));
+  const monthRev = monthCamps.reduce((s,c)=>s+(+c.actual_revenue||0), 0);
+  // 應收：對品牌 invoicing 或 closed 但 payment_status != received
+  const recv = (C2_STATE.data||[]).filter(r => ['invoicing','closed','wrapped'].indexOf(r.brand_status)>-1 && r.payment_status !== 'received').reduce((s,c)=>s+((+c.brand_total_billing||0) - (+c.brand_paid_amount||0)), 0);
+  // 應付 KOL：未付完
+  const pay = (C2_STATE.data||[]).reduce((s,c)=>s+Math.max(0,(+c.total_kol_payout||0) - 0), 0); // 暫無 KOL 已付詳細，先顯示總數
+  $('c2-k-month').textContent = monthCamps.length;
+  $('c2-k-rev').textContent = '$'+fmt(monthRev);
+  $('c2-k-recv').textContent = '$'+fmt(recv);
+  $('c2-k-pay').textContent = '$'+fmt(pay);
+
+  $('c2-sub').textContent = '共 '+(C2_STATE.data||[]).length+' 個活動，篩選後顯示 '+rows.length;
+
+  // 排序：未結案的優先（按 brand_status order），再按 start_date desc
+  const bsOrd = { proposal:1, confirming_kols:2, confirmed:3, running:4, wrapped:5, invoicing:6, closed:8, cancelled:9 };
+  rows.sort((a,b) => {
+    const oa = bsOrd[a.brand_status]||5, ob = bsOrd[b.brand_status]||5;
+    if (oa !== ob) return oa - ob;
+    return (b.start_date||'').localeCompare(a.start_date||'');
+  });
+
+  if (!rows.length) {
+    if (!(C2_STATE.data||[]).length) {
+      $('c2-list-box').innerHTML = '<div class="cd"><div style="padding:60px 20px;text-align:center"><div style="font-size:36px;margin-bottom:10px">🎯</div><div style="font-size:13px;color:var(--tx2);letter-spacing:2px;margin-bottom:6px">尚無開團活動</div><div style="font-size:11px;color:var(--tx3);letter-spacing:1.5px;margin-bottom:14px">點右上「+ 新增開團活動」開始</div></div></div>';
+    } else {
+      $('c2-list-box').innerHTML = '<div class="cd"><div style="padding:50px 20px;text-align:center;color:var(--tx3);letter-spacing:2px">沒有符合條件的活動</div></div>';
+    }
+    return;
+  }
+
+  let h = '<div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(380px, 1fr));gap:12px">';
+  rows.forEach(c => {
+    h += renderCamp2Card(c);
+  });
+  h += '</div>';
+  $('c2-list-box').innerHTML = h;
+}
+
+function renderCamp2Card(c) {
+  const tmeta = C2_TYPE_LBL[c.type||'platform'] || C2_TYPE_LBL.platform;
+  const bsmeta = C2_BS_LBL[c.brand_status||'proposal'] || C2_BS_LBL.proposal;
+  const psmeta = C2_PS_LBL[c.payment_status||'pending'] || C2_PS_LBL.pending;
+  const tdy = today();
+
+  // 時間進度（檔期內第幾天 / 總天數）
+  let timeBar = '';
+  if (c.start_date && c.end_date) {
+    const sD = new Date(c.start_date);
+    const eD = new Date(c.end_date);
+    const tD = new Date(tdy);
+    const total = Math.max(1, Math.round((eD - sD) / 86400000) + 1);
+    let elapsed = Math.round((tD - sD) / 86400000) + 1;
+    elapsed = Math.max(0, Math.min(total, elapsed));
+    const pct = Math.round(elapsed/total*100);
+    let barColor = 'var(--gold)';
+    if (tdy > c.end_date) barColor = 'var(--grn)';
+    else if (tdy < c.start_date) barColor = 'var(--tx3)';
+    timeBar = '<div style="margin-top:6px"><div style="display:flex;justify-content:space-between;font-size:9px;color:var(--tx3);font-family:var(--mo);letter-spacing:.05em;margin-bottom:3px"><span>'+esc(c.start_date)+' ~ '+esc(c.end_date)+'</span><span>第 '+elapsed+' / '+total+' 天</span></div><div style="height:4px;background:var(--s4);border-radius:2px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+barColor+';border-radius:2px"></div></div></div>';
+  }
+
+  // 業績進度（actual / target）
+  let revBar = '';
+  const target = +c.target_revenue || 0;
+  const actual = +c.actual_revenue || 0;
+  if (target > 0) {
+    const pct = Math.min(150, Math.round(actual/target*100));
+    const pctShown = Math.min(100, pct);
+    const isOver = pct > 100;
+    revBar = '<div style="margin-top:6px"><div style="display:flex;justify-content:space-between;font-size:9px;color:var(--tx3);font-family:var(--mo);margin-bottom:3px"><span>業績 / 目標</span><span style="'+(isOver?'color:var(--grn);font-weight:700':'')+'">$'+fmt(actual)+' / $'+fmt(target)+' · '+pct+'%</span></div><div style="height:4px;background:var(--s4);border-radius:2px;overflow:hidden"><div style="height:100%;width:'+pctShown+'%;background:'+(isOver?'var(--grn)':'var(--gold)')+';border-radius:2px"></div></div></div>';
+  } else if (actual > 0) {
+    revBar = '<div style="margin-top:6px;font-size:11px;color:var(--tx2);font-family:var(--mo);letter-spacing:.5px">業績累計 <strong style="color:var(--grn)">$'+fmt(actual)+'</strong>（無目標）</div>';
+  }
+
+  // KOL 摘要
+  // V4.8 detail panel 會載入 campaign_kols_v2，此卡片暫顯示快取（之後會在 detail 補資料）
+  let kolSummary = '';
+  if (typeof c._kol_count !== 'undefined') {
+    kolSummary = 'KOL 共 '+c._kol_count+' 位';
+    if (typeof c._kol_posted !== 'undefined') kolSummary += ' · 已上稿 '+c._kol_posted;
+  }
+
+  // 結算數字
+  const commission = +c.agency_commission || 0;
+  const kolPayout = +c.total_kol_payout || 0;
+  const netProfit = +c.agency_net_profit || 0;
+
+  let html = '<div class="cc" style="padding:14px;cursor:pointer;border:1px solid var(--li);position:relative" onclick="openC2Detail('+c.id+')">';
+  // 類型 icon 角標
+  html += '<div style="position:absolute;top:0;left:0;width:4px;height:100%;background:'+tmeta.color+';border-radius:2px 0 0 2px"></div>';
+  html += '<div style="display:flex;align-items:flex-start;gap:8px;margin-left:8px">';
+  html += '<div style="font-size:18px;line-height:1">'+tmeta.ic+'</div>';
+  html += '<div style="flex:1;min-width:0">';
+  html += '<div style="font-size:13px;font-weight:700;letter-spacing:.05em;line-height:1.3;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(c.name||'(未命名)')+'</div>';
+  html += '<div style="font-size:10px;color:var(--tx3);letter-spacing:.5px;margin-bottom:6px">'+esc(c.brand_name||'?')+(c.platform?' · '+esc(c.platform):'')+'</div>';
+  // 雙狀態
+  html += '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">';
+  html += '<span class="tg '+bsmeta.tg+'" style="font-size:9.5px">'+bsmeta.ic+' '+bsmeta.lbl+'</span>';
+  html += '<span class="tg '+psmeta.tg+'" style="font-size:9.5px">💵 '+psmeta.lbl+'</span>';
+  html += '</div>';
+
+  // 時間進度
+  html += timeBar;
+  // 業績進度
+  html += revBar;
+
+  // 結算數據（如果有）
+  if (commission > 0 || kolPayout > 0) {
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px;padding-top:8px;border-top:1px dashed var(--li)">';
+    html += '<div><div style="font-size:9px;color:var(--tx3);letter-spacing:.15em">抽成</div><div style="font-size:12px;font-weight:700;font-family:var(--mo);color:var(--gold)">$'+fmt(commission)+'</div></div>';
+    html += '<div><div style="font-size:9px;color:var(--tx3);letter-spacing:.15em">KOL費</div><div style="font-size:12px;font-weight:700;font-family:var(--mo);color:var(--red)">$'+fmt(kolPayout)+'</div></div>';
+    html += '<div><div style="font-size:9px;color:var(--tx3);letter-spacing:.15em">淨利</div><div style="font-size:12px;font-weight:700;font-family:var(--mo);color:var(--grn)">$'+fmt(netProfit)+'</div></div>';
+    html += '</div>';
+  }
+
+  // KOL 摘要
+  if (kolSummary) {
+    html += '<div style="font-size:10px;color:var(--tx3);margin-top:8px;letter-spacing:.5px">'+kolSummary+'</div>';
+  }
+
+  html += '</div></div></div>';
+  return html;
+}
+
+// ═══ Modal: 新增/編輯活動 ═══
+function openCamp2M(id) {
+  if (!hasPerm('group_campaigns','edit')) { toast('無權限','error'); return; }
+  $('c2-eid').value = '';
+  $('mc2-t-modal').textContent = '🎯 新增開團活動';
+  ['c2-name','c2-target','c2-start','c2-end','c2-rate','c2-fixed','c2-note'].forEach(i=>$(i).value='');
+  $('c2-type').value = 'platform';
+  $('c2-platform').value = '';
+  $('c2-bs').value = 'proposal';
+  $('c2-ps').value = 'pending';
+  $('c2-ct').value = 'percentage';
+  $('c2-flow').value = 'agency';
+  $('c2-rate').value = '15';
+  $('c2-del-btn').style.display = 'none';
+  onC2CtChange();
+
+  // 品牌下拉
+  const bsel = $('c2-brand');
+  bsel.innerHTML = '<option value="">— 請選擇 —</option>' +
+    DB.brands.filter(b=>!b.archived).map(b=>'<option value="'+b.id+'">'+esc(b.short||b.name)+'</option>').join('');
+
+  if (id) {
+    const c = (C2_STATE.data||[]).find(x => x.id === id);
+    if (!c) { toast('找不到活動','error'); return; }
+    $('c2-eid').value = id;
+    $('mc2-t-modal').textContent = '✏️ 編輯活動';
+    $('c2-name').value = c.name||'';
+    $('c2-brand').value = c.brand_id||'';
+    $('c2-type').value = c.type||'platform';
+    $('c2-platform').value = c.platform||'';
+    $('c2-target').value = c.target_revenue||'';
+    $('c2-start').value = c.start_date||'';
+    $('c2-end').value = c.end_date||'';
+    $('c2-bs').value = c.brand_status||'proposal';
+    $('c2-ps').value = c.payment_status||'pending';
+    $('c2-ct').value = c.commission_type||'percentage';
+    $('c2-rate').value = c.commission_rate||0;
+    $('c2-fixed').value = c.commission_fixed||0;
+    $('c2-flow').value = c.kol_payment_flow||'agency';
+    $('c2-note').value = c.note||'';
+    $('c2-del-btn').style.display = '';
+    onC2CtChange();
+  }
+  openM('m-camp2');
+}
+
+function onC2CtChange() {
+  const v = $('c2-ct').value;
+  $('c2-rate-wrap').style.display = v === 'percentage' ? '' : 'none';
+  $('c2-fixed-wrap').style.display = v === 'fixed' ? '' : 'none';
+}
+
+function saveC2() {
+  const name = $('c2-name').value.trim();
+  if (!name) { toast('請填活動名稱','error'); return; }
+  const brandId = parseInt($('c2-brand').value);
+  if (!brandId) { toast('請選擇品牌','error'); return; }
+  const brand = DB.brands.find(b=>b.id===brandId);
+  const eid = parseInt($('c2-eid').value) || null;
+
+  const data = {
+    name,
+    brand_id: brandId,
+    brand_name: brand ? (brand.name||brand.short) : '',
+    type: $('c2-type').value,
+    platform: $('c2-platform').value,
+    target_revenue: parseFloat($('c2-target').value) || 0,
+    start_date: $('c2-start').value || null,
+    end_date: $('c2-end').value || null,
+    brand_status: $('c2-bs').value,
+    payment_status: $('c2-ps').value,
+    commission_type: $('c2-ct').value,
+    commission_rate: parseFloat($('c2-rate').value) || 0,
+    commission_fixed: parseFloat($('c2-fixed').value) || 0,
+    kol_payment_flow: $('c2-flow').value,
+    note: $('c2-note').value.trim()
+  };
+
+  const p = eid ? apiPut('campaigns_v2', eid, data) : apiPost('campaigns_v2', data);
+  p.then(()=>loadCamps2()).then(()=>{
+    closeM('m-camp2');
+    toast(eid?'已更新':'已新增','success');
+  }).catch(e => {
+    if (e.code !== 403) toast('儲存失敗：'+(e.message||''),'error');
+  });
+}
+
+function delC2() {
+  const id = parseInt($('c2-eid').value);
+  if (!id) return;
+  if (!hasPerm('group_campaigns','edit')) return;
+  showCf('刪除此開團活動？','此動作無法復原，相關 KOL/業績連結都會被清除',()=>{
+    apiDel('campaigns_v2', id).then(()=>{
+      closeM('m-camp2');
+      toast('已刪除','info');
+      loadCamps2();
+    }).catch(e=>{
+      if (e.code !== 403) toast('刪除失敗','error');
+    });
+  });
+}
+
+// 開啟詳情面板
+function openC2Detail(id) {
+  go('camp2-detail', id);
+}
+
+// 重算業績 + 結算（呼叫 backend recalc endpoint）
+function recalcC2(id) {
+  if (!id) return;
+  const opts = { method:'POST', headers: {'Content-Type':'application/json'} };
+  if (CU && CU.email) opts.headers['X-User-Email'] = CU.email;
+  return fetch(API+'?path=campaign_recalc&id='+id, opts).then(r=>r.json()).then(j=>{
+    if (j.error) { toast('重算失敗：'+j.error,'error'); throw new Error(j.error); }
+    toast('重算完成：實際業績 $'+fmt(j.data.actual_revenue)+'，淨利 $'+fmt(j.data.agency_net_profit),'success');
+    return j.data;
+  }).catch(e=>{ toast('重算失敗','error'); throw e; });
+}
+
+/* ═══════════════════════════════════════
+   V4.8 開團活動詳情面板 (D-3)
+   ═══════════════════════════════════════ */
+let C2D_STATE = {
+  camp: null,        // campaigns_v2 row
+  kols: [],          // campaign_kols_v2 rows
+  links: [],         // campaign_revenue_links rows
+  revenue: [],       // 對應的 daily_revenue rows
+  tab: 'info'
+};
+
+const CK_IS_LBL = {
+  inviting:      { lbl:'邀約中',     ic:'📤', tg:'tg-gr',   color:'var(--tx3)' },
+  confirmed:     { lbl:'已確認',     ic:'✅', tg:'tg-cyn',  color:'var(--cyn)' },
+  sample_sent:   { lbl:'已寄樣',     ic:'📦', tg:'tg-yel',  color:'var(--yel)' },
+  posted:        { lbl:'已上稿',     ic:'📝', tg:'tg-gold', color:'var(--gold)' },
+  data_reported: { lbl:'數據已回報', ic:'📊', tg:'tg-pur',  color:'var(--pur)' },
+  settled:       { lbl:'已結款',     ic:'💰', tg:'tg-grn',  color:'var(--grn)' },
+  declined:      { lbl:'婉拒',       ic:'❌', tg:'tg-red',  color:'var(--red)' }
+};
+
+const CK_PT_LBL = {
+  fixed:      '固定金額',
+  percentage: '%抽業績',
+  barter:     '互惠'
+};
+
+function renderC2Detail(id) {
+  const cid = parseInt(id);
+  if (!cid) { go('camps2'); return; }
+  C2D_STATE.tab = 'info';
+  C2D_STATE.camp = null;
+  C2D_STATE.kols = [];
+  C2D_STATE.links = [];
+
+  // 顯示 loading
+  ['c2d-tab-info','c2d-tab-kol','c2d-tab-rev'].forEach(id=>{
+    const el = $(id);
+    if (el) el.innerHTML = '<div style="padding:50px 20px;text-align:center;color:var(--tx3);letter-spacing:2px">載入中...</div>';
+  });
+
+  // 載 camp（從快取或 fetch）
+  const cached = (C2_STATE.data||[]).find(c => c.id === cid);
+  const loadCamp = cached ? Promise.resolve(cached) : apiGet('campaigns_v2').then(rows => {
+    C2_STATE.data = rows||[];
+    return (rows||[]).find(c => c.id === cid);
+  });
+
+  loadCamp.then(camp => {
+    if (!camp) { toast('找不到活動','error'); go('camps2'); return; }
+    C2D_STATE.camp = camp;
+    // 載 KOL
+    return Promise.all([
+      apiGet('campaign_kols_v2').then(rows => (rows||[]).filter(k => k.campaign_id === cid)),
+      apiGet('campaign_revenue_links').then(rows => (rows||[]).filter(l => l.campaign_id === cid)).catch(()=>[])
+    ]);
+  }).then(arr => {
+    if (!arr) return;
+    C2D_STATE.kols = arr[0] || [];
+    C2D_STATE.links = arr[1] || [];
+    paintC2Detail();
+  }).catch(e=>{
+    if (e.code !== 403) toast('載入失敗：'+(e.message||''),'error');
+  });
+}
+
+function paintC2Detail() {
+  const c = C2D_STATE.camp;
+  if (!c) return;
+  const tmeta = C2_TYPE_LBL[c.type||'platform'] || C2_TYPE_LBL.platform;
+  const bsmeta = C2_BS_LBL[c.brand_status||'proposal'] || C2_BS_LBL.proposal;
+  const psmeta = C2_PS_LBL[c.payment_status||'pending'] || C2_PS_LBL.pending;
+
+  // Title bar
+  $('c2d-title').textContent = (tmeta.ic||'🎯')+' '+(c.name||'(未命名)');
+  $('c2d-bs-badge').innerHTML = '<span class="tg '+bsmeta.tg+'" style="font-size:10px">'+bsmeta.ic+' '+bsmeta.lbl+'</span>';
+  $('c2d-ps-badge').innerHTML = '<span class="tg '+psmeta.tg+'" style="font-size:10px">💵 '+psmeta.lbl+'</span>';
+  $('c2d-sub').textContent = (c.brand_name||'?')+' · '+(c.platform||'—')+' · '+(c.start_date||'?')+' ~ '+(c.end_date||'?');
+
+  // 重算按鈕權限
+  $('c2d-recalc-btn').style.display = hasPerm('group_campaigns','edit') ? '' : 'none';
+
+  // KPI
+  const target = +c.target_revenue||0;
+  const actual = +c.actual_revenue||0;
+  const comm = +c.agency_commission||0;
+  const kolPay = +c.total_kol_payout||0;
+  const net = +c.agency_net_profit||0;
+  $('c2d-k-rev').textContent = '$'+fmt(actual);
+  $('c2d-k-rev-d').textContent = target>0 ? ('目標 $'+fmt(target)+' · '+Math.round(actual/target*100)+'%') : '無目標';
+  $('c2d-k-comm').textContent = '$'+fmt(comm);
+  $('c2d-k-comm-d').textContent = c.commission_type==='percentage' ? (c.commission_rate+'% 抽成') : (c.commission_type==='fixed' ? '固定費用' : '—');
+  $('c2d-k-kol').textContent = '$'+fmt(kolPay);
+  $('c2d-k-kol-d').textContent = (C2D_STATE.kols||[]).length+' 位 KOL';
+  $('c2d-k-net').textContent = '$'+fmt(net);
+
+  // ROI: 業績 / KOL 費（如果 KOL 費 > 0）
+  if (kolPay > 0 && actual > 0) {
+    const roi = (actual / kolPay).toFixed(1);
+    $('c2d-k-net').innerHTML = '$'+fmt(net)+' <span style="font-size:10px;color:var(--tx3);font-weight:500;letter-spacing:.05em">· ROI '+roi+'x</span>';
+  }
+
+  $('c2d-kol-count').textContent = (C2D_STATE.kols||[]).length;
+
+  // 渲染當前 tab
+  paintC2DTab();
+}
+
+function setC2DTab(t) {
+  C2D_STATE.tab = t;
+  document.querySelectorAll('[data-c2dtab]').forEach(b=>b.classList.toggle('on', b.dataset.c2dtab===t));
+  ['info','kol','rev'].forEach(k=>{
+    $('c2d-tab-'+k).style.display = k===t ? '' : 'none';
+  });
+  paintC2DTab();
+}
+
+function paintC2DTab() {
+  if (C2D_STATE.tab === 'info') paintC2DInfo();
+  else if (C2D_STATE.tab === 'kol') paintC2DKol();
+  else if (C2D_STATE.tab === 'rev') paintC2DRev();
+}
+
+// ═══ Tab 1: 基本資訊 ═══
+function paintC2DInfo() {
+  const c = C2D_STATE.camp;
+  if (!c) return;
+  const tmeta = C2_TYPE_LBL[c.type||'platform'] || C2_TYPE_LBL.platform;
+  const bsmeta = C2_BS_LBL[c.brand_status||'proposal'] || C2_BS_LBL.proposal;
+  const psmeta = C2_PS_LBL[c.payment_status||'pending'] || C2_PS_LBL.pending;
+  const flowLbl = c.kol_payment_flow === 'agency' ? '🏢 走我（品牌付給我，我再結 KOL）' : '↔️ 走品牌（品牌直接付 KOL，我只收抽成）';
+
+  let h = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">';
+  // 左欄：基本
+  h += '<div>';
+  h += '<div style="font-size:10px;color:var(--tx3);letter-spacing:.2em;font-weight:700;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--li)">基本資訊</div>';
+  h += infoRow('品牌',     esc(c.brand_name||'—'));
+  h += infoRow('類型',     tmeta.ic+' '+tmeta.lbl);
+  h += infoRow('平台',     esc(c.platform||'—'));
+  h += infoRow('期間',     (c.start_date||'?')+' ~ '+(c.end_date||'?'));
+  h += infoRow('目標業績', '$'+fmt(c.target_revenue||0));
+  h += infoRow('實際業績', '<strong style="color:var(--grn)">$'+fmt(c.actual_revenue||0)+'</strong>');
+  h += '</div>';
+
+  // 右欄：狀態 + 結算
+  h += '<div>';
+  h += '<div style="font-size:10px;color:var(--tx3);letter-spacing:.2em;font-weight:700;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--li)">狀態 & 結算設定</div>';
+  h += infoRow('品牌方狀態', '<span class="tg '+bsmeta.tg+'">'+bsmeta.ic+' '+bsmeta.lbl+'</span>');
+  h += infoRow('款項狀態',   '<span class="tg '+psmeta.tg+'">💵 '+psmeta.lbl+'</span>');
+  if (c.commission_type === 'percentage') {
+    h += infoRow('抽成方式', '抽 <strong>'+(c.commission_rate||0)+'%</strong> 業績');
+  } else if (c.commission_type === 'fixed') {
+    h += infoRow('抽成方式', '固定 <strong>$'+fmt(c.commission_fixed||0)+'</strong>');
+  }
+  h += infoRow('金流走向', flowLbl);
+  h += infoRow('品牌請款額', '$'+fmt(c.brand_total_billing||0));
+  h += infoRow('我方淨利',   '<strong style="color:var(--grn)">$'+fmt(c.agency_net_profit||0)+'</strong>');
+  h += '</div>';
+
+  h += '</div>'; // grid
+
+  // 備註
+  if (c.note) {
+    h += '<div style="margin-top:24px;padding:14px;background:var(--bg2);border:1px solid var(--li);border-radius:4px">';
+    h += '<div style="font-size:10px;color:var(--tx3);letter-spacing:.2em;font-weight:700;margin-bottom:6px">📝 備註</div>';
+    h += '<div style="font-size:13px;color:var(--tx);line-height:1.7;white-space:pre-wrap">'+esc(c.note)+'</div>';
+    h += '</div>';
+  }
+
+  $('c2d-tab-info').innerHTML = h;
+}
+
+function infoRow(label, value) {
+  return '<div style="display:flex;padding:8px 0;border-bottom:1px dashed var(--li);font-size:12px"><div style="width:90px;color:var(--tx3);letter-spacing:.5px;flex-shrink:0">'+esc(label)+'</div><div style="flex:1;color:var(--tx)">'+value+'</div></div>';
+}
+
+// ═══ Tab 2: KOL 列表 ═══
+function paintC2DKol() {
+  const kols = C2D_STATE.kols || [];
+  const c = C2D_STATE.camp;
+
+  let h = '<div style="padding:14px">';
+  h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">';
+  h += '<div><div style="font-size:13px;font-weight:700;letter-spacing:.05em">KOL 名單管理</div><div style="font-size:10px;color:var(--tx3);letter-spacing:1px;margin-top:2px">每筆 KOL 可獨立追蹤狀態與費用</div></div>';
+  if (hasPerm('group_campaigns','edit')) {
+    h += '<button class="btn btn-p" onclick="openCK2(null)">+ 加入 KOL</button>';
+  }
+  h += '</div>';
+
+  if (!kols.length) {
+    h += '<div style="padding:50px 20px;text-align:center;border:1px dashed var(--li);border-radius:4px"><div style="font-size:36px;margin-bottom:10px">🌟</div><div style="font-size:12px;color:var(--tx3);letter-spacing:1.5px">尚未加入任何 KOL</div></div>';
+    h += '</div>';
+    $('c2d-tab-kol').innerHTML = h;
+    return;
+  }
+
+  // Summary stats
+  const stats = { total: kols.length, posted: 0, settled: 0, totalPayout: 0, paidPayout: 0 };
+  kols.forEach(k => {
+    if (k.invite_status === 'posted' || k.invite_status === 'data_reported' || k.invite_status === 'settled') stats.posted++;
+    if (k.invite_status === 'settled') stats.settled++;
+    stats.totalPayout += +k.payout||0;
+    stats.paidPayout += +k.payout_paid||0;
+  });
+  h += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px">';
+  h += '<div style="padding:10px;background:var(--bg2);border:1px solid var(--li);border-radius:3px;text-align:center"><div style="font-size:9px;color:var(--tx3);letter-spacing:.2em">已上稿</div><div style="font-size:18px;font-weight:800;font-family:var(--mo);color:var(--gold)">'+stats.posted+' / '+stats.total+'</div></div>';
+  h += '<div style="padding:10px;background:var(--bg2);border:1px solid var(--li);border-radius:3px;text-align:center"><div style="font-size:9px;color:var(--tx3);letter-spacing:.2em">已結款</div><div style="font-size:18px;font-weight:800;font-family:var(--mo);color:var(--grn)">'+stats.settled+' / '+stats.total+'</div></div>';
+  h += '<div style="padding:10px;background:var(--bg2);border:1px solid var(--li);border-radius:3px;text-align:center"><div style="font-size:9px;color:var(--tx3);letter-spacing:.2em">應付總額</div><div style="font-size:16px;font-weight:800;font-family:var(--mo);color:var(--red)">$'+fmt(stats.totalPayout)+'</div></div>';
+  h += '<div style="padding:10px;background:var(--bg2);border:1px solid var(--li);border-radius:3px;text-align:center"><div style="font-size:9px;color:var(--tx3);letter-spacing:.2em">已付總額</div><div style="font-size:16px;font-weight:800;font-family:var(--mo);color:var(--grn)">$'+fmt(stats.paidPayout)+'</div></div>';
+  h += '</div>';
+
+  // 表格
+  h += '<div class="tw"><table class="tbl-t"><thead><tr>';
+  h += '<th>KOL</th><th>角色</th><th>狀態</th><th>費用方式</th><th style="text-align:right">應付</th><th style="text-align:right">已付</th><th>上稿日</th><th style="text-align:right">觸及</th><th style="text-align:right">業績</th><th>操作</th>';
+  h += '</tr></thead><tbody>';
+  kols.forEach(k => {
+    const ismeta = CK_IS_LBL[k.invite_status||'inviting'] || CK_IS_LBL.inviting;
+    const ptlbl = CK_PT_LBL[k.payout_type||'fixed'];
+    const paid = +k.payout_paid||0;
+    const due = +k.payout||0;
+    const paidPct = due>0 ? Math.round(paid/due*100) : 0;
+    h += '<tr style="cursor:pointer" onclick="openCK2('+k.id+')">';
+    h += '<td><div style="font-weight:700">'+esc(k.kol_name||'—')+'</div><div style="font-size:9px;color:var(--tx3)">'+(k.kol_type==='group_buyer'?'🛍️ 團購主':'🌟 KOL')+'</div></td>';
+    h += '<td><div style="font-size:11px">'+(k.role==='main'?'主推':k.role==='secondary'?'次要':k.role==='support'?'輔助':'—')+'</div></td>';
+    // 狀態：可即時切換
+    h += '<td onclick="event.stopPropagation()">'+statusSelectHTML(k.id, k.invite_status||'inviting')+'</td>';
+    h += '<td><div style="font-size:11px;color:var(--tx2)">'+esc(ptlbl||'—')+'</div></td>';
+    h += '<td style="text-align:right;font-family:var(--mo);font-weight:700">$'+fmt(due)+'</td>';
+    h += '<td style="text-align:right;font-family:var(--mo)"><span style="color:'+(paidPct>=100?'var(--grn)':paidPct>0?'var(--yel)':'var(--tx3)')+'">$'+fmt(paid)+'</span>'+(due>0?' <span style="font-size:9px;color:var(--tx3)">('+paidPct+'%)</span>':'')+'</td>';
+    h += '<td style="font-family:var(--mo);font-size:11px">'+(k.post_date||'—')+'</td>';
+    h += '<td style="text-align:right;font-family:var(--mo);font-size:11px">'+(k.view_count?fmtK(k.view_count):'—')+'</td>';
+    h += '<td style="text-align:right;font-family:var(--mo);font-size:11px">'+(+k.attributed_revenue ? '$'+fmt(k.attributed_revenue) : '—')+'</td>';
+    h += '<td onclick="event.stopPropagation()"><button class="btn btn-g btn-sm" onclick="openCK2('+k.id+')">✏️</button></td>';
+    h += '</tr>';
+  });
+  h += '</tbody></table></div>';
+  h += '</div>';
+  $('c2d-tab-kol').innerHTML = h;
+}
+
+function statusSelectHTML(kolId, current) {
+  let h = '<select class="fc" style="padding:3px 6px;font-size:10.5px;width:100px" onchange="changeCK2Status('+kolId+',this.value)">';
+  Object.keys(CK_IS_LBL).forEach(k => {
+    h += '<option value="'+k+'"'+(k===current?' selected':'')+'>'+CK_IS_LBL[k].ic+' '+CK_IS_LBL[k].lbl+'</option>';
+  });
+  h += '</select>';
+  return h;
+}
+
+function changeCK2Status(kid, newStatus) {
+  if (!hasPerm('group_campaigns','edit')) { toast('無權限','error'); return; }
+  apiPut('campaign_kols_v2', kid, { invite_status: newStatus }).then(()=>{
+    const k = (C2D_STATE.kols||[]).find(x=>x.id===kid);
+    if (k) k.invite_status = newStatus;
+    toast('狀態已更新','success');
+    paintC2DKol();
+  }).catch(e=>{ if (e.code!==403) toast('失敗','error'); });
+}
+
+// ═══ Tab 3: 業績與結算 ═══
+function paintC2DRev() {
+  const c = C2D_STATE.camp;
+  if (!c) return;
+  const links = C2D_STATE.links || [];
+  const actualRev = +c.actual_revenue||0;
+  const target = +c.target_revenue||0;
+  const comm = +c.agency_commission||0;
+  const kolPay = +c.total_kol_payout||0;
+  const billing = +c.brand_total_billing||0;
+  const net = +c.agency_net_profit||0;
+
+  let h = '<div style="padding:14px">';
+
+  // 結算公式視覺化
+  h += '<div style="font-size:10px;color:var(--tx3);letter-spacing:.2em;font-weight:700;margin-bottom:10px">💰 結算公式</div>';
+  h += '<div style="padding:18px;background:var(--bg2);border:1px solid var(--li);border-radius:4px;margin-bottom:18px">';
+  h += '<div style="display:flex;flex-direction:column;gap:6px;font-family:var(--mo)">';
+  h += formulaRow('業績總額',          '$'+fmt(actualRev),      'var(--grn)',  null);
+  if (c.commission_type === 'percentage') {
+    h += formulaRow('× 抽成 '+(c.commission_rate||0)+'%', '',                    'var(--tx3)',  '');
+  } else if (c.commission_type === 'fixed') {
+    h += formulaRow('（固定抽成）',     '',                    'var(--tx3)',  '');
+  }
+  h += formulaRow('= 抽成金額',        '$'+fmt(comm),          'var(--gold)', null);
+  if (c.kol_payment_flow === 'agency') {
+    h += formulaRow('+ KOL 費用',        '$'+fmt(kolPay),        'var(--tx3)',  '');
+    h += formulaRow('= 跟品牌請款額',    '$'+fmt(billing),       'var(--cyn)',  null);
+    h += formulaRow('- 應付 KOL',        '$'+fmt(kolPay),        'var(--tx3)',  '');
+  } else {
+    h += formulaRow('（KOL 費品牌直付）','',                    'var(--tx3)',  '');
+    h += formulaRow('= 跟品牌請款額',    '$'+fmt(billing),       'var(--cyn)',  null);
+  }
+  h += formulaRow('= 我方淨利',        '$'+fmt(net),           'var(--grn)',  'highlight');
+  h += '</div>';
+  h += '</div>';
+
+  // 業績明細（從 campaign_revenue_links）
+  h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
+  h += '<div style="font-size:10px;color:var(--tx3);letter-spacing:.2em;font-weight:700">📊 業績明細（從 daily_revenue 串接）</div>';
+  if (hasPerm('group_campaigns','edit')) {
+    h += '<button class="btn btn-g btn-sm" onclick="c2dRecalc()">↻ 自動配對 + 重算</button>';
+  }
+  h += '</div>';
+
+  if (!links.length) {
+    h += '<div style="padding:30px;text-align:center;border:1px dashed var(--li);border-radius:4px;color:var(--tx3);letter-spacing:1.5px">';
+    h += '<div style="margin-bottom:8px">尚無業績連結</div>';
+    h += '<div style="font-size:10px">點上方「↻ 自動配對 + 重算」會自動掃描品牌的 daily_revenue 並建立連結</div>';
+    h += '</div>';
+  } else {
+    // 需要從 daily_revenue 撈詳細
+    h += '<div class="tw"><table class="tbl-t"><thead><tr><th>來源 ID</th><th style="text-align:right">金額</th><th>配對方式</th><th>建立時間</th></tr></thead><tbody>';
+    links.forEach(l => {
+      h += '<tr>';
+      h += '<td style="font-family:var(--mo);font-size:11px">#'+esc(l.revenue_id)+'</td>';
+      h += '<td style="text-align:right;font-family:var(--mo);font-weight:700">$'+fmt(l.amount)+'</td>';
+      h += '<td>'+(l.auto_matched=='1'||l.auto_matched===1 ? '<span class="tg tg-cyn">自動</span>' : '<span class="tg tg-gold">手動</span>')+'</td>';
+      h += '<td style="font-family:var(--mo);font-size:10px;color:var(--tx3)">'+esc((l.created_at||'').slice(0,16))+'</td>';
+      h += '</tr>';
+    });
+    const total = links.reduce((s,l)=>s+(+l.amount||0),0);
+    h += '<tr style="background:var(--bg2);font-weight:700"><td>合計（'+links.length+' 筆）</td><td style="text-align:right;font-family:var(--mo)">$'+fmt(total)+'</td><td colspan="2"></td></tr>';
+    h += '</tbody></table></div>';
+  }
+  h += '</div>';
+
+  $('c2d-tab-rev').innerHTML = h;
+}
+
+function formulaRow(label, value, color, type) {
+  const isHighlight = type === 'highlight';
+  const valStyle = isHighlight ? 'font-weight:800;font-size:18px;color:'+color : 'font-weight:700;color:'+color;
+  const lblStyle = isHighlight ? 'font-weight:700' : '';
+  return '<div style="display:flex;justify-content:space-between;align-items:center;padding:'+(isHighlight?'8px 0;border-top:1px solid var(--li);margin-top:4px':'2px 0')+'"><span style="font-size:'+(isHighlight?'13':'12')+'px;'+lblStyle+'">'+esc(label)+'</span><span style="'+valStyle+'">'+value+'</span></div>';
+}
+
+// ═══ 重算 ═══
+function c2dRecalc() {
+  const cid = C2D_STATE.camp ? C2D_STATE.camp.id : null;
+  if (!cid) return;
+  recalcC2(cid).then(()=>{
+    // 重新整個 detail 載入
+    renderC2Detail(cid);
+  }).catch(()=>{});
+}
+
+// ═══ 編輯活動（從 detail 觸發）═══
+function c2dEdit() {
+  const cid = C2D_STATE.camp ? C2D_STATE.camp.id : null;
+  if (!cid) return;
+  openCamp2M(cid);
+  // 儲存後 m-camp2 會 loadCamps2()，但 detail 不會重新載入；用 watcher 解決：
+  // 簡單作法：監聽 m-camp2 的 close 事件後重新拉
+  const obs = setInterval(()=>{
+    const m = $('m-camp2');
+    if (m && !m.classList.contains('on')) {
+      clearInterval(obs);
+      // 拉最新 camp 資料
+      apiGet('campaigns_v2').then(rows => {
+        C2_STATE.data = rows||[];
+        const updated = (rows||[]).find(c => c.id === cid);
+        if (updated) {
+          C2D_STATE.camp = updated;
+          paintC2Detail();
+        }
+      }).catch(()=>{});
+    }
+  }, 300);
+}
+
+// ═══ 加入 / 編輯 KOL ═══
+function openCK2(kid) {
+  if (!hasPerm('group_campaigns','edit')) { toast('無權限','error'); return; }
+  const cid = C2D_STATE.camp ? C2D_STATE.camp.id : null;
+  if (!cid) return;
+  $('ck2-eid').value = '';
+  $('ck2-cid').value = cid;
+  $('mck2-t').textContent = '👤 加入 KOL';
+  ['ck2-name','ck2-payout','ck2-paid','ck2-paid-date','ck2-post-date','ck2-post-url','ck2-views','ck2-eng','ck2-coupon','ck2-rev','ck2-note'].forEach(i=>$(i).value='');
+  $('ck2-source').value = 'kol';
+  $('ck2-role').value = 'main';
+  $('ck2-is').value = 'inviting';
+  $('ck2-pt').value = 'fixed';
+  $('ck2-flow').value = '';
+  $('ck2-del-btn').style.display = 'none';
+  onCK2SourceChange();
+
+  if (kid) {
+    const k = (C2D_STATE.kols||[]).find(x=>x.id===kid);
+    if (!k) { toast('找不到','error'); return; }
+    $('ck2-eid').value = kid;
+    $('mck2-t').textContent = '✏️ 編輯 KOL';
+    $('ck2-source').value = 'manual'; // 編輯時預設手動
+    $('ck2-name-wrap').style.display = '';
+    $('ck2-pick-wrap').style.display = 'none';
+    $('ck2-name').value = k.kol_name||'';
+    $('ck2-role').value = k.role||'main';
+    $('ck2-is').value = k.invite_status||'inviting';
+    $('ck2-pt').value = k.payout_type||'fixed';
+    $('ck2-payout').value = k.payout||'';
+    $('ck2-paid').value = k.payout_paid||'';
+    $('ck2-paid-date').value = k.payout_paid_date||'';
+    $('ck2-flow').value = k.payment_flow||'';
+    $('ck2-post-date').value = k.post_date||'';
+    $('ck2-post-url').value = k.post_url||'';
+    $('ck2-views').value = k.view_count||'';
+    $('ck2-eng').value = k.engagement_count||'';
+    $('ck2-coupon').value = k.coupon_code||'';
+    $('ck2-rev').value = k.attributed_revenue||'';
+    $('ck2-note').value = k.note||'';
+    $('ck2-del-btn').style.display = '';
+  }
+  openM('m-camp2-kol');
+}
+
+function onCK2SourceChange() {
+  const src = $('ck2-source').value;
+  const pickWrap = $('ck2-pick-wrap');
+  const nameWrap = $('ck2-name-wrap');
+  const pickSel = $('ck2-pick');
+
+  if (src === 'manual') {
+    pickWrap.style.display = 'none';
+    nameWrap.style.display = '';
+  } else {
+    pickWrap.style.display = '';
+    nameWrap.style.display = 'none';
+    // 填下拉
+    if (src === 'kol') {
+      pickSel.innerHTML = '<option value="">— 請選擇 —</option>' +
+        (DB.kols||[]).map(k => '<option value="'+k.id+'" data-name="'+esc(k.name||'')+'">🌟 '+esc(k.name||'?')+(k.ig_id?' ('+esc(k.ig_id)+')':'')+'</option>').join('');
+    } else if (src === 'group_buyer') {
+      pickSel.innerHTML = '<option value="">— 請選擇 —</option>' +
+        (DB.groupBuyers||[]).map(g => '<option value="'+g.id+'" data-name="'+esc(g.nickname||'')+'">🛍️ '+esc(g.nickname||'?')+'</option>').join('');
+    }
+  }
+}
+
+function saveCK2() {
+  const cid = parseInt($('ck2-cid').value);
+  if (!cid) return;
+  const eid = parseInt($('ck2-eid').value) || null;
+  const src = $('ck2-source').value;
+  let kolId = null, kolType = 'kol', kolName = '';
+  if (src === 'manual') {
+    kolName = $('ck2-name').value.trim();
+    if (!kolName) { toast('請填名稱','error'); return; }
+    kolId = 0; // 手動輸入無 reference
+  } else {
+    const sel = $('ck2-pick');
+    kolId = parseInt(sel.value);
+    if (!kolId) { toast('請選擇對象','error'); return; }
+    kolType = src; // 'kol' or 'group_buyer'
+    const opt = sel.options[sel.selectedIndex];
+    kolName = opt.dataset.name || opt.textContent.replace(/^[🌟🛍️]\s*/, '').replace(/\s*\(.*\)$/, '');
+  }
+
+  const data = {
+    campaign_id: cid,
+    kol_id: kolId,
+    kol_type: kolType,
+    kol_name: kolName,
+    role: $('ck2-role').value,
+    invite_status: $('ck2-is').value,
+    payout_type: $('ck2-pt').value,
+    payout: parseFloat($('ck2-payout').value) || 0,
+    payout_paid: parseFloat($('ck2-paid').value) || 0,
+    payout_paid_date: $('ck2-paid-date').value || null,
+    payment_flow: $('ck2-flow').value || null,
+    post_date: $('ck2-post-date').value || null,
+    post_url: $('ck2-post-url').value.trim(),
+    view_count: parseInt($('ck2-views').value) || 0,
+    engagement_count: parseInt($('ck2-eng').value) || 0,
+    coupon_code: $('ck2-coupon').value.trim(),
+    attributed_revenue: parseFloat($('ck2-rev').value) || 0,
+    note: $('ck2-note').value.trim()
+  };
+
+  // 自動推 payout_status
+  if (data.payout_paid >= data.payout && data.payout > 0) data.payout_status = 'paid';
+  else if (data.payout_paid > 0) data.payout_status = 'partial';
+  else data.payout_status = 'pending';
+
+  const p = eid ? apiPut('campaign_kols_v2', eid, data) : apiPost('campaign_kols_v2', data);
+  p.then(()=>{
+    closeM('m-camp2-kol');
+    toast(eid?'已更新':'已加入','success');
+    // 重載 KOL 列表
+    return apiGet('campaign_kols_v2');
+  }).then(rows => {
+    if (rows) {
+      C2D_STATE.kols = (rows||[]).filter(k => k.campaign_id === cid);
+      paintC2Detail();
+    }
+  }).catch(e=>{ if (e.code!==403) toast('儲存失敗：'+(e.message||''),'error'); });
+}
+
+function delCK2() {
+  const eid = parseInt($('ck2-eid').value);
+  if (!eid) return;
+  showCf('移除此 KOL？','此 KOL 從活動中移除（KOL 庫不會被刪）',()=>{
+    apiDel('campaign_kols_v2', eid).then(()=>{
+      closeM('m-camp2-kol');
+      toast('已移除','info');
+      const cid = C2D_STATE.camp ? C2D_STATE.camp.id : null;
+      if (cid) {
+        apiGet('campaign_kols_v2').then(rows => {
+          C2D_STATE.kols = (rows||[]).filter(k => k.campaign_id === cid);
+          paintC2Detail();
+        });
+      }
+    }).catch(e=>{ if (e.code!==403) toast('刪除失敗','error'); });
   });
 }
 

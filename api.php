@@ -110,6 +110,9 @@ function tablePermMap($table) {
         'brand_links'          => ['clients', 'view', 'edit', 'edit'],
         'brand_campaigns'      => ['group_campaigns', 'view', 'edit', 'edit'],
         'campaign_kols'        => ['group_campaigns', 'view', 'edit', 'edit'],
+        'campaigns_v2'         => ['group_campaigns', 'view', 'edit', 'edit'],
+        'campaign_kols_v2'     => ['group_campaigns', 'view', 'edit', 'edit'],
+        'campaign_revenue_links' => ['group_campaigns', 'view', 'edit', 'edit'],
         'email_templates'      => ['tasks', 'view', 'edit', 'delete'],
         'brand_products'       => ['clients', 'view', 'edit', 'delete'],
         'invoices'             => ['commissions', 'view', 'edit', 'edit'],
@@ -190,6 +193,7 @@ function tableBrandIdField($table) {
         'brand_credentials' => 'brand_id',
         'brand_links' => 'brand_id',
         'brand_campaigns' => 'brand_id',
+        'campaigns_v2' => 'brand_id',
         'daily_revenue' => 'brand_id',
         'group_campaigns' => 'brand_id',
         'commissions' => 'brand_id',
@@ -583,6 +587,118 @@ function initTables($pdo) {
         INDEX idx_campaign (campaign_id),
         INDEX idx_kol (kol_id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+    // ── V4.8: 升級版開團/檔期 (Q6+Q7+Q8) ──
+    $pdo->exec("CREATE TABLE IF NOT EXISTS campaigns_v2 (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        brand_id INT NOT NULL,
+        brand_name VARCHAR(200),
+
+        -- 基本資訊
+        name VARCHAR(300) NOT NULL,
+        type VARCHAR(30) DEFAULT 'platform',
+        platform VARCHAR(50),
+
+        -- 期間
+        start_date DATE,
+        end_date DATE,
+
+        -- 業績
+        target_revenue DECIMAL(14,2) DEFAULT 0,
+        actual_revenue DECIMAL(14,2) DEFAULT 0,
+
+        -- 雙重狀態
+        brand_status VARCHAR(30) DEFAULT 'proposal',
+        payment_status VARCHAR(30) DEFAULT 'pending',
+
+        -- 抽成設定
+        commission_type VARCHAR(20) DEFAULT 'percentage',
+        commission_rate DECIMAL(5,2) DEFAULT 0,
+        commission_fixed DECIMAL(12,2) DEFAULT 0,
+
+        -- 金流走向（this campaign 整體的設計）
+        kol_payment_flow VARCHAR(20) DEFAULT 'agency',
+
+        -- 結算金額（自動算）
+        total_kol_payout DECIMAL(14,2) DEFAULT 0,
+        agency_commission DECIMAL(14,2) DEFAULT 0,
+        brand_total_billing DECIMAL(14,2) DEFAULT 0,
+        agency_net_profit DECIMAL(14,2) DEFAULT 0,
+
+        -- 收付款日期
+        brand_invoice_date DATE,
+        brand_invoice_amount DECIMAL(14,2) DEFAULT 0,
+        brand_paid_date DATE,
+        brand_paid_amount DECIMAL(14,2) DEFAULT 0,
+        kol_payout_date DATE,
+
+        note TEXT,
+        linked_old_campaign_id INT DEFAULT NULL,
+        created_by VARCHAR(100),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+        INDEX idx_brand (brand_id),
+        INDEX idx_dates (start_date, end_date),
+        INDEX idx_brand_status (brand_status),
+        INDEX idx_payment_status (payment_status),
+        INDEX idx_type (type),
+        INDEX idx_platform (platform)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS campaign_kols_v2 (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        campaign_id INT NOT NULL,
+        kol_id INT NOT NULL,
+        kol_type VARCHAR(20) DEFAULT 'kol',
+        kol_name VARCHAR(200),
+        role VARCHAR(50) DEFAULT 'main',
+
+        -- KOL 流程狀態
+        invite_status VARCHAR(30) DEFAULT 'inviting',
+
+        -- 費用
+        payout_type VARCHAR(20) DEFAULT 'fixed',
+        payout DECIMAL(12,2) DEFAULT 0,
+        payout_paid DECIMAL(12,2) DEFAULT 0,
+        payout_paid_date DATE,
+        payout_status VARCHAR(20) DEFAULT 'pending',
+
+        -- 此 KOL 的金流走向（覆蓋 campaign 預設）
+        payment_flow VARCHAR(20) DEFAULT NULL,
+
+        -- 業績歸因
+        attributed_revenue DECIMAL(14,2) DEFAULT 0,
+
+        -- 上稿/數據
+        post_date DATE,
+        post_url VARCHAR(500),
+        view_count INT DEFAULT 0,
+        engagement_count INT DEFAULT 0,
+        coupon_code VARCHAR(50),
+
+        note TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+        INDEX idx_campaign (campaign_id),
+        INDEX idx_kol (kol_id, kol_type),
+        INDEX idx_invite_status (invite_status),
+        INDEX idx_payout_status (payout_status)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS campaign_revenue_links (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        campaign_id INT NOT NULL,
+        revenue_id INT NOT NULL,
+        amount DECIMAL(12,2) DEFAULT 0,
+        auto_matched TINYINT DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+        INDEX idx_campaign (campaign_id),
+        INDEX idx_revenue (revenue_id),
+        UNIQUE KEY uniq_link (campaign_id, revenue_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 }
 
 // ── Activity Log (V4.4) ──
@@ -599,6 +715,39 @@ function logActivity($pdo, $user, $action, $entityType, $entityId, $details = nu
             $details ? json_encode($details, JSON_UNESCAPED_UNICODE) : null,
             $_SERVER['REMOTE_ADDR'] ?? ''
         ]);
+    } catch (Exception $e) { /* silent fail */ }
+}
+
+// ── V4.8 D-4: 業績自動串檔期 ──
+// 給定一筆 daily_revenue，掃描該品牌符合的 campaigns_v2，建立 campaign_revenue_links
+function autoLinkRevenueToCampaigns($pdo, $revenueId, $revenueRow) {
+    $brandId = (int)($revenueRow['brand_id'] ?? 0);
+    $date    = $revenueRow['revenue_date'] ?? null;
+    $channel = $revenueRow['channel'] ?? '';
+    $amount  = (float)($revenueRow['amount'] ?? 0);
+    if (!$brandId || !$date || $amount <= 0) return;
+
+    try {
+        // 找符合的 campaigns_v2：品牌一致 + 日期落入區間 + 平台相符或為空
+        $stmt = $pdo->prepare("SELECT id FROM campaigns_v2
+            WHERE brand_id = ?
+              AND start_date <= ? AND end_date >= ?
+              AND brand_status NOT IN ('cancelled')
+              AND (platform = ? OR platform IS NULL OR platform = '' OR platform = '其他' OR ? = '')");
+        $stmt->execute([$brandId, $date, $date, $channel, $channel]);
+        $matched = $stmt->fetchAll();
+
+        foreach ($matched as $m) {
+            $cid = (int)$m['id'];
+            // INSERT IGNORE 避免重複
+            $pdo->prepare("INSERT IGNORE INTO campaign_revenue_links
+                (campaign_id, revenue_id, amount, auto_matched) VALUES (?,?,?,1)")
+                ->execute([$cid, $revenueId, $amount]);
+            // 更新 campaign 的 actual_revenue
+            $pdo->prepare("UPDATE campaigns_v2 SET actual_revenue = (
+                SELECT COALESCE(SUM(amount),0) FROM campaign_revenue_links WHERE campaign_id = ?
+            ) WHERE id = ?")->execute([$cid, $cid]);
+        }
     } catch (Exception $e) { /* silent fail */ }
 }
 
@@ -619,7 +768,8 @@ $validTables = [
     'brand_credentials','email_templates','brand_task_fields',
     'kol_brand_relations','kol_contacts','group_buyers','group_campaigns',
     'brand_products','invoices','task_templates','file_attachments','activity_log',
-    'daily_revenue','brand_links','brand_campaigns','campaign_kols'
+    'daily_revenue','brand_links','brand_campaigns','campaign_kols',
+    'campaigns_v2','campaign_kols_v2','campaign_revenue_links'
 ];
 
 $pdo = getDB();
@@ -915,6 +1065,83 @@ if ($path === 'my_workspace' && $method === 'GET') {
     ]);
 }
 
+// ── /campaign_recalc/{id} 重算檔期業績與結算金額 (V4.8) ──
+if ($path === 'campaign_recalc' && $method === 'POST') {
+    if (!userHasPerm($currentUser, 'group_campaigns', 'edit')) err('無權限', 403);
+    $cid = (int)($_GET['id'] ?? 0);
+    if (!$cid) err('缺少 id');
+
+    // 1. 取檔期
+    $stmt = $pdo->prepare("SELECT * FROM campaigns_v2 WHERE id = ?");
+    $stmt->execute([$cid]);
+    $camp = $stmt->fetch();
+    if (!$camp) err('Not found', 404);
+
+    // 2. 自動配對 daily_revenue → 建立 links
+    $stmt = $pdo->prepare("SELECT id, amount FROM daily_revenue
+        WHERE brand_id = ? AND revenue_date BETWEEN ? AND ?
+        AND (channel = ? OR ? = '' OR ? = '其他')");
+    $stmt->execute([$camp['brand_id'], $camp['start_date'], $camp['end_date'],
+                    $camp['platform'], $camp['platform'], $camp['platform']]);
+    $rows = $stmt->fetchAll();
+    $totalRev = 0;
+    foreach ($rows as $r) {
+        // INSERT IGNORE 避免重複 link
+        $pdo->prepare("INSERT IGNORE INTO campaign_revenue_links (campaign_id, revenue_id, amount, auto_matched) VALUES (?,?,?,1)")
+            ->execute([$cid, $r['id'], $r['amount']]);
+        $totalRev += (float)$r['amount'];
+    }
+    // 加上手動指定的 links 已存在的金額
+    $stmt = $pdo->prepare("SELECT SUM(amount) AS total FROM campaign_revenue_links WHERE campaign_id = ?");
+    $stmt->execute([$cid]);
+    $linkTotal = (float)($stmt->fetch()['total'] ?? 0);
+
+    // 3. 取所有 campaign_kols_v2 加總費用
+    $stmt = $pdo->prepare("SELECT SUM(payout) AS total FROM campaign_kols_v2 WHERE campaign_id = ?");
+    $stmt->execute([$cid]);
+    $totalKolPayout = (float)($stmt->fetch()['total'] ?? 0);
+
+    // 4. 計算抽成
+    $actualRev = $linkTotal;
+    $commission = 0;
+    if ($camp['commission_type'] === 'percentage') {
+        $commission = $actualRev * ((float)$camp['commission_rate']) / 100;
+    } elseif ($camp['commission_type'] === 'fixed') {
+        $commission = (float)$camp['commission_fixed'];
+    }
+
+    // 5. 跟品牌請款金額（依金流走向）
+    $brandTotal = $commission;
+    if ($camp['kol_payment_flow'] === 'agency') {
+        // 走我：品牌付 KOL費 + 抽成
+        $brandTotal = $totalKolPayout + $commission;
+    }
+    // direct：品牌只付抽成（KOL費品牌直接付）
+
+    // 6. 淨利
+    $netProfit = $brandTotal - $totalKolPayout;
+    if ($camp['kol_payment_flow'] === 'direct') {
+        $netProfit = $commission;
+    }
+
+    // 7. 寫回
+    $pdo->prepare("UPDATE campaigns_v2 SET
+        actual_revenue = ?, total_kol_payout = ?, agency_commission = ?,
+        brand_total_billing = ?, agency_net_profit = ?
+        WHERE id = ?")
+        ->execute([$actualRev, $totalKolPayout, $commission, $brandTotal, $netProfit, $cid]);
+
+    ok([
+        'campaign_id' => $cid,
+        'actual_revenue' => $actualRev,
+        'auto_matched_count' => count($rows),
+        'total_kol_payout' => $totalKolPayout,
+        'agency_commission' => $commission,
+        'brand_total_billing' => $brandTotal,
+        'agency_net_profit' => $netProfit
+    ]);
+}
+
 if (!in_array($table, $validTables)) err('Invalid table: ' . $table);
 
 // ── 統一權限攔截（CRUD 前）──
@@ -1023,6 +1250,11 @@ if ($path === 'batch_insert' && $method === 'POST') {
             $phs = implode(',', array_fill(0, count($row), '?'));
             $stmt = $pdo->prepare("INSERT INTO `$tb` ($cols) VALUES ($phs)");
             $stmt->execute(array_values($row));
+            $newId = $pdo->lastInsertId();
+            // V4.8 D-4: 批次業績登錄也自動串檔期
+            if ($tb === 'daily_revenue' && $newId) {
+                autoLinkRevenueToCampaigns($pdo, (int)$newId, $row);
+            }
             $success++;
         } catch (Exception $e) {
             $failed++;
@@ -1087,6 +1319,12 @@ if ($method === 'POST') {
     $row = maskCredentials($table, $row);
     if ($table === 'notifications') $row['read'] = (bool)$row['is_read'];
     if (shouldLogTable($table)) logActivity($pdo, $currentUser, 'create', $table, $newId, ['name' => $row['name'] ?? $row['title'] ?? '']);
+
+    // V4.8 D-4: 業績登錄時自動串接檔期
+    if ($table === 'daily_revenue' && $newId) {
+        autoLinkRevenueToCampaigns($pdo, (int)$newId, $row);
+    }
+
     ok($row);
 }
 
